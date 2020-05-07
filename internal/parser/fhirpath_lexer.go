@@ -1,4 +1,4 @@
-// Code generated from fhirpath.g4 by ANTLR 4.8. DO NOT EDIT.
+// Code generated from FHIRPath.g4 by ANTLR 4.8. DO NOT EDIT.
 
 package parser
 
@@ -290,7 +290,7 @@ var lexerRuleNames = []string{
 	"HEX",
 }
 
-type fhirpathLexer struct {
+type FHIRPathLexer struct {
 	*antlr.BaseLexer
 	channelNames []string
 	modeNames    []string
@@ -305,9 +305,9 @@ func init() {
 	}
 }
 
-func NewfhirpathLexer(input antlr.CharStream) *fhirpathLexer {
+func NewFHIRPathLexer(input antlr.CharStream) *FHIRPathLexer {
 
-	l := new(fhirpathLexer)
+	l := new(FHIRPathLexer)
 
 	l.BaseLexer = antlr.NewBaseLexer(input)
 	l.Interpreter = antlr.NewLexerATNSimulator(l, lexerAtn, lexerDecisionToDFA, antlr.NewPredictionContextCache())
@@ -317,76 +317,76 @@ func NewfhirpathLexer(input antlr.CharStream) *fhirpathLexer {
 	l.RuleNames = lexerRuleNames
 	l.LiteralNames = lexerLiteralNames
 	l.SymbolicNames = lexerSymbolicNames
-	l.GrammarFileName = "fhirpath.g4"
+	l.GrammarFileName = "FHIRPath.g4"
 	// TODO: l.EOF = antlr.TokenEOF
 
 	return l
 }
 
-// fhirpathLexer tokens.
+// FHIRPathLexer tokens.
 const (
-	fhirpathLexerT__0                = 1
-	fhirpathLexerT__1                = 2
-	fhirpathLexerT__2                = 3
-	fhirpathLexerT__3                = 4
-	fhirpathLexerT__4                = 5
-	fhirpathLexerT__5                = 6
-	fhirpathLexerT__6                = 7
-	fhirpathLexerT__7                = 8
-	fhirpathLexerT__8                = 9
-	fhirpathLexerT__9                = 10
-	fhirpathLexerT__10               = 11
-	fhirpathLexerT__11               = 12
-	fhirpathLexerT__12               = 13
-	fhirpathLexerT__13               = 14
-	fhirpathLexerT__14               = 15
-	fhirpathLexerT__15               = 16
-	fhirpathLexerT__16               = 17
-	fhirpathLexerT__17               = 18
-	fhirpathLexerT__18               = 19
-	fhirpathLexerT__19               = 20
-	fhirpathLexerT__20               = 21
-	fhirpathLexerT__21               = 22
-	fhirpathLexerT__22               = 23
-	fhirpathLexerT__23               = 24
-	fhirpathLexerT__24               = 25
-	fhirpathLexerT__25               = 26
-	fhirpathLexerT__26               = 27
-	fhirpathLexerT__27               = 28
-	fhirpathLexerT__28               = 29
-	fhirpathLexerT__29               = 30
-	fhirpathLexerT__30               = 31
-	fhirpathLexerT__31               = 32
-	fhirpathLexerT__32               = 33
-	fhirpathLexerT__33               = 34
-	fhirpathLexerT__34               = 35
-	fhirpathLexerT__35               = 36
-	fhirpathLexerT__36               = 37
-	fhirpathLexerT__37               = 38
-	fhirpathLexerT__38               = 39
-	fhirpathLexerT__39               = 40
-	fhirpathLexerT__40               = 41
-	fhirpathLexerT__41               = 42
-	fhirpathLexerT__42               = 43
-	fhirpathLexerT__43               = 44
-	fhirpathLexerT__44               = 45
-	fhirpathLexerT__45               = 46
-	fhirpathLexerT__46               = 47
-	fhirpathLexerT__47               = 48
-	fhirpathLexerT__48               = 49
-	fhirpathLexerT__49               = 50
-	fhirpathLexerT__50               = 51
-	fhirpathLexerT__51               = 52
-	fhirpathLexerT__52               = 53
-	fhirpathLexerT__53               = 54
-	fhirpathLexerDATE                = 55
-	fhirpathLexerDATETIME            = 56
-	fhirpathLexerTIME                = 57
-	fhirpathLexerIDENTIFIER          = 58
-	fhirpathLexerDELIMITEDIDENTIFIER = 59
-	fhirpathLexerSTRING              = 60
-	fhirpathLexerNUMBER              = 61
-	fhirpathLexerWS                  = 62
-	fhirpathLexerCOMMENT             = 63
-	fhirpathLexerLINE_COMMENT        = 64
+	FHIRPathLexerT__0                = 1
+	FHIRPathLexerT__1                = 2
+	FHIRPathLexerT__2                = 3
+	FHIRPathLexerT__3                = 4
+	FHIRPathLexerT__4                = 5
+	FHIRPathLexerT__5                = 6
+	FHIRPathLexerT__6                = 7
+	FHIRPathLexerT__7                = 8
+	FHIRPathLexerT__8                = 9
+	FHIRPathLexerT__9                = 10
+	FHIRPathLexerT__10               = 11
+	FHIRPathLexerT__11               = 12
+	FHIRPathLexerT__12               = 13
+	FHIRPathLexerT__13               = 14
+	FHIRPathLexerT__14               = 15
+	FHIRPathLexerT__15               = 16
+	FHIRPathLexerT__16               = 17
+	FHIRPathLexerT__17               = 18
+	FHIRPathLexerT__18               = 19
+	FHIRPathLexerT__19               = 20
+	FHIRPathLexerT__20               = 21
+	FHIRPathLexerT__21               = 22
+	FHIRPathLexerT__22               = 23
+	FHIRPathLexerT__23               = 24
+	FHIRPathLexerT__24               = 25
+	FHIRPathLexerT__25               = 26
+	FHIRPathLexerT__26               = 27
+	FHIRPathLexerT__27               = 28
+	FHIRPathLexerT__28               = 29
+	FHIRPathLexerT__29               = 30
+	FHIRPathLexerT__30               = 31
+	FHIRPathLexerT__31               = 32
+	FHIRPathLexerT__32               = 33
+	FHIRPathLexerT__33               = 34
+	FHIRPathLexerT__34               = 35
+	FHIRPathLexerT__35               = 36
+	FHIRPathLexerT__36               = 37
+	FHIRPathLexerT__37               = 38
+	FHIRPathLexerT__38               = 39
+	FHIRPathLexerT__39               = 40
+	FHIRPathLexerT__40               = 41
+	FHIRPathLexerT__41               = 42
+	FHIRPathLexerT__42               = 43
+	FHIRPathLexerT__43               = 44
+	FHIRPathLexerT__44               = 45
+	FHIRPathLexerT__45               = 46
+	FHIRPathLexerT__46               = 47
+	FHIRPathLexerT__47               = 48
+	FHIRPathLexerT__48               = 49
+	FHIRPathLexerT__49               = 50
+	FHIRPathLexerT__50               = 51
+	FHIRPathLexerT__51               = 52
+	FHIRPathLexerT__52               = 53
+	FHIRPathLexerT__53               = 54
+	FHIRPathLexerDATE                = 55
+	FHIRPathLexerDATETIME            = 56
+	FHIRPathLexerTIME                = 57
+	FHIRPathLexerIDENTIFIER          = 58
+	FHIRPathLexerDELIMITEDIDENTIFIER = 59
+	FHIRPathLexerSTRING              = 60
+	FHIRPathLexerNUMBER              = 61
+	FHIRPathLexerWS                  = 62
+	FHIRPathLexerCOMMENT             = 63
+	FHIRPathLexerLINE_COMMENT        = 64
 )

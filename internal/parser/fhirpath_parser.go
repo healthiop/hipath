@@ -1,6 +1,6 @@
-// Code generated from fhirpath.g4 by ANTLR 4.8. DO NOT EDIT.
+// Code generated from FHIRPath.g4 by ANTLR 4.8. DO NOT EDIT.
 
-package parser // fhirpath
+package parser // FHIRPath
 
 import (
 	"fmt"
@@ -119,12 +119,12 @@ func init() {
 	}
 }
 
-type fhirpathParser struct {
+type FHIRPathParser struct {
 	*antlr.BaseParser
 }
 
-func NewfhirpathParser(input antlr.TokenStream) *fhirpathParser {
-	this := new(fhirpathParser)
+func NewFHIRPathParser(input antlr.TokenStream) *FHIRPathParser {
+	this := new(FHIRPathParser)
 
 	this.BaseParser = antlr.NewBaseParser(input)
 
@@ -132,96 +132,96 @@ func NewfhirpathParser(input antlr.TokenStream) *fhirpathParser {
 	this.RuleNames = ruleNames
 	this.LiteralNames = literalNames
 	this.SymbolicNames = symbolicNames
-	this.GrammarFileName = "fhirpath.g4"
+	this.GrammarFileName = "FHIRPath.g4"
 
 	return this
 }
 
-// fhirpathParser tokens.
+// FHIRPathParser tokens.
 const (
-	fhirpathParserEOF                 = antlr.TokenEOF
-	fhirpathParserT__0                = 1
-	fhirpathParserT__1                = 2
-	fhirpathParserT__2                = 3
-	fhirpathParserT__3                = 4
-	fhirpathParserT__4                = 5
-	fhirpathParserT__5                = 6
-	fhirpathParserT__6                = 7
-	fhirpathParserT__7                = 8
-	fhirpathParserT__8                = 9
-	fhirpathParserT__9                = 10
-	fhirpathParserT__10               = 11
-	fhirpathParserT__11               = 12
-	fhirpathParserT__12               = 13
-	fhirpathParserT__13               = 14
-	fhirpathParserT__14               = 15
-	fhirpathParserT__15               = 16
-	fhirpathParserT__16               = 17
-	fhirpathParserT__17               = 18
-	fhirpathParserT__18               = 19
-	fhirpathParserT__19               = 20
-	fhirpathParserT__20               = 21
-	fhirpathParserT__21               = 22
-	fhirpathParserT__22               = 23
-	fhirpathParserT__23               = 24
-	fhirpathParserT__24               = 25
-	fhirpathParserT__25               = 26
-	fhirpathParserT__26               = 27
-	fhirpathParserT__27               = 28
-	fhirpathParserT__28               = 29
-	fhirpathParserT__29               = 30
-	fhirpathParserT__30               = 31
-	fhirpathParserT__31               = 32
-	fhirpathParserT__32               = 33
-	fhirpathParserT__33               = 34
-	fhirpathParserT__34               = 35
-	fhirpathParserT__35               = 36
-	fhirpathParserT__36               = 37
-	fhirpathParserT__37               = 38
-	fhirpathParserT__38               = 39
-	fhirpathParserT__39               = 40
-	fhirpathParserT__40               = 41
-	fhirpathParserT__41               = 42
-	fhirpathParserT__42               = 43
-	fhirpathParserT__43               = 44
-	fhirpathParserT__44               = 45
-	fhirpathParserT__45               = 46
-	fhirpathParserT__46               = 47
-	fhirpathParserT__47               = 48
-	fhirpathParserT__48               = 49
-	fhirpathParserT__49               = 50
-	fhirpathParserT__50               = 51
-	fhirpathParserT__51               = 52
-	fhirpathParserT__52               = 53
-	fhirpathParserT__53               = 54
-	fhirpathParserDATE                = 55
-	fhirpathParserDATETIME            = 56
-	fhirpathParserTIME                = 57
-	fhirpathParserIDENTIFIER          = 58
-	fhirpathParserDELIMITEDIDENTIFIER = 59
-	fhirpathParserSTRING              = 60
-	fhirpathParserNUMBER              = 61
-	fhirpathParserWS                  = 62
-	fhirpathParserCOMMENT             = 63
-	fhirpathParserLINE_COMMENT        = 64
+	FHIRPathParserEOF                 = antlr.TokenEOF
+	FHIRPathParserT__0                = 1
+	FHIRPathParserT__1                = 2
+	FHIRPathParserT__2                = 3
+	FHIRPathParserT__3                = 4
+	FHIRPathParserT__4                = 5
+	FHIRPathParserT__5                = 6
+	FHIRPathParserT__6                = 7
+	FHIRPathParserT__7                = 8
+	FHIRPathParserT__8                = 9
+	FHIRPathParserT__9                = 10
+	FHIRPathParserT__10               = 11
+	FHIRPathParserT__11               = 12
+	FHIRPathParserT__12               = 13
+	FHIRPathParserT__13               = 14
+	FHIRPathParserT__14               = 15
+	FHIRPathParserT__15               = 16
+	FHIRPathParserT__16               = 17
+	FHIRPathParserT__17               = 18
+	FHIRPathParserT__18               = 19
+	FHIRPathParserT__19               = 20
+	FHIRPathParserT__20               = 21
+	FHIRPathParserT__21               = 22
+	FHIRPathParserT__22               = 23
+	FHIRPathParserT__23               = 24
+	FHIRPathParserT__24               = 25
+	FHIRPathParserT__25               = 26
+	FHIRPathParserT__26               = 27
+	FHIRPathParserT__27               = 28
+	FHIRPathParserT__28               = 29
+	FHIRPathParserT__29               = 30
+	FHIRPathParserT__30               = 31
+	FHIRPathParserT__31               = 32
+	FHIRPathParserT__32               = 33
+	FHIRPathParserT__33               = 34
+	FHIRPathParserT__34               = 35
+	FHIRPathParserT__35               = 36
+	FHIRPathParserT__36               = 37
+	FHIRPathParserT__37               = 38
+	FHIRPathParserT__38               = 39
+	FHIRPathParserT__39               = 40
+	FHIRPathParserT__40               = 41
+	FHIRPathParserT__41               = 42
+	FHIRPathParserT__42               = 43
+	FHIRPathParserT__43               = 44
+	FHIRPathParserT__44               = 45
+	FHIRPathParserT__45               = 46
+	FHIRPathParserT__46               = 47
+	FHIRPathParserT__47               = 48
+	FHIRPathParserT__48               = 49
+	FHIRPathParserT__49               = 50
+	FHIRPathParserT__50               = 51
+	FHIRPathParserT__51               = 52
+	FHIRPathParserT__52               = 53
+	FHIRPathParserT__53               = 54
+	FHIRPathParserDATE                = 55
+	FHIRPathParserDATETIME            = 56
+	FHIRPathParserTIME                = 57
+	FHIRPathParserIDENTIFIER          = 58
+	FHIRPathParserDELIMITEDIDENTIFIER = 59
+	FHIRPathParserSTRING              = 60
+	FHIRPathParserNUMBER              = 61
+	FHIRPathParserWS                  = 62
+	FHIRPathParserCOMMENT             = 63
+	FHIRPathParserLINE_COMMENT        = 64
 )
 
-// fhirpathParser rules.
+// FHIRPathParser rules.
 const (
-	fhirpathParserRULE_expression              = 0
-	fhirpathParserRULE_term                    = 1
-	fhirpathParserRULE_literal                 = 2
-	fhirpathParserRULE_externalConstant        = 3
-	fhirpathParserRULE_invocation              = 4
-	fhirpathParserRULE_function                = 5
-	fhirpathParserRULE_paramList               = 6
-	fhirpathParserRULE_quantity                = 7
-	fhirpathParserRULE_unit                    = 8
-	fhirpathParserRULE_dateTimePrecision       = 9
-	fhirpathParserRULE_pluralDateTimePrecision = 10
-	fhirpathParserRULE_typeSpecifier           = 11
-	fhirpathParserRULE_qualifiedIdentifier     = 12
-	fhirpathParserRULE_identifier              = 13
+	FHIRPathParserRULE_expression              = 0
+	FHIRPathParserRULE_term                    = 1
+	FHIRPathParserRULE_literal                 = 2
+	FHIRPathParserRULE_externalConstant        = 3
+	FHIRPathParserRULE_invocation              = 4
+	FHIRPathParserRULE_function                = 5
+	FHIRPathParserRULE_paramList               = 6
+	FHIRPathParserRULE_quantity                = 7
+	FHIRPathParserRULE_unit                    = 8
+	FHIRPathParserRULE_dateTimePrecision       = 9
+	FHIRPathParserRULE_pluralDateTimePrecision = 10
+	FHIRPathParserRULE_typeSpecifier           = 11
+	FHIRPathParserRULE_qualifiedIdentifier     = 12
+	FHIRPathParserRULE_identifier              = 13
 )
 
 // IExpressionContext is an interface to support dynamic dispatch.
@@ -243,7 +243,7 @@ type ExpressionContext struct {
 func NewEmptyExpressionContext() *ExpressionContext {
 	var p = new(ExpressionContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_expression
+	p.RuleIndex = FHIRPathParserRULE_expression
 	return p
 }
 
@@ -255,7 +255,7 @@ func NewExpressionContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_expression
+	p.RuleIndex = FHIRPathParserRULE_expression
 
 	return p
 }
@@ -316,13 +316,13 @@ func (s *IndexerExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *IndexerExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterIndexerExpression(s)
 	}
 }
 
 func (s *IndexerExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitIndexerExpression(s)
 	}
 }
@@ -356,13 +356,13 @@ func (s *PolarityExpressionContext) Expression() IExpressionContext {
 }
 
 func (s *PolarityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterPolarityExpression(s)
 	}
 }
 
 func (s *PolarityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitPolarityExpression(s)
 	}
 }
@@ -409,13 +409,13 @@ func (s *AdditiveExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *AdditiveExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterAdditiveExpression(s)
 	}
 }
 
 func (s *AdditiveExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitAdditiveExpression(s)
 	}
 }
@@ -462,13 +462,13 @@ func (s *MultiplicativeExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *MultiplicativeExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterMultiplicativeExpression(s)
 	}
 }
 
 func (s *MultiplicativeExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitMultiplicativeExpression(s)
 	}
 }
@@ -515,13 +515,13 @@ func (s *UnionExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *UnionExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterUnionExpression(s)
 	}
 }
 
 func (s *UnionExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitUnionExpression(s)
 	}
 }
@@ -568,13 +568,13 @@ func (s *OrExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *OrExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterOrExpression(s)
 	}
 }
 
 func (s *OrExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitOrExpression(s)
 	}
 }
@@ -621,13 +621,13 @@ func (s *AndExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *AndExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterAndExpression(s)
 	}
 }
 
 func (s *AndExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitAndExpression(s)
 	}
 }
@@ -674,13 +674,13 @@ func (s *MembershipExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *MembershipExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterMembershipExpression(s)
 	}
 }
 
 func (s *MembershipExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitMembershipExpression(s)
 	}
 }
@@ -727,13 +727,13 @@ func (s *InequalityExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *InequalityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterInequalityExpression(s)
 	}
 }
 
 func (s *InequalityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitInequalityExpression(s)
 	}
 }
@@ -777,13 +777,13 @@ func (s *InvocationExpressionContext) Invocation() IInvocationContext {
 }
 
 func (s *InvocationExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterInvocationExpression(s)
 	}
 }
 
 func (s *InvocationExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitInvocationExpression(s)
 	}
 }
@@ -830,13 +830,13 @@ func (s *EqualityExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *EqualityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterEqualityExpression(s)
 	}
 }
 
 func (s *EqualityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitEqualityExpression(s)
 	}
 }
@@ -883,13 +883,13 @@ func (s *ImpliesExpressionContext) Expression(i int) IExpressionContext {
 }
 
 func (s *ImpliesExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterImpliesExpression(s)
 	}
 }
 
 func (s *ImpliesExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitImpliesExpression(s)
 	}
 }
@@ -923,13 +923,13 @@ func (s *TermExpressionContext) Term() ITermContext {
 }
 
 func (s *TermExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterTermExpression(s)
 	}
 }
 
 func (s *TermExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitTermExpression(s)
 	}
 }
@@ -973,29 +973,29 @@ func (s *TypeExpressionContext) TypeSpecifier() ITypeSpecifierContext {
 }
 
 func (s *TypeExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterTypeExpression(s)
 	}
 }
 
 func (s *TypeExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitTypeExpression(s)
 	}
 }
 
-func (p *fhirpathParser) Expression() (localctx IExpressionContext) {
+func (p *FHIRPathParser) Expression() (localctx IExpressionContext) {
 	return p.expression(0)
 }
 
-func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
+func (p *FHIRPathParser) expression(_p int) (localctx IExpressionContext) {
 	var _parentctx antlr.ParserRuleContext = p.GetParserRuleContext()
 	_parentState := p.GetState()
 	localctx = NewExpressionContext(p, p.GetParserRuleContext(), _parentState)
 	var _prevctx IExpressionContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
 	_startState := 0
-	p.EnterRecursionRule(localctx, 0, fhirpathParserRULE_expression, _p)
+	p.EnterRecursionRule(localctx, 0, FHIRPathParserRULE_expression, _p)
 	var _la int
 
 	defer func() {
@@ -1021,7 +1021,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
-	case fhirpathParserT__10, fhirpathParserT__11, fhirpathParserT__21, fhirpathParserT__22, fhirpathParserT__27, fhirpathParserT__29, fhirpathParserT__31, fhirpathParserT__32, fhirpathParserT__33, fhirpathParserT__34, fhirpathParserT__35, fhirpathParserT__36, fhirpathParserDATE, fhirpathParserDATETIME, fhirpathParserTIME, fhirpathParserIDENTIFIER, fhirpathParserDELIMITEDIDENTIFIER, fhirpathParserSTRING, fhirpathParserNUMBER:
+	case FHIRPathParserT__10, FHIRPathParserT__11, FHIRPathParserT__21, FHIRPathParserT__22, FHIRPathParserT__27, FHIRPathParserT__29, FHIRPathParserT__31, FHIRPathParserT__32, FHIRPathParserT__33, FHIRPathParserT__34, FHIRPathParserT__35, FHIRPathParserT__36, FHIRPathParserDATE, FHIRPathParserDATETIME, FHIRPathParserTIME, FHIRPathParserIDENTIFIER, FHIRPathParserDELIMITEDIDENTIFIER, FHIRPathParserSTRING, FHIRPathParserNUMBER:
 		localctx = NewTermExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
@@ -1031,7 +1031,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 			p.Term()
 		}
 
-	case fhirpathParserT__3, fhirpathParserT__4:
+	case FHIRPathParserT__3, FHIRPathParserT__4:
 		localctx = NewPolarityExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
@@ -1039,7 +1039,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 			p.SetState(30)
 			_la = p.GetTokenStream().LA(1)
 
-			if !(_la == fhirpathParserT__3 || _la == fhirpathParserT__4) {
+			if !(_la == FHIRPathParserT__3 || _la == FHIRPathParserT__4) {
 				p.GetErrorHandler().RecoverInline(p)
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
@@ -1070,7 +1070,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 			switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewMultiplicativeExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(34)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
@@ -1080,7 +1080,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(35)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__5)|(1<<fhirpathParserT__6)|(1<<fhirpathParserT__7)|(1<<fhirpathParserT__8))) != 0) {
+					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__5)|(1<<FHIRPathParserT__6)|(1<<FHIRPathParserT__7)|(1<<FHIRPathParserT__8))) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1094,7 +1094,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 2:
 				localctx = NewAdditiveExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(37)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 9)) {
@@ -1104,7 +1104,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(38)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__3)|(1<<fhirpathParserT__4)|(1<<fhirpathParserT__9))) != 0) {
+					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__3)|(1<<FHIRPathParserT__4)|(1<<FHIRPathParserT__9))) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1118,7 +1118,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 3:
 				localctx = NewUnionExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(40)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 7)) {
@@ -1126,7 +1126,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(41)
-					p.Match(fhirpathParserT__12)
+					p.Match(FHIRPathParserT__12)
 				}
 				{
 					p.SetState(42)
@@ -1135,7 +1135,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 4:
 				localctx = NewInequalityExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(43)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 6)) {
@@ -1145,7 +1145,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(44)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__13)|(1<<fhirpathParserT__14)|(1<<fhirpathParserT__15)|(1<<fhirpathParserT__16))) != 0) {
+					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__13)|(1<<FHIRPathParserT__14)|(1<<FHIRPathParserT__15)|(1<<FHIRPathParserT__16))) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1159,7 +1159,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 5:
 				localctx = NewEqualityExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(46)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
@@ -1169,7 +1169,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(47)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__17)|(1<<fhirpathParserT__18)|(1<<fhirpathParserT__19)|(1<<fhirpathParserT__20))) != 0) {
+					if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__17)|(1<<FHIRPathParserT__18)|(1<<FHIRPathParserT__19)|(1<<FHIRPathParserT__20))) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1183,7 +1183,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 6:
 				localctx = NewMembershipExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(49)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
@@ -1193,7 +1193,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(50)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(_la == fhirpathParserT__21 || _la == fhirpathParserT__22) {
+					if !(_la == FHIRPathParserT__21 || _la == FHIRPathParserT__22) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1207,7 +1207,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 7:
 				localctx = NewAndExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(52)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 3)) {
@@ -1215,7 +1215,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(53)
-					p.Match(fhirpathParserT__23)
+					p.Match(FHIRPathParserT__23)
 				}
 				{
 					p.SetState(54)
@@ -1224,7 +1224,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 8:
 				localctx = NewOrExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(55)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 2)) {
@@ -1234,7 +1234,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(56)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(_la == fhirpathParserT__24 || _la == fhirpathParserT__25) {
+					if !(_la == FHIRPathParserT__24 || _la == FHIRPathParserT__25) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1248,7 +1248,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 9:
 				localctx = NewImpliesExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(58)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 1)) {
@@ -1256,7 +1256,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(59)
-					p.Match(fhirpathParserT__26)
+					p.Match(FHIRPathParserT__26)
 				}
 				{
 					p.SetState(60)
@@ -1265,7 +1265,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 10:
 				localctx = NewInvocationExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(61)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 13)) {
@@ -1273,7 +1273,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(62)
-					p.Match(fhirpathParserT__0)
+					p.Match(FHIRPathParserT__0)
 				}
 				{
 					p.SetState(63)
@@ -1282,7 +1282,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 
 			case 11:
 				localctx = NewIndexerExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(64)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
@@ -1290,7 +1290,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(65)
-					p.Match(fhirpathParserT__1)
+					p.Match(FHIRPathParserT__1)
 				}
 				{
 					p.SetState(66)
@@ -1298,12 +1298,12 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 				}
 				{
 					p.SetState(67)
-					p.Match(fhirpathParserT__2)
+					p.Match(FHIRPathParserT__2)
 				}
 
 			case 12:
 				localctx = NewTypeExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, fhirpathParserRULE_expression)
+				p.PushNewRecursionContext(localctx, _startState, FHIRPathParserRULE_expression)
 				p.SetState(69)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 8)) {
@@ -1313,7 +1313,7 @@ func (p *fhirpathParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(70)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(_la == fhirpathParserT__10 || _la == fhirpathParserT__11) {
+					if !(_la == FHIRPathParserT__10 || _la == FHIRPathParserT__11) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -1355,7 +1355,7 @@ type TermContext struct {
 func NewEmptyTermContext() *TermContext {
 	var p = new(TermContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_term
+	p.RuleIndex = FHIRPathParserRULE_term
 	return p
 }
 
@@ -1367,7 +1367,7 @@ func NewTermContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokin
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_term
+	p.RuleIndex = FHIRPathParserRULE_term
 
 	return p
 }
@@ -1415,13 +1415,13 @@ func (s *ExternalConstantTermContext) ExternalConstant() IExternalConstantContex
 }
 
 func (s *ExternalConstantTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterExternalConstantTerm(s)
 	}
 }
 
 func (s *ExternalConstantTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitExternalConstantTerm(s)
 	}
 }
@@ -1455,13 +1455,13 @@ func (s *LiteralTermContext) Literal() ILiteralContext {
 }
 
 func (s *LiteralTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterLiteralTerm(s)
 	}
 }
 
 func (s *LiteralTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitLiteralTerm(s)
 	}
 }
@@ -1495,13 +1495,13 @@ func (s *ParenthesizedTermContext) Expression() IExpressionContext {
 }
 
 func (s *ParenthesizedTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterParenthesizedTerm(s)
 	}
 }
 
 func (s *ParenthesizedTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitParenthesizedTerm(s)
 	}
 }
@@ -1535,20 +1535,20 @@ func (s *InvocationTermContext) Invocation() IInvocationContext {
 }
 
 func (s *InvocationTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterInvocationTerm(s)
 	}
 }
 
 func (s *InvocationTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitInvocationTerm(s)
 	}
 }
 
-func (p *fhirpathParser) Term() (localctx ITermContext) {
+func (p *FHIRPathParser) Term() (localctx ITermContext) {
 	localctx = NewTermContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 2, fhirpathParserRULE_term)
+	p.EnterRule(localctx, 2, FHIRPathParserRULE_term)
 
 	defer func() {
 		p.ExitRule()
@@ -1570,7 +1570,7 @@ func (p *fhirpathParser) Term() (localctx ITermContext) {
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
-	case fhirpathParserT__10, fhirpathParserT__11, fhirpathParserT__21, fhirpathParserT__22, fhirpathParserT__34, fhirpathParserT__35, fhirpathParserT__36, fhirpathParserIDENTIFIER, fhirpathParserDELIMITEDIDENTIFIER:
+	case FHIRPathParserT__10, FHIRPathParserT__11, FHIRPathParserT__21, FHIRPathParserT__22, FHIRPathParserT__34, FHIRPathParserT__35, FHIRPathParserT__36, FHIRPathParserIDENTIFIER, FHIRPathParserDELIMITEDIDENTIFIER:
 		localctx = NewInvocationTermContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
@@ -1578,7 +1578,7 @@ func (p *fhirpathParser) Term() (localctx ITermContext) {
 			p.Invocation()
 		}
 
-	case fhirpathParserT__29, fhirpathParserT__31, fhirpathParserT__32, fhirpathParserDATE, fhirpathParserDATETIME, fhirpathParserTIME, fhirpathParserSTRING, fhirpathParserNUMBER:
+	case FHIRPathParserT__29, FHIRPathParserT__31, FHIRPathParserT__32, FHIRPathParserDATE, FHIRPathParserDATETIME, FHIRPathParserTIME, FHIRPathParserSTRING, FHIRPathParserNUMBER:
 		localctx = NewLiteralTermContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
@@ -1586,7 +1586,7 @@ func (p *fhirpathParser) Term() (localctx ITermContext) {
 			p.Literal()
 		}
 
-	case fhirpathParserT__33:
+	case FHIRPathParserT__33:
 		localctx = NewExternalConstantTermContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
@@ -1594,12 +1594,12 @@ func (p *fhirpathParser) Term() (localctx ITermContext) {
 			p.ExternalConstant()
 		}
 
-	case fhirpathParserT__27:
+	case FHIRPathParserT__27:
 		localctx = NewParenthesizedTermContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(80)
-			p.Match(fhirpathParserT__27)
+			p.Match(FHIRPathParserT__27)
 		}
 		{
 			p.SetState(81)
@@ -1607,7 +1607,7 @@ func (p *fhirpathParser) Term() (localctx ITermContext) {
 		}
 		{
 			p.SetState(82)
-			p.Match(fhirpathParserT__28)
+			p.Match(FHIRPathParserT__28)
 		}
 
 	default:
@@ -1636,7 +1636,7 @@ type LiteralContext struct {
 func NewEmptyLiteralContext() *LiteralContext {
 	var p = new(LiteralContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_literal
+	p.RuleIndex = FHIRPathParserRULE_literal
 	return p
 }
 
@@ -1648,7 +1648,7 @@ func NewLiteralContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_literal
+	p.RuleIndex = FHIRPathParserRULE_literal
 
 	return p
 }
@@ -1686,17 +1686,17 @@ func (s *TimeLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *TimeLiteralContext) TIME() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserTIME, 0)
+	return s.GetToken(FHIRPathParserTIME, 0)
 }
 
 func (s *TimeLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterTimeLiteral(s)
 	}
 }
 
 func (s *TimeLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitTimeLiteral(s)
 	}
 }
@@ -1720,13 +1720,13 @@ func (s *NullLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *NullLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterNullLiteral(s)
 	}
 }
 
 func (s *NullLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitNullLiteral(s)
 	}
 }
@@ -1750,17 +1750,17 @@ func (s *DateTimeLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *DateTimeLiteralContext) DATETIME() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserDATETIME, 0)
+	return s.GetToken(FHIRPathParserDATETIME, 0)
 }
 
 func (s *DateTimeLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterDateTimeLiteral(s)
 	}
 }
 
 func (s *DateTimeLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitDateTimeLiteral(s)
 	}
 }
@@ -1784,17 +1784,17 @@ func (s *StringLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *StringLiteralContext) STRING() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserSTRING, 0)
+	return s.GetToken(FHIRPathParserSTRING, 0)
 }
 
 func (s *StringLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterStringLiteral(s)
 	}
 }
 
 func (s *StringLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitStringLiteral(s)
 	}
 }
@@ -1818,17 +1818,17 @@ func (s *DateLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *DateLiteralContext) DATE() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserDATE, 0)
+	return s.GetToken(FHIRPathParserDATE, 0)
 }
 
 func (s *DateLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterDateLiteral(s)
 	}
 }
 
 func (s *DateLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitDateLiteral(s)
 	}
 }
@@ -1852,13 +1852,13 @@ func (s *BooleanLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *BooleanLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterBooleanLiteral(s)
 	}
 }
 
 func (s *BooleanLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitBooleanLiteral(s)
 	}
 }
@@ -1882,17 +1882,17 @@ func (s *NumberLiteralContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *NumberLiteralContext) NUMBER() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserNUMBER, 0)
+	return s.GetToken(FHIRPathParserNUMBER, 0)
 }
 
 func (s *NumberLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterNumberLiteral(s)
 	}
 }
 
 func (s *NumberLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitNumberLiteral(s)
 	}
 }
@@ -1926,20 +1926,20 @@ func (s *QuantityLiteralContext) Quantity() IQuantityContext {
 }
 
 func (s *QuantityLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterQuantityLiteral(s)
 	}
 }
 
 func (s *QuantityLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitQuantityLiteral(s)
 	}
 }
 
-func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
+func (p *FHIRPathParser) Literal() (localctx ILiteralContext) {
 	localctx = NewLiteralContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 4, fhirpathParserRULE_literal)
+	p.EnterRule(localctx, 4, FHIRPathParserRULE_literal)
 	var _la int
 
 	defer func() {
@@ -1966,11 +1966,11 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(86)
-			p.Match(fhirpathParserT__29)
+			p.Match(FHIRPathParserT__29)
 		}
 		{
 			p.SetState(87)
-			p.Match(fhirpathParserT__30)
+			p.Match(FHIRPathParserT__30)
 		}
 
 	case 2:
@@ -1980,7 +1980,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 			p.SetState(88)
 			_la = p.GetTokenStream().LA(1)
 
-			if !(_la == fhirpathParserT__31 || _la == fhirpathParserT__32) {
+			if !(_la == FHIRPathParserT__31 || _la == FHIRPathParserT__32) {
 				p.GetErrorHandler().RecoverInline(p)
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
@@ -1993,7 +1993,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(89)
-			p.Match(fhirpathParserSTRING)
+			p.Match(FHIRPathParserSTRING)
 		}
 
 	case 4:
@@ -2001,7 +2001,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(90)
-			p.Match(fhirpathParserNUMBER)
+			p.Match(FHIRPathParserNUMBER)
 		}
 
 	case 5:
@@ -2009,7 +2009,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 5)
 		{
 			p.SetState(91)
-			p.Match(fhirpathParserDATE)
+			p.Match(FHIRPathParserDATE)
 		}
 
 	case 6:
@@ -2017,7 +2017,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 6)
 		{
 			p.SetState(92)
-			p.Match(fhirpathParserDATETIME)
+			p.Match(FHIRPathParserDATETIME)
 		}
 
 	case 7:
@@ -2025,7 +2025,7 @@ func (p *fhirpathParser) Literal() (localctx ILiteralContext) {
 		p.EnterOuterAlt(localctx, 7)
 		{
 			p.SetState(93)
-			p.Match(fhirpathParserTIME)
+			p.Match(FHIRPathParserTIME)
 		}
 
 	case 8:
@@ -2060,7 +2060,7 @@ type ExternalConstantContext struct {
 func NewEmptyExternalConstantContext() *ExternalConstantContext {
 	var p = new(ExternalConstantContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_externalConstant
+	p.RuleIndex = FHIRPathParserRULE_externalConstant
 	return p
 }
 
@@ -2072,7 +2072,7 @@ func NewExternalConstantContext(parser antlr.Parser, parent antlr.ParserRuleCont
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_externalConstant
+	p.RuleIndex = FHIRPathParserRULE_externalConstant
 
 	return p
 }
@@ -2090,7 +2090,7 @@ func (s *ExternalConstantContext) Identifier() IIdentifierContext {
 }
 
 func (s *ExternalConstantContext) STRING() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserSTRING, 0)
+	return s.GetToken(FHIRPathParserSTRING, 0)
 }
 
 func (s *ExternalConstantContext) GetRuleContext() antlr.RuleContext {
@@ -2102,20 +2102,20 @@ func (s *ExternalConstantContext) ToStringTree(ruleNames []string, recog antlr.R
 }
 
 func (s *ExternalConstantContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterExternalConstant(s)
 	}
 }
 
 func (s *ExternalConstantContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitExternalConstant(s)
 	}
 }
 
-func (p *fhirpathParser) ExternalConstant() (localctx IExternalConstantContext) {
+func (p *FHIRPathParser) ExternalConstant() (localctx IExternalConstantContext) {
 	localctx = NewExternalConstantContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 6, fhirpathParserRULE_externalConstant)
+	p.EnterRule(localctx, 6, FHIRPathParserRULE_externalConstant)
 
 	defer func() {
 		p.ExitRule()
@@ -2136,22 +2136,22 @@ func (p *fhirpathParser) ExternalConstant() (localctx IExternalConstantContext) 
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(97)
-		p.Match(fhirpathParserT__33)
+		p.Match(FHIRPathParserT__33)
 	}
 	p.SetState(100)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
-	case fhirpathParserT__10, fhirpathParserT__11, fhirpathParserT__21, fhirpathParserT__22, fhirpathParserIDENTIFIER, fhirpathParserDELIMITEDIDENTIFIER:
+	case FHIRPathParserT__10, FHIRPathParserT__11, FHIRPathParserT__21, FHIRPathParserT__22, FHIRPathParserIDENTIFIER, FHIRPathParserDELIMITEDIDENTIFIER:
 		{
 			p.SetState(98)
 			p.Identifier()
 		}
 
-	case fhirpathParserSTRING:
+	case FHIRPathParserSTRING:
 		{
 			p.SetState(99)
-			p.Match(fhirpathParserSTRING)
+			p.Match(FHIRPathParserSTRING)
 		}
 
 	default:
@@ -2180,7 +2180,7 @@ type InvocationContext struct {
 func NewEmptyInvocationContext() *InvocationContext {
 	var p = new(InvocationContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_invocation
+	p.RuleIndex = FHIRPathParserRULE_invocation
 	return p
 }
 
@@ -2192,7 +2192,7 @@ func NewInvocationContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_invocation
+	p.RuleIndex = FHIRPathParserRULE_invocation
 
 	return p
 }
@@ -2230,13 +2230,13 @@ func (s *TotalInvocationContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *TotalInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterTotalInvocation(s)
 	}
 }
 
 func (s *TotalInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitTotalInvocation(s)
 	}
 }
@@ -2260,13 +2260,13 @@ func (s *ThisInvocationContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *ThisInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterThisInvocation(s)
 	}
 }
 
 func (s *ThisInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitThisInvocation(s)
 	}
 }
@@ -2290,13 +2290,13 @@ func (s *IndexInvocationContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *IndexInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterIndexInvocation(s)
 	}
 }
 
 func (s *IndexInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitIndexInvocation(s)
 	}
 }
@@ -2330,13 +2330,13 @@ func (s *FunctionInvocationContext) Function() IFunctionContext {
 }
 
 func (s *FunctionInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterFunctionInvocation(s)
 	}
 }
 
 func (s *FunctionInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitFunctionInvocation(s)
 	}
 }
@@ -2370,20 +2370,20 @@ func (s *MemberInvocationContext) Identifier() IIdentifierContext {
 }
 
 func (s *MemberInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterMemberInvocation(s)
 	}
 }
 
 func (s *MemberInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitMemberInvocation(s)
 	}
 }
 
-func (p *fhirpathParser) Invocation() (localctx IInvocationContext) {
+func (p *FHIRPathParser) Invocation() (localctx IInvocationContext) {
 	localctx = NewInvocationContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 8, fhirpathParserRULE_invocation)
+	p.EnterRule(localctx, 8, FHIRPathParserRULE_invocation)
 
 	defer func() {
 		p.ExitRule()
@@ -2425,7 +2425,7 @@ func (p *fhirpathParser) Invocation() (localctx IInvocationContext) {
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(104)
-			p.Match(fhirpathParserT__34)
+			p.Match(FHIRPathParserT__34)
 		}
 
 	case 4:
@@ -2433,7 +2433,7 @@ func (p *fhirpathParser) Invocation() (localctx IInvocationContext) {
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(105)
-			p.Match(fhirpathParserT__35)
+			p.Match(FHIRPathParserT__35)
 		}
 
 	case 5:
@@ -2441,7 +2441,7 @@ func (p *fhirpathParser) Invocation() (localctx IInvocationContext) {
 		p.EnterOuterAlt(localctx, 5)
 		{
 			p.SetState(106)
-			p.Match(fhirpathParserT__36)
+			p.Match(FHIRPathParserT__36)
 		}
 
 	}
@@ -2468,7 +2468,7 @@ type FunctionContext struct {
 func NewEmptyFunctionContext() *FunctionContext {
 	var p = new(FunctionContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_function
+	p.RuleIndex = FHIRPathParserRULE_function
 	return p
 }
 
@@ -2480,7 +2480,7 @@ func NewFunctionContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_function
+	p.RuleIndex = FHIRPathParserRULE_function
 
 	return p
 }
@@ -2516,20 +2516,20 @@ func (s *FunctionContext) ToStringTree(ruleNames []string, recog antlr.Recognize
 }
 
 func (s *FunctionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterFunction(s)
 	}
 }
 
 func (s *FunctionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitFunction(s)
 	}
 }
 
-func (p *fhirpathParser) Function() (localctx IFunctionContext) {
+func (p *FHIRPathParser) Function() (localctx IFunctionContext) {
 	localctx = NewFunctionContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, fhirpathParserRULE_function)
+	p.EnterRule(localctx, 10, FHIRPathParserRULE_function)
 	var _la int
 
 	defer func() {
@@ -2555,13 +2555,13 @@ func (p *fhirpathParser) Function() (localctx IFunctionContext) {
 	}
 	{
 		p.SetState(110)
-		p.Match(fhirpathParserT__27)
+		p.Match(FHIRPathParserT__27)
 	}
 	p.SetState(112)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__3)|(1<<fhirpathParserT__4)|(1<<fhirpathParserT__10)|(1<<fhirpathParserT__11)|(1<<fhirpathParserT__21)|(1<<fhirpathParserT__22)|(1<<fhirpathParserT__27)|(1<<fhirpathParserT__29))) != 0) || (((_la-32)&-(0x1f+1)) == 0 && ((1<<uint((_la-32)))&((1<<(fhirpathParserT__31-32))|(1<<(fhirpathParserT__32-32))|(1<<(fhirpathParserT__33-32))|(1<<(fhirpathParserT__34-32))|(1<<(fhirpathParserT__35-32))|(1<<(fhirpathParserT__36-32))|(1<<(fhirpathParserDATE-32))|(1<<(fhirpathParserDATETIME-32))|(1<<(fhirpathParserTIME-32))|(1<<(fhirpathParserIDENTIFIER-32))|(1<<(fhirpathParserDELIMITEDIDENTIFIER-32))|(1<<(fhirpathParserSTRING-32))|(1<<(fhirpathParserNUMBER-32)))) != 0) {
+	if (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__3)|(1<<FHIRPathParserT__4)|(1<<FHIRPathParserT__10)|(1<<FHIRPathParserT__11)|(1<<FHIRPathParserT__21)|(1<<FHIRPathParserT__22)|(1<<FHIRPathParserT__27)|(1<<FHIRPathParserT__29))) != 0) || (((_la-32)&-(0x1f+1)) == 0 && ((1<<uint((_la-32)))&((1<<(FHIRPathParserT__31-32))|(1<<(FHIRPathParserT__32-32))|(1<<(FHIRPathParserT__33-32))|(1<<(FHIRPathParserT__34-32))|(1<<(FHIRPathParserT__35-32))|(1<<(FHIRPathParserT__36-32))|(1<<(FHIRPathParserDATE-32))|(1<<(FHIRPathParserDATETIME-32))|(1<<(FHIRPathParserTIME-32))|(1<<(FHIRPathParserIDENTIFIER-32))|(1<<(FHIRPathParserDELIMITEDIDENTIFIER-32))|(1<<(FHIRPathParserSTRING-32))|(1<<(FHIRPathParserNUMBER-32)))) != 0) {
 		{
 			p.SetState(111)
 			p.ParamList()
@@ -2570,7 +2570,7 @@ func (p *fhirpathParser) Function() (localctx IFunctionContext) {
 	}
 	{
 		p.SetState(114)
-		p.Match(fhirpathParserT__28)
+		p.Match(FHIRPathParserT__28)
 	}
 
 	return localctx
@@ -2595,7 +2595,7 @@ type ParamListContext struct {
 func NewEmptyParamListContext() *ParamListContext {
 	var p = new(ParamListContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_paramList
+	p.RuleIndex = FHIRPathParserRULE_paramList
 	return p
 }
 
@@ -2607,7 +2607,7 @@ func NewParamListContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_paramList
+	p.RuleIndex = FHIRPathParserRULE_paramList
 
 	return p
 }
@@ -2646,20 +2646,20 @@ func (s *ParamListContext) ToStringTree(ruleNames []string, recog antlr.Recogniz
 }
 
 func (s *ParamListContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterParamList(s)
 	}
 }
 
 func (s *ParamListContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitParamList(s)
 	}
 }
 
-func (p *fhirpathParser) ParamList() (localctx IParamListContext) {
+func (p *FHIRPathParser) ParamList() (localctx IParamListContext) {
 	localctx = NewParamListContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 12, fhirpathParserRULE_paramList)
+	p.EnterRule(localctx, 12, FHIRPathParserRULE_paramList)
 	var _la int
 
 	defer func() {
@@ -2687,10 +2687,10 @@ func (p *fhirpathParser) ParamList() (localctx IParamListContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for _la == fhirpathParserT__37 {
+	for _la == FHIRPathParserT__37 {
 		{
 			p.SetState(117)
-			p.Match(fhirpathParserT__37)
+			p.Match(FHIRPathParserT__37)
 		}
 		{
 			p.SetState(118)
@@ -2724,7 +2724,7 @@ type QuantityContext struct {
 func NewEmptyQuantityContext() *QuantityContext {
 	var p = new(QuantityContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_quantity
+	p.RuleIndex = FHIRPathParserRULE_quantity
 	return p
 }
 
@@ -2736,7 +2736,7 @@ func NewQuantityContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_quantity
+	p.RuleIndex = FHIRPathParserRULE_quantity
 
 	return p
 }
@@ -2744,7 +2744,7 @@ func NewQuantityContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 func (s *QuantityContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *QuantityContext) NUMBER() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserNUMBER, 0)
+	return s.GetToken(FHIRPathParserNUMBER, 0)
 }
 
 func (s *QuantityContext) Unit() IUnitContext {
@@ -2766,20 +2766,20 @@ func (s *QuantityContext) ToStringTree(ruleNames []string, recog antlr.Recognize
 }
 
 func (s *QuantityContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterQuantity(s)
 	}
 }
 
 func (s *QuantityContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitQuantity(s)
 	}
 }
 
-func (p *fhirpathParser) Quantity() (localctx IQuantityContext) {
+func (p *FHIRPathParser) Quantity() (localctx IQuantityContext) {
 	localctx = NewQuantityContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 14, fhirpathParserRULE_quantity)
+	p.EnterRule(localctx, 14, FHIRPathParserRULE_quantity)
 
 	defer func() {
 		p.ExitRule()
@@ -2800,7 +2800,7 @@ func (p *fhirpathParser) Quantity() (localctx IQuantityContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(124)
-		p.Match(fhirpathParserNUMBER)
+		p.Match(FHIRPathParserNUMBER)
 	}
 	p.SetState(126)
 	p.GetErrorHandler().Sync(p)
@@ -2835,7 +2835,7 @@ type UnitContext struct {
 func NewEmptyUnitContext() *UnitContext {
 	var p = new(UnitContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_unit
+	p.RuleIndex = FHIRPathParserRULE_unit
 	return p
 }
 
@@ -2847,7 +2847,7 @@ func NewUnitContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokin
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_unit
+	p.RuleIndex = FHIRPathParserRULE_unit
 
 	return p
 }
@@ -2875,7 +2875,7 @@ func (s *UnitContext) PluralDateTimePrecision() IPluralDateTimePrecisionContext 
 }
 
 func (s *UnitContext) STRING() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserSTRING, 0)
+	return s.GetToken(FHIRPathParserSTRING, 0)
 }
 
 func (s *UnitContext) GetRuleContext() antlr.RuleContext {
@@ -2887,20 +2887,20 @@ func (s *UnitContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) s
 }
 
 func (s *UnitContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterUnit(s)
 	}
 }
 
 func (s *UnitContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitUnit(s)
 	}
 }
 
-func (p *fhirpathParser) Unit() (localctx IUnitContext) {
+func (p *FHIRPathParser) Unit() (localctx IUnitContext) {
 	localctx = NewUnitContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, fhirpathParserRULE_unit)
+	p.EnterRule(localctx, 16, FHIRPathParserRULE_unit)
 
 	defer func() {
 		p.ExitRule()
@@ -2922,25 +2922,25 @@ func (p *fhirpathParser) Unit() (localctx IUnitContext) {
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
-	case fhirpathParserT__38, fhirpathParserT__39, fhirpathParserT__40, fhirpathParserT__41, fhirpathParserT__42, fhirpathParserT__43, fhirpathParserT__44, fhirpathParserT__45:
+	case FHIRPathParserT__38, FHIRPathParserT__39, FHIRPathParserT__40, FHIRPathParserT__41, FHIRPathParserT__42, FHIRPathParserT__43, FHIRPathParserT__44, FHIRPathParserT__45:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(128)
 			p.DateTimePrecision()
 		}
 
-	case fhirpathParserT__46, fhirpathParserT__47, fhirpathParserT__48, fhirpathParserT__49, fhirpathParserT__50, fhirpathParserT__51, fhirpathParserT__52, fhirpathParserT__53:
+	case FHIRPathParserT__46, FHIRPathParserT__47, FHIRPathParserT__48, FHIRPathParserT__49, FHIRPathParserT__50, FHIRPathParserT__51, FHIRPathParserT__52, FHIRPathParserT__53:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(129)
 			p.PluralDateTimePrecision()
 		}
 
-	case fhirpathParserSTRING:
+	case FHIRPathParserSTRING:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(130)
-			p.Match(fhirpathParserSTRING)
+			p.Match(FHIRPathParserSTRING)
 		}
 
 	default:
@@ -2969,7 +2969,7 @@ type DateTimePrecisionContext struct {
 func NewEmptyDateTimePrecisionContext() *DateTimePrecisionContext {
 	var p = new(DateTimePrecisionContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_dateTimePrecision
+	p.RuleIndex = FHIRPathParserRULE_dateTimePrecision
 	return p
 }
 
@@ -2981,7 +2981,7 @@ func NewDateTimePrecisionContext(parser antlr.Parser, parent antlr.ParserRuleCon
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_dateTimePrecision
+	p.RuleIndex = FHIRPathParserRULE_dateTimePrecision
 
 	return p
 }
@@ -2996,20 +2996,20 @@ func (s *DateTimePrecisionContext) ToStringTree(ruleNames []string, recog antlr.
 }
 
 func (s *DateTimePrecisionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterDateTimePrecision(s)
 	}
 }
 
 func (s *DateTimePrecisionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitDateTimePrecision(s)
 	}
 }
 
-func (p *fhirpathParser) DateTimePrecision() (localctx IDateTimePrecisionContext) {
+func (p *FHIRPathParser) DateTimePrecision() (localctx IDateTimePrecisionContext) {
 	localctx = NewDateTimePrecisionContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, fhirpathParserRULE_dateTimePrecision)
+	p.EnterRule(localctx, 18, FHIRPathParserRULE_dateTimePrecision)
 	var _la int
 
 	defer func() {
@@ -3033,7 +3033,7 @@ func (p *fhirpathParser) DateTimePrecision() (localctx IDateTimePrecisionContext
 		p.SetState(133)
 		_la = p.GetTokenStream().LA(1)
 
-		if !(((_la-39)&-(0x1f+1)) == 0 && ((1<<uint((_la-39)))&((1<<(fhirpathParserT__38-39))|(1<<(fhirpathParserT__39-39))|(1<<(fhirpathParserT__40-39))|(1<<(fhirpathParserT__41-39))|(1<<(fhirpathParserT__42-39))|(1<<(fhirpathParserT__43-39))|(1<<(fhirpathParserT__44-39))|(1<<(fhirpathParserT__45-39)))) != 0) {
+		if !(((_la-39)&-(0x1f+1)) == 0 && ((1<<uint((_la-39)))&((1<<(FHIRPathParserT__38-39))|(1<<(FHIRPathParserT__39-39))|(1<<(FHIRPathParserT__40-39))|(1<<(FHIRPathParserT__41-39))|(1<<(FHIRPathParserT__42-39))|(1<<(FHIRPathParserT__43-39))|(1<<(FHIRPathParserT__44-39))|(1<<(FHIRPathParserT__45-39)))) != 0) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -3063,7 +3063,7 @@ type PluralDateTimePrecisionContext struct {
 func NewEmptyPluralDateTimePrecisionContext() *PluralDateTimePrecisionContext {
 	var p = new(PluralDateTimePrecisionContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_pluralDateTimePrecision
+	p.RuleIndex = FHIRPathParserRULE_pluralDateTimePrecision
 	return p
 }
 
@@ -3075,7 +3075,7 @@ func NewPluralDateTimePrecisionContext(parser antlr.Parser, parent antlr.ParserR
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_pluralDateTimePrecision
+	p.RuleIndex = FHIRPathParserRULE_pluralDateTimePrecision
 
 	return p
 }
@@ -3090,20 +3090,20 @@ func (s *PluralDateTimePrecisionContext) ToStringTree(ruleNames []string, recog 
 }
 
 func (s *PluralDateTimePrecisionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterPluralDateTimePrecision(s)
 	}
 }
 
 func (s *PluralDateTimePrecisionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitPluralDateTimePrecision(s)
 	}
 }
 
-func (p *fhirpathParser) PluralDateTimePrecision() (localctx IPluralDateTimePrecisionContext) {
+func (p *FHIRPathParser) PluralDateTimePrecision() (localctx IPluralDateTimePrecisionContext) {
 	localctx = NewPluralDateTimePrecisionContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 20, fhirpathParserRULE_pluralDateTimePrecision)
+	p.EnterRule(localctx, 20, FHIRPathParserRULE_pluralDateTimePrecision)
 	var _la int
 
 	defer func() {
@@ -3127,7 +3127,7 @@ func (p *fhirpathParser) PluralDateTimePrecision() (localctx IPluralDateTimePrec
 		p.SetState(135)
 		_la = p.GetTokenStream().LA(1)
 
-		if !(((_la-47)&-(0x1f+1)) == 0 && ((1<<uint((_la-47)))&((1<<(fhirpathParserT__46-47))|(1<<(fhirpathParserT__47-47))|(1<<(fhirpathParserT__48-47))|(1<<(fhirpathParserT__49-47))|(1<<(fhirpathParserT__50-47))|(1<<(fhirpathParserT__51-47))|(1<<(fhirpathParserT__52-47))|(1<<(fhirpathParserT__53-47)))) != 0) {
+		if !(((_la-47)&-(0x1f+1)) == 0 && ((1<<uint((_la-47)))&((1<<(FHIRPathParserT__46-47))|(1<<(FHIRPathParserT__47-47))|(1<<(FHIRPathParserT__48-47))|(1<<(FHIRPathParserT__49-47))|(1<<(FHIRPathParserT__50-47))|(1<<(FHIRPathParserT__51-47))|(1<<(FHIRPathParserT__52-47))|(1<<(FHIRPathParserT__53-47)))) != 0) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -3157,7 +3157,7 @@ type TypeSpecifierContext struct {
 func NewEmptyTypeSpecifierContext() *TypeSpecifierContext {
 	var p = new(TypeSpecifierContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_typeSpecifier
+	p.RuleIndex = FHIRPathParserRULE_typeSpecifier
 	return p
 }
 
@@ -3169,7 +3169,7 @@ func NewTypeSpecifierContext(parser antlr.Parser, parent antlr.ParserRuleContext
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_typeSpecifier
+	p.RuleIndex = FHIRPathParserRULE_typeSpecifier
 
 	return p
 }
@@ -3195,20 +3195,20 @@ func (s *TypeSpecifierContext) ToStringTree(ruleNames []string, recog antlr.Reco
 }
 
 func (s *TypeSpecifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterTypeSpecifier(s)
 	}
 }
 
 func (s *TypeSpecifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitTypeSpecifier(s)
 	}
 }
 
-func (p *fhirpathParser) TypeSpecifier() (localctx ITypeSpecifierContext) {
+func (p *FHIRPathParser) TypeSpecifier() (localctx ITypeSpecifierContext) {
 	localctx = NewTypeSpecifierContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 22, fhirpathParserRULE_typeSpecifier)
+	p.EnterRule(localctx, 22, FHIRPathParserRULE_typeSpecifier)
 
 	defer func() {
 		p.ExitRule()
@@ -3254,7 +3254,7 @@ type QualifiedIdentifierContext struct {
 func NewEmptyQualifiedIdentifierContext() *QualifiedIdentifierContext {
 	var p = new(QualifiedIdentifierContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_qualifiedIdentifier
+	p.RuleIndex = FHIRPathParserRULE_qualifiedIdentifier
 	return p
 }
 
@@ -3266,7 +3266,7 @@ func NewQualifiedIdentifierContext(parser antlr.Parser, parent antlr.ParserRuleC
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_qualifiedIdentifier
+	p.RuleIndex = FHIRPathParserRULE_qualifiedIdentifier
 
 	return p
 }
@@ -3305,20 +3305,20 @@ func (s *QualifiedIdentifierContext) ToStringTree(ruleNames []string, recog antl
 }
 
 func (s *QualifiedIdentifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterQualifiedIdentifier(s)
 	}
 }
 
 func (s *QualifiedIdentifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitQualifiedIdentifier(s)
 	}
 }
 
-func (p *fhirpathParser) QualifiedIdentifier() (localctx IQualifiedIdentifierContext) {
+func (p *FHIRPathParser) QualifiedIdentifier() (localctx IQualifiedIdentifierContext) {
 	localctx = NewQualifiedIdentifierContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 24, fhirpathParserRULE_qualifiedIdentifier)
+	p.EnterRule(localctx, 24, FHIRPathParserRULE_qualifiedIdentifier)
 
 	defer func() {
 		p.ExitRule()
@@ -3351,7 +3351,7 @@ func (p *fhirpathParser) QualifiedIdentifier() (localctx IQualifiedIdentifierCon
 		if _alt == 1 {
 			{
 				p.SetState(140)
-				p.Match(fhirpathParserT__0)
+				p.Match(FHIRPathParserT__0)
 			}
 			{
 				p.SetState(141)
@@ -3386,7 +3386,7 @@ type IdentifierContext struct {
 func NewEmptyIdentifierContext() *IdentifierContext {
 	var p = new(IdentifierContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = fhirpathParserRULE_identifier
+	p.RuleIndex = FHIRPathParserRULE_identifier
 	return p
 }
 
@@ -3398,7 +3398,7 @@ func NewIdentifierContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = fhirpathParserRULE_identifier
+	p.RuleIndex = FHIRPathParserRULE_identifier
 
 	return p
 }
@@ -3406,11 +3406,11 @@ func NewIdentifierContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 func (s *IdentifierContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *IdentifierContext) IDENTIFIER() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserIDENTIFIER, 0)
+	return s.GetToken(FHIRPathParserIDENTIFIER, 0)
 }
 
 func (s *IdentifierContext) DELIMITEDIDENTIFIER() antlr.TerminalNode {
-	return s.GetToken(fhirpathParserDELIMITEDIDENTIFIER, 0)
+	return s.GetToken(FHIRPathParserDELIMITEDIDENTIFIER, 0)
 }
 
 func (s *IdentifierContext) GetRuleContext() antlr.RuleContext {
@@ -3422,20 +3422,20 @@ func (s *IdentifierContext) ToStringTree(ruleNames []string, recog antlr.Recogni
 }
 
 func (s *IdentifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.EnterIdentifier(s)
 	}
 }
 
 func (s *IdentifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(fhirpathListener); ok {
+	if listenerT, ok := listener.(FHIRPathListener); ok {
 		listenerT.ExitIdentifier(s)
 	}
 }
 
-func (p *fhirpathParser) Identifier() (localctx IIdentifierContext) {
+func (p *FHIRPathParser) Identifier() (localctx IIdentifierContext) {
 	localctx = NewIdentifierContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 26, fhirpathParserRULE_identifier)
+	p.EnterRule(localctx, 26, FHIRPathParserRULE_identifier)
 	var _la int
 
 	defer func() {
@@ -3459,7 +3459,7 @@ func (p *fhirpathParser) Identifier() (localctx IIdentifierContext) {
 		p.SetState(147)
 		_la = p.GetTokenStream().LA(1)
 
-		if !((((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<fhirpathParserT__10)|(1<<fhirpathParserT__11)|(1<<fhirpathParserT__21)|(1<<fhirpathParserT__22))) != 0) || _la == fhirpathParserIDENTIFIER || _la == fhirpathParserDELIMITEDIDENTIFIER) {
+		if !((((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__10)|(1<<FHIRPathParserT__11)|(1<<FHIRPathParserT__21)|(1<<FHIRPathParserT__22))) != 0) || _la == FHIRPathParserIDENTIFIER || _la == FHIRPathParserDELIMITEDIDENTIFIER) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -3470,7 +3470,7 @@ func (p *fhirpathParser) Identifier() (localctx IIdentifierContext) {
 	return localctx
 }
 
-func (p *fhirpathParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
+func (p *FHIRPathParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
 	case 0:
 		var t *ExpressionContext = nil
@@ -3484,7 +3484,7 @@ func (p *fhirpathParser) Sempred(localctx antlr.RuleContext, ruleIndex, predInde
 	}
 }
 
-func (p *fhirpathParser) Expression_Sempred(localctx antlr.RuleContext, predIndex int) bool {
+func (p *FHIRPathParser) Expression_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 0:
 		return p.Precpred(p.GetParserRuleContext(), 10)

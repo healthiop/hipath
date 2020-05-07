@@ -1,11 +1,11 @@
-// Code generated from fhirpath.g4 by ANTLR 4.8. DO NOT EDIT.
+// Code generated from FHIRPath.g4 by ANTLR 4.8. DO NOT EDIT.
 
-package parser // fhirpath
+package parser // FHIRPath
 
 import "github.com/antlr/antlr4/runtime/Go/antlr"
 
-// fhirpathListener is a complete listener for a parse tree produced by fhirpathParser.
-type fhirpathListener interface {
+// FHIRPathListener is a complete listener for a parse tree produced by FHIRPathParser.
+type FHIRPathListener interface {
 	antlr.ParseTreeListener
 
 	// EnterIndexerExpression is called when entering the indexerExpression production.
