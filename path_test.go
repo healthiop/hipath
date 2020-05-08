@@ -26,8 +26,45 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohi-path
+package gohipath
 
-go 1.14
+import "testing"
 
-require github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
+func TestParsePath(t *testing.T) {
+	p, e := ParsePath("DomainResource.contained(id = 23).exists()")
+
+	if p == nil {
+		t.Errorf("path return value expected")
+	} else if len(p.tokens) != 14 {
+		t.Errorf("got %d tokens, expected %d", len(p.tokens), 14)
+	}
+
+	if e != nil {
+		t.Errorf("no error return value expected")
+	}
+}
+
+func TestParsePathEmpty(t *testing.T) {
+	p, e := ParsePath("")
+
+	if p == nil {
+		t.Errorf("path return value expected")
+	} else if len(p.tokens) != 0 {
+		t.Errorf("got %d tokens, expected %d", len(p.tokens), 0)
+	}
+
+	if e != nil {
+		t.Errorf("no error return value expected")
+	}
+}
+
+func TestParsePathInvalid(t *testing.T) {
+	p, e := ParsePath("xxx$#@yyy")
+
+	if p != nil {
+		t.Errorf("no path return value expected")
+	}
+	if e == nil {
+		t.Errorf("error return value expected")
+	}
+}

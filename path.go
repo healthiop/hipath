@@ -26,8 +26,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohi-path
+package gohipath
 
-go 1.14
+import (
+	"errors"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
 
-require github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
+	"github.com/volsch/gohi-path/internal"
+	"github.com/volsch/gohi-path/internal/parser"
+)
+
+type Path struct {
+	tokens []antlr.Token
+}
+
+func ParsePath(pathString string) (*Path, error) {
+	stream := antlr.NewInputStream(pathString)
+	lexer := parser.NewFHIRPathLexer(stream)
+
+	lexer.RemoveErrorListeners()
+	listener := new(internal.PathErrorListener)
+	lexer.AddErrorListener(listener)
+
+	tokens := make([]antlr.Token, 0)
+	for {
+		token := lexer.NextToken()
+		if listener.Err {
+			return nil, errors.New(listener.Msg)
+		}
+		if token.GetTokenType() == antlr.TokenEOF {
+			break
+		}
+		tokens = append(tokens, token)
+	}
+
+	return &Path{tokens}, nil
+}
