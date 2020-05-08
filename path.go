@@ -32,8 +32,8 @@ import (
 	"errors"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 
-	"github.com/volsch/gohi-path/internal"
-	"github.com/volsch/gohi-path/internal/parser"
+	"github.com/volsch/gohipath/internal"
+	"github.com/volsch/gohipath/internal/parser"
 )
 
 type Path struct {
