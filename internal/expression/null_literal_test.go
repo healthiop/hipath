@@ -26,40 +26,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+func TestNullLiteral(t *testing.T) {
+	executor := NewNullLiteralExecutor()
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
-}
-
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
-}
-
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
+	if assert.NotNil(t, executor, "executor expected") {
+		assert.Nil(t, executor.Execute(nil), "nil executor result expected")
 	}
 }

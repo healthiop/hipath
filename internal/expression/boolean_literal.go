@@ -26,40 +26,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+type BooleanLiteral struct {
+	accessor datatype.BooleanAccessor
+}
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
+func ParseBooleanLiteral(value string) (Executor, error) {
+	if accessor, err := datatype.ParseBooleanValue(value); err != nil {
+		return nil, err
+	} else {
+		return &BooleanLiteral{accessor}, nil
 	}
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
-}
-
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
-	}
+func (e *BooleanLiteral) Execute(*context.PathContext) interface{} {
+	return e.accessor
 }

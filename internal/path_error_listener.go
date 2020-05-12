@@ -29,19 +29,21 @@
 package internal
 
 import (
-	"fmt"
-
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
 type PathErrorListener struct {
 	antlr.DefaultErrorListener
-	Err bool
-	Msg string
+	errorItemCollection *PathErrorItemCollection
+}
+
+func NewPathErrorListener(errorItemCollection *PathErrorItemCollection) *PathErrorListener {
+	l := new(PathErrorListener)
+	l.errorItemCollection = errorItemCollection
+	return l
 }
 
 func (l *PathErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
 	line, column int, msg string, e antlr.RecognitionException) {
-	l.Err = true
-	l.Msg = fmt.Sprintf("invalid token in column %d of line %d: %s", column, line, msg)
+	l.errorItemCollection.AddError(line, column, msg)
 }

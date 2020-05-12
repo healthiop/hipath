@@ -26,41 +26,60 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package internal
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-
-	"github.com/volsch/gohipath/internal"
 	"github.com/volsch/gohipath/internal/parser"
 )
 
-type Path struct {
-	executor expression.Executor
+func (v *PathVisitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
+	return v.VisitChildren(ctx)
 }
 
-func Compile(pathString string) (*Path, *internal.PathError) {
-	errorItemCollection := internal.NewPathErrorItemCollection()
-	errorListener := internal.NewPathErrorListener(errorItemCollection)
+func (v *PathVisitor) VisitMemberInvocation(ctx *parser.MemberInvocationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
 
-	is := antlr.NewInputStream(pathString)
-	lexer := parser.NewFHIRPathLexer(is)
-	lexer.RemoveErrorListeners()
-	lexer.AddErrorListener(errorListener)
+func (v *PathVisitor) VisitFunctionInvocation(ctx *parser.FunctionInvocationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
 
-	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
-	p := parser.NewFHIRPathParser(stream)
-	p.RemoveErrorListeners()
-	p.AddErrorListener(errorListener)
+func (v *PathVisitor) VisitThisInvocation(ctx *parser.ThisInvocationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
 
-	v := internal.NewPathVisitor(errorItemCollection)
-	result := p.Expression().Accept(v)
+func (v *PathVisitor) VisitIndexInvocation(ctx *parser.IndexInvocationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
 
-	if errorItemCollection.HasErrors() {
-		return nil, internal.NewPathError(
-			"error when parsing path expression", errorItemCollection.Items())
-	}
+func (v *PathVisitor) VisitTotalInvocation(ctx *parser.TotalInvocationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
 
-	return &Path{executor: result.(expression.Executor)}, nil
+func (v *PathVisitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitParamList(ctx *parser.ParamListContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitDateTimePrecision(ctx *parser.DateTimePrecisionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitPluralDateTimePrecision(ctx *parser.PluralDateTimePrecisionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitTypeSpecifier(ctx *parser.TypeSpecifierContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitQualifiedIdentifier(ctx *parser.QualifiedIdentifierContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *PathVisitor) VisitIdentifier(ctx *parser.IdentifierContext) interface{} {
+	return v.VisitChildren(ctx)
 }

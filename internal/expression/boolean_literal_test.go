@@ -26,40 +26,45 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohimodel/datatype"
 	"testing"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+func TestBooleanLiteralTrue(t *testing.T) {
+	executor, err := ParseBooleanLiteral("true")
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
-}
-
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, executor, "executor expected")
+	if executor != nil {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
+			assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Value())
 		}
 	}
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func TestBooleanLiteralFalse(t *testing.T) {
+	executor, err := ParseBooleanLiteral("false")
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, executor, "executor expected")
+	if executor != nil {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
+			assert.Equal(t, false, accessor.(datatype.BooleanAccessor).Value())
 		}
 	}
+}
+
+func TestBooleanLiteralInvalid(t *testing.T) {
+	executor, err := ParseBooleanLiteral("0")
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, executor, "no executor expected")
 }

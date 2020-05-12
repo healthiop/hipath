@@ -26,40 +26,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohimodel/datatype"
 	"testing"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+func TestStringLiteral(t *testing.T) {
+	executor := ParseStringLiteral(
+		"x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk")
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
-}
-
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
+	assert.NotNil(t, executor, "executor expected")
+	if executor != nil {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
+			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
+				accessor.(datatype.StringAccessor).Value())
 		}
 	}
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func TestParseStringLiteralShortUnicode(t *testing.T) {
+	assert.Equal(t, "u005", parseStringLiteral("\\u005"))
+}
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
-	}
+func TestParseStringLiteralInvalidUnicode(t *testing.T) {
+	assert.Equal(t, "aux005b", parseStringLiteral("a\\ux005b"))
+}
+
+func TestParseStringLiteralNoEscapedChar(t *testing.T) {
+	assert.Equal(t, "", parseStringLiteral("\\"))
 }

@@ -26,40 +26,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"fmt"
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+type TimeLiteral struct {
+	accessor datatype.TimeAccessor
+}
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
+func ParseTimeLiteral(value string) (Executor, error) {
+	if len(value) < 3 || value[0] != '@' || value[1] != 'T' {
+		return nil, fmt.Errorf("invalid time literal: %s", value)
+	}
+	if accessor, err := datatype.ParseFluentTimeValue(value[2:]); err != nil {
+		return nil, err
+	} else {
+		return &TimeLiteral{accessor}, nil
 	}
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
-}
-
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
-	}
+func (e *TimeLiteral) Execute(*context.PathContext) interface{} {
+	return e.accessor
 }

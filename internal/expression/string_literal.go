@@ -26,40 +26,80 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
+	"strconv"
+	"strings"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
-
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
+type StringLiteral struct {
+	accessor datatype.StringAccessor
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
+func ParseStringLiteral(value string) Executor {
+	return &StringLiteral{datatype.NewStringType(parseStringLiteral(value))}
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func parseStringLiteral(value string) string {
+	l := len(value)
+	if l == 0 {
+		return value
+	}
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
+	var b strings.Builder
+	b.Grow(l)
+
+	var esc bool
+	var unicode bool
+	var unicodeValue strings.Builder
+	for _, char := range value {
+		if unicode {
+			unicodeValue.WriteRune(char)
+			if unicodeValue.Len() == 4 {
+				if r, err := strconv.ParseInt(unicodeValue.String(), 16, 32); err != nil {
+					b.WriteRune('u')
+					b.WriteString(unicodeValue.String())
+				} else {
+					b.WriteRune(int32(r))
+				}
+				unicode = false
+			}
+		} else if esc {
+			switch char {
+			case 'r':
+				b.WriteRune('\r')
+			case 'n':
+				b.WriteRune('\n')
+			case 't':
+				b.WriteRune('\t')
+			case 'f':
+				b.WriteRune('\f')
+			case 'u':
+				unicode = true
+				unicodeValue.Grow(4)
+				unicodeValue.Reset()
+			default:
+				b.WriteRune(char)
+			}
+			esc = false
+		} else if char == '\\' {
+			esc = true
+		} else {
+			b.WriteRune(char)
 		}
 	}
+
+	if unicode {
+		b.WriteRune('u')
+		b.WriteString(unicodeValue.String())
+	}
+
+	return b.String()
+}
+
+func (e *StringLiteral) Execute(*context.PathContext) interface{} {
+	return e.accessor
 }

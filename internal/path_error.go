@@ -26,40 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package internal
 
-import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-)
-
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
-
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
+type PathError struct {
+	msg   string
+	items []*PathErrorItem
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
+func NewPathError(msg string, items []*PathErrorItem) *PathError {
+	return &PathError{msg, items}
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func (e *PathError) Error() string {
+	return e.msg
+}
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
-	}
+func (e *PathError) Items() []*PathErrorItem {
+	return e.items
 }

@@ -26,40 +26,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
+	"strings"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+type NumberLiteral struct {
+	accessor datatype.NumberAccessor
+}
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
+func ParseNumberLiteral(value string) (Executor, error) {
+	var accessor datatype.NumberAccessor
+	var err error
+
+	if strings.ContainsRune(value, '.') {
+		accessor, err = datatype.ParseDecimalValue(value)
+	} else {
+		accessor, err = datatype.ParseIntegerValue(value)
+	}
+
+	if err != nil {
+		return nil, err
+	} else {
+		return &NumberLiteral{accessor}, nil
 	}
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
-}
-
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
-	}
+func (e *NumberLiteral) Execute(*context.PathContext) interface{} {
+	return e.accessor
 }

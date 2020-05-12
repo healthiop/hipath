@@ -26,40 +26,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package expression
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohimodel/datatype"
 	"testing"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
+func TestNumberLiteralInteger(t *testing.T) {
+	executor, err := ParseNumberLiteral("-72638")
 
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
-}
-
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, executor, "executor expected")
+	if executor != nil {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.IntegerAccessor)(nil), accessor) {
+			assert.Equal(t, int32(-72638), accessor.(datatype.IntegerAccessor).Value())
 		}
 	}
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func TestNumberLiteralInvalidInteger(t *testing.T) {
+	executor, err := ParseNumberLiteral("8237u")
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, executor, "no executor expected")
+}
+
+func TestNumberLiteralDecimal(t *testing.T) {
+	executor, err := ParseNumberLiteral("-72638.1")
+
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, executor, "executor expected")
+	if executor != nil {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), accessor) {
+			assert.Equal(t, -72638.1, accessor.(datatype.DecimalAccessor).Value())
 		}
 	}
+}
+
+func TestNumberLiteralInvalidDecimal(t *testing.T) {
+	executor, err := ParseNumberLiteral("8237.1u")
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, executor, "no executor expected")
 }

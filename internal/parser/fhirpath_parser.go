@@ -1,7 +1,6 @@
 // Code generated from FHIRPath.g4 by ANTLR 4.8. DO NOT EDIT.
 
 package parser // FHIRPath
-
 import (
 	"fmt"
 	"reflect"
@@ -315,15 +314,13 @@ func (s *IndexerExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *IndexerExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterIndexerExpression(s)
-	}
-}
+func (s *IndexerExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitIndexerExpression(s)
 
-func (s *IndexerExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitIndexerExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -355,15 +352,13 @@ func (s *PolarityExpressionContext) Expression() IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *PolarityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterPolarityExpression(s)
-	}
-}
+func (s *PolarityExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitPolarityExpression(s)
 
-func (s *PolarityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitPolarityExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -408,15 +403,13 @@ func (s *AdditiveExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *AdditiveExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterAdditiveExpression(s)
-	}
-}
+func (s *AdditiveExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitAdditiveExpression(s)
 
-func (s *AdditiveExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitAdditiveExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -461,15 +454,13 @@ func (s *MultiplicativeExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *MultiplicativeExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterMultiplicativeExpression(s)
-	}
-}
+func (s *MultiplicativeExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitMultiplicativeExpression(s)
 
-func (s *MultiplicativeExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitMultiplicativeExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -514,15 +505,13 @@ func (s *UnionExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *UnionExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterUnionExpression(s)
-	}
-}
+func (s *UnionExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitUnionExpression(s)
 
-func (s *UnionExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitUnionExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -567,15 +556,13 @@ func (s *OrExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *OrExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterOrExpression(s)
-	}
-}
+func (s *OrExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitOrExpression(s)
 
-func (s *OrExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitOrExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -620,15 +607,13 @@ func (s *AndExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *AndExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterAndExpression(s)
-	}
-}
+func (s *AndExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitAndExpression(s)
 
-func (s *AndExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitAndExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -673,15 +658,13 @@ func (s *MembershipExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *MembershipExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterMembershipExpression(s)
-	}
-}
+func (s *MembershipExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitMembershipExpression(s)
 
-func (s *MembershipExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitMembershipExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -726,15 +709,13 @@ func (s *InequalityExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *InequalityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterInequalityExpression(s)
-	}
-}
+func (s *InequalityExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitInequalityExpression(s)
 
-func (s *InequalityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitInequalityExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -776,15 +757,13 @@ func (s *InvocationExpressionContext) Invocation() IInvocationContext {
 	return t.(IInvocationContext)
 }
 
-func (s *InvocationExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterInvocationExpression(s)
-	}
-}
+func (s *InvocationExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitInvocationExpression(s)
 
-func (s *InvocationExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitInvocationExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -829,15 +808,13 @@ func (s *EqualityExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *EqualityExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterEqualityExpression(s)
-	}
-}
+func (s *EqualityExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitEqualityExpression(s)
 
-func (s *EqualityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitEqualityExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -882,15 +859,13 @@ func (s *ImpliesExpressionContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *ImpliesExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterImpliesExpression(s)
-	}
-}
+func (s *ImpliesExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitImpliesExpression(s)
 
-func (s *ImpliesExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitImpliesExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -922,15 +897,13 @@ func (s *TermExpressionContext) Term() ITermContext {
 	return t.(ITermContext)
 }
 
-func (s *TermExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterTermExpression(s)
-	}
-}
+func (s *TermExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitTermExpression(s)
 
-func (s *TermExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitTermExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -972,15 +945,13 @@ func (s *TypeExpressionContext) TypeSpecifier() ITypeSpecifierContext {
 	return t.(ITypeSpecifierContext)
 }
 
-func (s *TypeExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterTypeExpression(s)
-	}
-}
+func (s *TypeExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitTypeExpression(s)
 
-func (s *TypeExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitTypeExpression(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1414,15 +1385,13 @@ func (s *ExternalConstantTermContext) ExternalConstant() IExternalConstantContex
 	return t.(IExternalConstantContext)
 }
 
-func (s *ExternalConstantTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterExternalConstantTerm(s)
-	}
-}
+func (s *ExternalConstantTermContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitExternalConstantTerm(s)
 
-func (s *ExternalConstantTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitExternalConstantTerm(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1454,15 +1423,13 @@ func (s *LiteralTermContext) Literal() ILiteralContext {
 	return t.(ILiteralContext)
 }
 
-func (s *LiteralTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterLiteralTerm(s)
-	}
-}
+func (s *LiteralTermContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitLiteralTerm(s)
 
-func (s *LiteralTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitLiteralTerm(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1494,15 +1461,13 @@ func (s *ParenthesizedTermContext) Expression() IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *ParenthesizedTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterParenthesizedTerm(s)
-	}
-}
+func (s *ParenthesizedTermContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitParenthesizedTerm(s)
 
-func (s *ParenthesizedTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitParenthesizedTerm(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1534,15 +1499,13 @@ func (s *InvocationTermContext) Invocation() IInvocationContext {
 	return t.(IInvocationContext)
 }
 
-func (s *InvocationTermContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterInvocationTerm(s)
-	}
-}
+func (s *InvocationTermContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitInvocationTerm(s)
 
-func (s *InvocationTermContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitInvocationTerm(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1689,15 +1652,13 @@ func (s *TimeLiteralContext) TIME() antlr.TerminalNode {
 	return s.GetToken(FHIRPathParserTIME, 0)
 }
 
-func (s *TimeLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterTimeLiteral(s)
-	}
-}
+func (s *TimeLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitTimeLiteral(s)
 
-func (s *TimeLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitTimeLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1719,15 +1680,13 @@ func (s *NullLiteralContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *NullLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterNullLiteral(s)
-	}
-}
+func (s *NullLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitNullLiteral(s)
 
-func (s *NullLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitNullLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1753,15 +1712,13 @@ func (s *DateTimeLiteralContext) DATETIME() antlr.TerminalNode {
 	return s.GetToken(FHIRPathParserDATETIME, 0)
 }
 
-func (s *DateTimeLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterDateTimeLiteral(s)
-	}
-}
+func (s *DateTimeLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitDateTimeLiteral(s)
 
-func (s *DateTimeLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitDateTimeLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1787,15 +1744,13 @@ func (s *StringLiteralContext) STRING() antlr.TerminalNode {
 	return s.GetToken(FHIRPathParserSTRING, 0)
 }
 
-func (s *StringLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterStringLiteral(s)
-	}
-}
+func (s *StringLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitStringLiteral(s)
 
-func (s *StringLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitStringLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1821,15 +1776,13 @@ func (s *DateLiteralContext) DATE() antlr.TerminalNode {
 	return s.GetToken(FHIRPathParserDATE, 0)
 }
 
-func (s *DateLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterDateLiteral(s)
-	}
-}
+func (s *DateLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitDateLiteral(s)
 
-func (s *DateLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitDateLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1851,15 +1804,13 @@ func (s *BooleanLiteralContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *BooleanLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterBooleanLiteral(s)
-	}
-}
+func (s *BooleanLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitBooleanLiteral(s)
 
-func (s *BooleanLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitBooleanLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1885,15 +1836,13 @@ func (s *NumberLiteralContext) NUMBER() antlr.TerminalNode {
 	return s.GetToken(FHIRPathParserNUMBER, 0)
 }
 
-func (s *NumberLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterNumberLiteral(s)
-	}
-}
+func (s *NumberLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitNumberLiteral(s)
 
-func (s *NumberLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitNumberLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -1925,15 +1874,13 @@ func (s *QuantityLiteralContext) Quantity() IQuantityContext {
 	return t.(IQuantityContext)
 }
 
-func (s *QuantityLiteralContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterQuantityLiteral(s)
-	}
-}
+func (s *QuantityLiteralContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitQuantityLiteral(s)
 
-func (s *QuantityLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitQuantityLiteral(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2101,15 +2048,13 @@ func (s *ExternalConstantContext) ToStringTree(ruleNames []string, recog antlr.R
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ExternalConstantContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterExternalConstant(s)
-	}
-}
+func (s *ExternalConstantContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitExternalConstant(s)
 
-func (s *ExternalConstantContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitExternalConstant(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2229,15 +2174,13 @@ func (s *TotalInvocationContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *TotalInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterTotalInvocation(s)
-	}
-}
+func (s *TotalInvocationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitTotalInvocation(s)
 
-func (s *TotalInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitTotalInvocation(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2259,15 +2202,13 @@ func (s *ThisInvocationContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ThisInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterThisInvocation(s)
-	}
-}
+func (s *ThisInvocationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitThisInvocation(s)
 
-func (s *ThisInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitThisInvocation(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2289,15 +2230,13 @@ func (s *IndexInvocationContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *IndexInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterIndexInvocation(s)
-	}
-}
+func (s *IndexInvocationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitIndexInvocation(s)
 
-func (s *IndexInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitIndexInvocation(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2329,15 +2268,13 @@ func (s *FunctionInvocationContext) Function() IFunctionContext {
 	return t.(IFunctionContext)
 }
 
-func (s *FunctionInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterFunctionInvocation(s)
-	}
-}
+func (s *FunctionInvocationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitFunctionInvocation(s)
 
-func (s *FunctionInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitFunctionInvocation(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2369,15 +2306,13 @@ func (s *MemberInvocationContext) Identifier() IIdentifierContext {
 	return t.(IIdentifierContext)
 }
 
-func (s *MemberInvocationContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterMemberInvocation(s)
-	}
-}
+func (s *MemberInvocationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitMemberInvocation(s)
 
-func (s *MemberInvocationContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitMemberInvocation(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2515,15 +2450,13 @@ func (s *FunctionContext) ToStringTree(ruleNames []string, recog antlr.Recognize
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *FunctionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterFunction(s)
-	}
-}
+func (s *FunctionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitFunction(s)
 
-func (s *FunctionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitFunction(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2645,15 +2578,13 @@ func (s *ParamListContext) ToStringTree(ruleNames []string, recog antlr.Recogniz
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ParamListContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterParamList(s)
-	}
-}
+func (s *ParamListContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitParamList(s)
 
-func (s *ParamListContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitParamList(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2765,15 +2696,13 @@ func (s *QuantityContext) ToStringTree(ruleNames []string, recog antlr.Recognize
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *QuantityContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterQuantity(s)
-	}
-}
+func (s *QuantityContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitQuantity(s)
 
-func (s *QuantityContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitQuantity(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2886,15 +2815,13 @@ func (s *UnitContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) s
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *UnitContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterUnit(s)
-	}
-}
+func (s *UnitContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitUnit(s)
 
-func (s *UnitContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitUnit(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -2995,15 +2922,13 @@ func (s *DateTimePrecisionContext) ToStringTree(ruleNames []string, recog antlr.
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *DateTimePrecisionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterDateTimePrecision(s)
-	}
-}
+func (s *DateTimePrecisionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitDateTimePrecision(s)
 
-func (s *DateTimePrecisionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitDateTimePrecision(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -3089,15 +3014,13 @@ func (s *PluralDateTimePrecisionContext) ToStringTree(ruleNames []string, recog 
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *PluralDateTimePrecisionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterPluralDateTimePrecision(s)
-	}
-}
+func (s *PluralDateTimePrecisionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitPluralDateTimePrecision(s)
 
-func (s *PluralDateTimePrecisionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitPluralDateTimePrecision(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -3194,15 +3117,13 @@ func (s *TypeSpecifierContext) ToStringTree(ruleNames []string, recog antlr.Reco
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *TypeSpecifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterTypeSpecifier(s)
-	}
-}
+func (s *TypeSpecifierContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitTypeSpecifier(s)
 
-func (s *TypeSpecifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitTypeSpecifier(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -3304,15 +3225,13 @@ func (s *QualifiedIdentifierContext) ToStringTree(ruleNames []string, recog antl
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *QualifiedIdentifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterQualifiedIdentifier(s)
-	}
-}
+func (s *QualifiedIdentifierContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitQualifiedIdentifier(s)
 
-func (s *QualifiedIdentifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitQualifiedIdentifier(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 
@@ -3421,15 +3340,13 @@ func (s *IdentifierContext) ToStringTree(ruleNames []string, recog antlr.Recogni
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *IdentifierContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.EnterIdentifier(s)
-	}
-}
+func (s *IdentifierContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FHIRPathVisitor:
+		return t.VisitIdentifier(s)
 
-func (s *IdentifierContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(FHIRPathListener); ok {
-		listenerT.ExitIdentifier(s)
+	default:
+		return t.VisitChildren(s)
 	}
 }
 

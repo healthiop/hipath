@@ -26,40 +26,51 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohipath
+package internal
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/internal/parser"
 )
 
-func TestCompileLiteral(t *testing.T) {
-	path, err := Compile("true")
-
-	assert.Nil(t, err, "no error expected")
-	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
-	}
+type PathVisitor struct {
+	parser.BaseFHIRPathVisitor
+	errorItemCollection *PathErrorItemCollection
 }
 
-func TestCompileEmpty(t *testing.T) {
-	path, err := Compile("")
-
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 1)
-		}
-	}
+func NewPathVisitor(errorItemCollection *PathErrorItemCollection) *PathVisitor {
+	v := new(PathVisitor)
+	v.errorItemCollection = errorItemCollection
+	return v
 }
 
-func TestCompileInvalid(t *testing.T) {
-	path, err := Compile("xxx$#@yyy")
+func (v *PathVisitor) AddError(ctx antlr.ParserRuleContext, msg string) expression.Executor {
+	v.errorItemCollection.AddError(ctx.GetStart().GetLine(), ctx.GetStart().GetColumn(), msg)
+	return nil
+}
 
-	assert.Nil(t, path, "no path expected")
-	if assert.NotNil(t, err, "error expected") {
-		if assert.NotNil(t, err.Items(), "items expected") {
-			assert.Len(t, err.Items(), 2)
-		}
+func (v *PathVisitor) VisitChildren(node antlr.RuleNode) interface{} {
+	r := make([]interface{}, 0)
+	for _, child := range node.GetChildren() {
+		r = append(r, v.evalNode(child))
 	}
+	return r
+}
+
+func (v *PathVisitor) VisitFirstChild(node antlr.RuleNode) interface{} {
+	if node.GetChildCount() == 0 {
+		return nil
+	}
+	return v.evalNode(node.GetChild(0))
+}
+
+func (v *PathVisitor) evalNode(node antlr.Tree) interface{} {
+	switch n := node.(type) {
+	case antlr.RuleNode:
+		return n.Accept(v)
+	case antlr.TerminalNode:
+		return n.GetText()
+	}
+	return nil
 }
