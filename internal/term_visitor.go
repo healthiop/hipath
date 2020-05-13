@@ -32,54 +32,10 @@ import (
 	"github.com/volsch/gohipath/internal/parser"
 )
 
-func (v *PathVisitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
-	return v.VisitChildren(ctx)
+func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
+	return v.VisitChild(ctx, 1)
 }
 
-func (v *PathVisitor) VisitMemberInvocation(ctx *parser.MemberInvocationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitFunctionInvocation(ctx *parser.FunctionInvocationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitThisInvocation(ctx *parser.ThisInvocationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitIndexInvocation(ctx *parser.IndexInvocationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitTotalInvocation(ctx *parser.TotalInvocationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitParamList(ctx *parser.ParamListContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitDateTimePrecision(ctx *parser.DateTimePrecisionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitPluralDateTimePrecision(ctx *parser.PluralDateTimePrecisionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitTypeSpecifier(ctx *parser.TypeSpecifierContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitQualifiedIdentifier(ctx *parser.QualifiedIdentifierContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *PathVisitor) VisitIdentifier(ctx *parser.IdentifierContext) interface{} {
-	return v.VisitChildren(ctx)
+func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
+	return v.VisitFirstChild(ctx)
 }

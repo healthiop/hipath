@@ -64,12 +64,11 @@ func ParseQuantityLiteral(number string, unit string) (Executor, error) {
 }
 
 func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.CodeAccessor, err error) {
-	parsedUnit := parseStringLiteral(unit)
-	if len(parsedUnit) == 0 {
+	if len(unit) == 0 || unit == "''" {
 		return
 	}
 
-	switch parsedUnit {
+	switch unit {
 	case "year", "years":
 		code = YearQuantityCode
 	case "month", "months":
@@ -87,7 +86,7 @@ func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.
 	case "millisecond", "milliseconds":
 		code = MillisecondQuantityCode
 	default:
-		code, err = datatype.ParseCode(parsedUnit)
+		code, err = datatype.ParseCode(parseStringLiteral(unit))
 		if err != nil {
 			return
 		}

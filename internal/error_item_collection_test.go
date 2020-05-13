@@ -28,24 +28,32 @@
 
 package internal
 
-type PathErrorItem struct {
-	line   int
-	column int
-	msg    string
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+func TestErrorCollection(t *testing.T) {
+	c := NewErrorItemCollection()
+	c.AddError(72, 3, "error 1")
+	c.AddError(87, 23, "error 2")
+
+	assert.True(t, c.HasErrors(), "collection must have errors")
+	if assert.Len(t, c.Items(), 2) {
+		err := c.Items()[0]
+		assert.Equal(t, 72, err.Line())
+		assert.Equal(t, 3, err.Column())
+		assert.Equal(t, "error 1", err.Msg())
+
+		err = c.Items()[1]
+		assert.Equal(t, 87, err.Line())
+		assert.Equal(t, 23, err.Column())
+		assert.Equal(t, "error 2", err.Msg())
+	}
 }
 
-func NewPathErrorItem(line int, column int, msg string) *PathErrorItem {
-	return &PathErrorItem{line, column, msg}
-}
-
-func (e *PathErrorItem) Line() int {
-	return e.line
-}
-
-func (e *PathErrorItem) Column() int {
-	return e.column
-}
-
-func (e *PathErrorItem) Msg() string {
-	return e.msg
+func TestErrorCollectionEmpty(t *testing.T) {
+	c := NewErrorItemCollection()
+	assert.False(t, c.HasErrors(), "collection must have no errors")
+	assert.Len(t, c.Items(), 0)
 }

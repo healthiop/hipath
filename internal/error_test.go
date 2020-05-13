@@ -28,24 +28,23 @@
 
 package internal
 
-type PathErrorItemCollection struct {
-	items []*PathErrorItem
-}
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-func NewPathErrorItemCollection() *PathErrorItemCollection {
-	items := make([]*PathErrorItem, 0)
-	return &PathErrorItemCollection{items}
-}
+func TestError(t *testing.T) {
+	items := make([]*ErrorItem, 2)
+	items[0] = NewErrorItem(1, 2, "test1")
+	items[1] = NewErrorItem(3, 4, "test2")
 
-func (c *PathErrorItemCollection) AddError(line int, column int, msg string) {
-	item := NewPathErrorItem(line, column, msg)
-	c.items = append(c.items, item)
-}
-
-func (c *PathErrorItemCollection) HasErrors() bool {
-	return len(c.items) > 0
-}
-
-func (c *PathErrorItemCollection) Items() []*PathErrorItem {
-	return c.items
+	err := NewPathError("this is an error", items)
+	assert.Implements(t, (*error)(nil), err)
+	assert.Equal(t, "this is an error", err.Error())
+	if assert.NotNil(t, items, err.Items()) {
+		if assert.Equal(t, 2, len(err.Items())) {
+			assert.Same(t, items[0], err.Items()[0])
+			assert.Same(t, items[1], err.Items()[1])
+		}
+	}
 }

@@ -30,52 +30,20 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
 )
 
-type PathVisitor struct {
-	parser.BaseFHIRPathVisitor
-	errorItemCollection *PathErrorItemCollection
+type ErrorListener struct {
+	antlr.DefaultErrorListener
+	errorItemCollection *ErrorItemCollection
 }
 
-func NewPathVisitor(errorItemCollection *PathErrorItemCollection) *PathVisitor {
-	v := new(PathVisitor)
-	v.errorItemCollection = errorItemCollection
-	return v
+func NewErrorListener(errorItemCollection *ErrorItemCollection) *ErrorListener {
+	l := new(ErrorListener)
+	l.errorItemCollection = errorItemCollection
+	return l
 }
 
-func (v *PathVisitor) AddError(ctx antlr.ParserRuleContext, msg string) expression.Executor {
-	v.errorItemCollection.AddError(ctx.GetStart().GetLine(), ctx.GetStart().GetColumn(), msg)
-	return nil
-}
-
-func (v *PathVisitor) VisitChildren(node antlr.RuleNode) interface{} {
-	c := node.GetChildCount()
-	if c == 0 {
-		return nil
-	}
-
-	r := make([]interface{}, c)
-	for pos, child := range node.GetChildren() {
-		r[pos] = v.evalNode(child)
-	}
-	return r
-}
-
-func (v *PathVisitor) VisitFirstChild(node antlr.RuleNode) interface{} {
-	if node.GetChildCount() == 0 {
-		return nil
-	}
-	return v.evalNode(node.GetChild(0))
-}
-
-func (v *PathVisitor) evalNode(node antlr.Tree) interface{} {
-	switch n := node.(type) {
-	case antlr.RuleNode:
-		return n.Accept(v)
-	case antlr.TerminalNode:
-		return n.GetText()
-	}
-	return nil
+func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
+	line, column int, msg string, e antlr.RecognitionException) {
+	l.errorItemCollection.AddError(line, column, msg)
 }

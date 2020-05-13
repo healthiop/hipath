@@ -26,12 +26,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohipath
+package internal
 
-go 1.14
+type ErrorItemCollection struct {
+	items []*ErrorItem
+}
 
-require (
-	github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
-	github.com/stretchr/testify v1.5.1
-	github.com/volsch/gohimodel v0.0.0-20200513133234-eddafd5bc5ef
-)
+func NewErrorItemCollection() *ErrorItemCollection {
+	items := make([]*ErrorItem, 0)
+	return &ErrorItemCollection{items}
+}
+
+func (c *ErrorItemCollection) AddError(line int, column int, msg string) {
+	item := NewErrorItem(line, column, msg)
+	c.items = append(c.items, item)
+}
+
+func (c *ErrorItemCollection) HasErrors() bool {
+	return len(c.items) > 0
+}
+
+func (c *ErrorItemCollection) Items() []*ErrorItem {
+	return c.items
+}

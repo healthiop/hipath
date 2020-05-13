@@ -28,19 +28,20 @@
 
 package internal
 
-type PathError struct {
-	msg   string
-	items []*PathErrorItem
-}
+import (
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/volsch/gohipath/internal/parser"
+)
 
-func NewPathError(msg string, items []*PathErrorItem) *PathError {
-	return &PathError{msg, items}
-}
+func testParse(pathString string) (result interface{}, errorItemCollection *ErrorItemCollection) {
+	is := antlr.NewInputStream(pathString)
+	lexer := parser.NewFHIRPathLexer(is)
+	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
+	p := parser.NewFHIRPathParser(stream)
 
-func (e *PathError) Error() string {
-	return e.msg
-}
+	errorItemCollection = NewErrorItemCollection()
+	v := NewVisitor(errorItemCollection)
+	result = p.Expression().Accept(v)
 
-func (e *PathError) Items() []*PathErrorItem {
-	return e.items
+	return
 }

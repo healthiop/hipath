@@ -28,22 +28,19 @@
 
 package internal
 
-import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-)
-
-type PathErrorListener struct {
-	antlr.DefaultErrorListener
-	errorItemCollection *PathErrorItemCollection
+type Error struct {
+	msg   string
+	items []*ErrorItem
 }
 
-func NewPathErrorListener(errorItemCollection *PathErrorItemCollection) *PathErrorListener {
-	l := new(PathErrorListener)
-	l.errorItemCollection = errorItemCollection
-	return l
+func NewPathError(msg string, items []*ErrorItem) *Error {
+	return &Error{msg, items}
 }
 
-func (l *PathErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
-	line, column int, msg string, e antlr.RecognitionException) {
-	l.errorItemCollection.AddError(line, column, msg)
+func (e *Error) Error() string {
+	return e.msg
+}
+
+func (e *Error) Items() []*ErrorItem {
+	return e.items
 }

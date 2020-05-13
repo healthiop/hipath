@@ -26,12 +26,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohipath
+package internal
 
-go 1.14
-
-require (
-	github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
-	github.com/stretchr/testify v1.5.1
-	github.com/volsch/gohimodel v0.0.0-20200513133234-eddafd5bc5ef
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
+
+func TestErrorItem(t *testing.T) {
+	item := NewErrorItem(28, 12, "Test Error")
+
+	assert.Equal(t, 28, item.Line())
+	assert.Equal(t, 12, item.Column())
+	assert.Equal(t, "Test Error", item.Msg())
+}

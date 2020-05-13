@@ -29,21 +29,26 @@
 package internal
 
 import (
-	"github.com/volsch/gohipath/internal/parser"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func (v *PathVisitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
+func TestErrorListenerSyntaxError(t *testing.T) {
+	c := NewErrorItemCollection()
+	l := NewErrorListener(c)
+	l.SyntaxError(nil, nil, 72, 3, "error 1", nil)
+	l.SyntaxError(nil, nil, 87, 23, "error 2", nil)
 
-func (v *PathVisitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
+	assert.True(t, c.HasErrors(), "collection must have errors")
+	if assert.Len(t, c.Items(), 2) {
+		err := c.Items()[0]
+		assert.Equal(t, 72, err.Line())
+		assert.Equal(t, 3, err.Column())
+		assert.Equal(t, "error 1", err.Msg())
 
-func (v *PathVisitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
-
-func (v *PathVisitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
+		err = c.Items()[1]
+		assert.Equal(t, 87, err.Line())
+		assert.Equal(t, 23, err.Column())
+		assert.Equal(t, "error 2", err.Msg())
+	}
 }

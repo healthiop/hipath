@@ -40,9 +40,9 @@ type Path struct {
 	executor expression.Executor
 }
 
-func Compile(pathString string) (*Path, *internal.PathError) {
-	errorItemCollection := internal.NewPathErrorItemCollection()
-	errorListener := internal.NewPathErrorListener(errorItemCollection)
+func Compile(pathString string) (*Path, *internal.Error) {
+	errorItemCollection := internal.NewErrorItemCollection()
+	errorListener := internal.NewErrorListener(errorItemCollection)
 
 	is := antlr.NewInputStream(pathString)
 	lexer := parser.NewFHIRPathLexer(is)
@@ -54,7 +54,7 @@ func Compile(pathString string) (*Path, *internal.PathError) {
 	p.RemoveErrorListeners()
 	p.AddErrorListener(errorListener)
 
-	v := internal.NewPathVisitor(errorItemCollection)
+	v := internal.NewVisitor(errorItemCollection)
 	result := p.Expression().Accept(v)
 
 	if errorItemCollection.HasErrors() {
