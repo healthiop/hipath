@@ -40,7 +40,7 @@ type StringLiteral struct {
 }
 
 func ParseStringLiteral(value string) Executor {
-	return &StringLiteral{datatype.NewStringType(parseStringLiteral(value))}
+	return &StringLiteral{datatype.NewString(parseStringLiteral(value))}
 }
 
 func parseStringLiteral(value string) string {

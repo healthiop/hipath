@@ -43,9 +43,9 @@ func ParseNumberLiteral(value string) (Executor, error) {
 	var err error
 
 	if strings.ContainsRune(value, '.') {
-		accessor, err = datatype.ParseDecimalValue(value)
+		accessor, err = datatype.ParseDecimal(value)
 	} else {
-		accessor, err = datatype.ParseIntegerValue(value)
+		accessor, err = datatype.ParseInteger(value)
 	}
 
 	if err != nil {

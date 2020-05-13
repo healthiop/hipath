@@ -42,7 +42,7 @@ func ParseTimeLiteral(value string) (Executor, error) {
 	if len(value) < 3 || value[0] != '@' || value[1] != 'T' {
 		return nil, fmt.Errorf("invalid time literal: %s", value)
 	}
-	if accessor, err := datatype.ParseFluentTimeValue(value[2:]); err != nil {
+	if accessor, err := datatype.ParseFluentTime(value[2:]); err != nil {
 		return nil, err
 	} else {
 		return &TimeLiteral{accessor}, nil

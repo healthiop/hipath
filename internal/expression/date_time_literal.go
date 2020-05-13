@@ -42,7 +42,7 @@ func ParseDateTimeLiteral(value string) (Executor, error) {
 	if len(value) < 2 || value[0] != '@' {
 		return nil, fmt.Errorf("invalid date/time literal: %s", value)
 	}
-	if accessor, err := datatype.ParseFluentDateTimeValue(value[1:]); err != nil {
+	if accessor, err := datatype.ParseFluentDateTime(value[1:]); err != nil {
 		return nil, err
 	} else {
 		return &DateTimeLiteral{accessor}, nil

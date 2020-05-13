@@ -43,7 +43,7 @@ func TestNumberLiteralInteger(t *testing.T) {
 		accessor := executor.Execute(nil)
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.IntegerAccessor)(nil), accessor) {
-			assert.Equal(t, int32(-72638), accessor.(datatype.IntegerAccessor).Value())
+			assert.Equal(t, int32(-72638), accessor.(datatype.IntegerAccessor).Int())
 		}
 	}
 }
@@ -64,7 +64,7 @@ func TestNumberLiteralDecimal(t *testing.T) {
 		accessor := executor.Execute(nil)
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), accessor) {
-			assert.Equal(t, -72638.1, accessor.(datatype.DecimalAccessor).Value())
+			assert.Equal(t, -72638.1, accessor.(datatype.DecimalAccessor).Float64())
 		}
 	}
 }

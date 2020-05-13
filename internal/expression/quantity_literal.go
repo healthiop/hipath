@@ -34,14 +34,14 @@ import (
 )
 
 var (
-	YearQuantityCode        datatype.CodeAccessor = datatype.NewCodeType("year")
-	MonthQuantityCode       datatype.CodeAccessor = datatype.NewCodeType("month")
-	WeekQuantityCode        datatype.CodeAccessor = datatype.NewCodeType("week")
-	DayQuantityCode         datatype.CodeAccessor = datatype.NewCodeType("day")
-	HourQuantityCode        datatype.CodeAccessor = datatype.NewCodeType("hour")
-	MinuteQuantityCode      datatype.CodeAccessor = datatype.NewCodeType("minute")
-	SecondQuantityCode      datatype.CodeAccessor = datatype.NewCodeType("second")
-	MillisecondQuantityCode datatype.CodeAccessor = datatype.NewCodeType("millisecond")
+	YearQuantityCode        datatype.CodeAccessor = datatype.NewCode("year")
+	MonthQuantityCode       datatype.CodeAccessor = datatype.NewCode("month")
+	WeekQuantityCode        datatype.CodeAccessor = datatype.NewCode("week")
+	DayQuantityCode         datatype.CodeAccessor = datatype.NewCode("day")
+	HourQuantityCode        datatype.CodeAccessor = datatype.NewCode("hour")
+	MinuteQuantityCode      datatype.CodeAccessor = datatype.NewCode("minute")
+	SecondQuantityCode      datatype.CodeAccessor = datatype.NewCode("second")
+	MillisecondQuantityCode datatype.CodeAccessor = datatype.NewCode("millisecond")
 )
 
 type QuantityLiteral struct {
@@ -49,7 +49,7 @@ type QuantityLiteral struct {
 }
 
 func ParseQuantityLiteral(number string, unit string) (Executor, error) {
-	value, err := datatype.ParseDecimalValue(number)
+	value, err := datatype.ParseDecimal(number)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func ParseQuantityLiteral(number string, unit string) (Executor, error) {
 		return nil, err
 	}
 
-	accessor := datatype.NewQuantityType(value, nil, nil, system, code)
+	accessor := datatype.NewQuantity(value, nil, nil, system, code)
 	return &QuantityLiteral{accessor}, nil
 }
 
@@ -87,7 +87,7 @@ func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.
 	case "millisecond", "milliseconds":
 		code = MillisecondQuantityCode
 	default:
-		code, err = datatype.ParseCodeValue(parsedUnit)
+		code, err = datatype.ParseCode(parsedUnit)
 		if err != nil {
 			return
 		}

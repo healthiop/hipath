@@ -45,7 +45,7 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
-				assert.Equal(t, -17.4, quantityAccessor.Value().Value())
+				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
 			if assert.NotNil(t, quantityAccessor.System()) {
 				assert.Equal(t, "http://unitsofmeasure.org", quantityAccessor.System().Value())
@@ -68,7 +68,7 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
-				assert.Equal(t, -17.4, quantityAccessor.Value().Value())
+				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
 			assert.Nil(t, quantityAccessor.System())
 			if assert.NotNil(t, quantityAccessor.Code()) {
@@ -115,7 +115,7 @@ func testParseQuantityUnit(t *testing.T, unit string, code string) {
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
-				assert.Equal(t, -17.4, quantityAccessor.Value().Value())
+				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
 			assert.Nil(t, quantityAccessor.System())
 			if assert.NotNil(t, quantityAccessor.Code()) {

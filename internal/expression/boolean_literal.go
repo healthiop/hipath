@@ -38,7 +38,7 @@ type BooleanLiteral struct {
 }
 
 func ParseBooleanLiteral(value string) (Executor, error) {
-	if accessor, err := datatype.ParseBooleanValue(value); err != nil {
+	if accessor, err := datatype.ParseBoolean(value); err != nil {
 		return nil, err
 	} else {
 		return &BooleanLiteral{accessor}, nil
