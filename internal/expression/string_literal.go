@@ -45,7 +45,7 @@ func ParseStringLiteral(value string) Executor {
 
 func parseStringLiteral(value string) string {
 	l := len(value)
-	if l == 0 {
+	if l < 2 || value[0] != '\'' || value[l-1] != '\'' {
 		return value
 	}
 
@@ -55,7 +55,7 @@ func parseStringLiteral(value string) string {
 	var esc bool
 	var unicode bool
 	var unicodeValue strings.Builder
-	for _, char := range value {
+	for _, char := range value[1 : l-1] {
 		if unicode {
 			unicodeValue.WriteRune(char)
 			if unicodeValue.Len() == 4 {

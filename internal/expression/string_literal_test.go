@@ -36,7 +36,7 @@ import (
 
 func TestStringLiteral(t *testing.T) {
 	executor := ParseStringLiteral(
-		"x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk")
+		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
 
 	assert.NotNil(t, executor, "executor expected")
 	if executor != nil {
@@ -50,13 +50,17 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestParseStringLiteralShortUnicode(t *testing.T) {
-	assert.Equal(t, "u005", parseStringLiteral("\\u005"))
+	assert.Equal(t, "u005", parseStringLiteral("'\\u005'"))
 }
 
 func TestParseStringLiteralInvalidUnicode(t *testing.T) {
-	assert.Equal(t, "aux005b", parseStringLiteral("a\\ux005b"))
+	assert.Equal(t, "aux005b", parseStringLiteral("'a\\ux005b'"))
 }
 
 func TestParseStringLiteralNoEscapedChar(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("\\"))
+	assert.Equal(t, "", parseStringLiteral("'\\'"))
+}
+
+func TestParseStringLiteralEmpty(t *testing.T) {
+	assert.Equal(t, "", parseStringLiteral(""))
 }

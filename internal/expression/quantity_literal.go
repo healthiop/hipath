@@ -64,10 +64,10 @@ func ParseQuantityLiteral(number string, unit string) (Executor, error) {
 }
 
 func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.CodeAccessor, err error) {
-	if len(unit) == 0 {
+	parsedUnit := parseStringLiteral(unit)
+	if len(parsedUnit) == 0 {
 		return
 	}
-	parsedUnit := parseStringLiteral(unit)
 
 	switch parsedUnit {
 	case "year", "years":

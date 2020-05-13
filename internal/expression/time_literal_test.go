@@ -72,21 +72,21 @@ func TestFluentTimeLiteral(t *testing.T) {
 }
 
 func TestTimeLiteralInvalid(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@T:30:14.559")
+	executor, err := ParseTimeLiteral("@T:30:14.559")
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, executor, "no executor expected")
 }
 
 func TestTimeLiteralInvalidStartToken(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@14:30:14.559")
+	executor, err := ParseTimeLiteral("@14:30:14.559")
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, executor, "no executor expected")
 }
 
 func TestTimeLiteralInvalidStart(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@T")
+	executor, err := ParseTimeLiteral("@T")
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, executor, "no executor expected")

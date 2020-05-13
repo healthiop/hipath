@@ -35,7 +35,7 @@ import (
 )
 
 func TestQuantityLiteralUCUM(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "ms")
+	executor, err := ParseQuantityLiteral("-17.4", "'ms'")
 
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, executor, "executor expected")
@@ -58,7 +58,7 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 }
 
 func TestQuantityLiteralNoUCUM(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "milliseconds")
+	executor, err := ParseQuantityLiteral("-17.4", "'milliseconds'")
 
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, executor, "executor expected")
@@ -78,8 +78,34 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 	}
 }
 
+func TestQuantityLiteralUnitEmpty(t *testing.T) {
+	executor, err := ParseQuantityLiteral("-17.4", "")
+
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, executor, "executor expected")
+	if assert.NotNil(t, executor, "executor expected") {
+		accessor := executor.Execute(nil)
+		assert.NotNil(t, accessor, "accessor expected")
+		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
+			quantityAccessor := accessor.(datatype.QuantityAccessor)
+			if assert.NotNil(t, quantityAccessor.Value()) {
+				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
+			}
+			assert.Nil(t, quantityAccessor.System())
+			assert.Nil(t, quantityAccessor.Code())
+		}
+	}
+}
+
+func TestQuantityLiteralValueInvalid(t *testing.T) {
+	executor, err := ParseQuantityLiteral("-17.u", " 'test'")
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, executor, "no executor expected")
+}
+
 func TestQuantityLiteralUnitInvalid(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", " test")
+	executor, err := ParseQuantityLiteral("-17.4", " 'test'")
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, executor, "no executor expected")
@@ -105,7 +131,7 @@ func TestQuantityLiteralUnits(t *testing.T) {
 }
 
 func testParseQuantityUnit(t *testing.T, unit string, code string) {
-	executor, err := ParseQuantityLiteral("-17.4", unit)
+	executor, err := ParseQuantityLiteral("-17.4", "'"+unit+"'")
 
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, executor, "executor expected")
