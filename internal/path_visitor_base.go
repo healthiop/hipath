@@ -51,9 +51,14 @@ func (v *PathVisitor) AddError(ctx antlr.ParserRuleContext, msg string) expressi
 }
 
 func (v *PathVisitor) VisitChildren(node antlr.RuleNode) interface{} {
-	r := make([]interface{}, 0)
-	for _, child := range node.GetChildren() {
-		r = append(r, v.evalNode(child))
+	c := node.GetChildCount()
+	if c == 0 {
+		return nil
+	}
+
+	r := make([]interface{}, c)
+	for pos, child := range node.GetChildren() {
+		r[pos] = v.evalNode(child)
 	}
 	return r
 }
