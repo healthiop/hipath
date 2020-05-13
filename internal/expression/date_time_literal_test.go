@@ -70,7 +70,7 @@ func TestFluentDateTimeLiteral(t *testing.T) {
 }
 
 func TestDateTimeLiteralInvalid(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("4-01-25T14:30:14.559Z")
+	executor, err := ParseDateTimeLiteral("@4-01-25T14:30:14.559Z")
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, executor, "no executor expected")
