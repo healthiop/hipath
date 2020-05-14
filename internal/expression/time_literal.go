@@ -48,6 +48,6 @@ func ParseTimeLiteral(value string) (Evaluator, error) {
 	}
 }
 
-func (e *TimeLiteral) Evaluate(*EvalContext) (interface{}, error) {
+func (e *TimeLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
 	return e.accessor, nil
 }

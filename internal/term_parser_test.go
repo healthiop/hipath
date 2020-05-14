@@ -43,7 +43,7 @@ func TestParseParenthesizedBooleanLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, false, a.(datatype.BooleanAccessor).Value())
 	}
 }
@@ -56,7 +56,7 @@ func TestParseExtConstant(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
 		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx)
+		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Equal(t, datatype.UCUMSystemURI, a)
 	}
@@ -70,7 +70,7 @@ func TestParseExtConstantDelimited(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
 		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx)
+		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Equal(t, datatype.UCUMSystemURI, a)
 	}
@@ -84,7 +84,7 @@ func TestParseExtConstantNotDefined(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
 		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx)
+		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.Error(t, err, "evaluation error expected")
 		assert.Nil(t, a, "no accessor expected due to error")
 	}

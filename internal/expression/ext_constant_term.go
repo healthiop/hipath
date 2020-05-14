@@ -30,6 +30,7 @@ package expression
 
 import (
 	"fmt"
+	"github.com/volsch/gohimodel/datatype"
 )
 
 const delimitedIdentifierChar = '`'
@@ -46,7 +47,7 @@ func ParseExtConstantTerm(value string) *ExtConstantTerm {
 	return &ExtConstantTerm{resultingValue}
 }
 
-func (e *ExtConstantTerm) Evaluate(ctx *EvalContext) (interface{}, error) {
+func (e *ExtConstantTerm) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (interface{}, error) {
 	accessor, found := ctx.EnvVar(e.name)
 	if !found {
 		return nil, fmt.Errorf("Environment variable has not been defined: %s", e.name)

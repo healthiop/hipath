@@ -101,6 +101,6 @@ func parseStringLiteral(value string, delimiter byte) string {
 	return b.String()
 }
 
-func (e *StringLiteral) Evaluate(*EvalContext) (interface{}, error) {
+func (e *StringLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
 	return e.accessor, nil
 }

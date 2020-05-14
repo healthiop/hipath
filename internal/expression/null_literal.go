@@ -28,6 +28,8 @@
 
 package expression
 
+import "github.com/volsch/gohimodel/datatype"
+
 type NullLiteral struct {
 }
 
@@ -35,6 +37,6 @@ func NewNullLiteralExecutor() Evaluator {
 	return &NullLiteral{}
 }
 
-func (e *NullLiteral) Evaluate(*EvalContext) (interface{}, error) {
+func (e *NullLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
 	return nil, nil
 }

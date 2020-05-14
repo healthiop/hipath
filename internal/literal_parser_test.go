@@ -52,7 +52,7 @@ func TestParseBooleanLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, true, a.(datatype.BooleanAccessor).Value())
 	}
 }
@@ -64,7 +64,7 @@ func TestParseStringLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.StringLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, "Test \nValue", a.(datatype.StringAccessor).Value())
 	}
 }
@@ -76,7 +76,7 @@ func TestParseNumberLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.NumberLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, 183.2889, a.(datatype.NumberAccessor).Float64())
 	}
 }
@@ -88,7 +88,7 @@ func TestParseDateTimeLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.DateTimeLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 14, 30, 14, 559000000, time.UTC),
 			a.(datatype.DateTimeAccessor).Value())
 	}
@@ -101,7 +101,7 @@ func TestParseDateLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.DateLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 0, 0, 0, 0, time.Local),
 			a.(datatype.DateAccessor).Value())
 	}
@@ -114,7 +114,7 @@ func TestParseTimeLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.TimeLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		now := time.Now()
 		assert.Equal(t, time.Date(now.Year(), now.Month(), now.Day(), 14, 30, 14, 559000000, time.Local),
 			a.(datatype.TimeAccessor).Value())
@@ -128,7 +128,7 @@ func TestParseQuantityLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.QuantityLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		qa := a.(datatype.QuantityAccessor)
 		if assert.NotNil(t, qa.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, qa.Value().Float64())
@@ -147,7 +147,7 @@ func TestParseQuantityLiteralUCUM(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.QuantityLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil)
+		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		qa := a.(datatype.QuantityAccessor)
 		if assert.NotNil(t, qa.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, qa.Value().Float64())

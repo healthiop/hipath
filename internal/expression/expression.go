@@ -34,25 +34,25 @@ import (
 )
 
 type EvalContext struct {
-	root    datatype.Accessor
+	rootObj datatype.Accessor
 	context *context.Context
 }
 
 type Evaluator interface {
-	Evaluate(ctx *EvalContext) (interface{}, error)
+	Evaluate(ctx *EvalContext, curObj datatype.Accessor) (interface{}, error)
 }
 
 func NewEvalContext(root datatype.Accessor, context *context.Context) *EvalContext {
 	return &EvalContext{root, context}
 }
 
-func (c *EvalContext) Root() datatype.Accessor {
-	return c.root
+func (c *EvalContext) RootObj() datatype.Accessor {
+	return c.rootObj
 }
 
 func (c *EvalContext) EnvVar(name string) (accessor datatype.Accessor, found bool) {
 	if name == "context" {
-		accessor, found = c.root, true
+		accessor, found = c.rootObj, true
 	} else {
 		accessor, found = c.context.EnvVar(name)
 	}

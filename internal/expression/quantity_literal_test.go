@@ -40,7 +40,7 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
@@ -64,7 +64,7 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
@@ -86,7 +86,7 @@ func TestQuantityLiteralUnitEmpty(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
@@ -106,7 +106,7 @@ func TestQuantityLiteralUnitEmptyStringLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
@@ -159,7 +159,7 @@ func testParseQuantityUnit(t *testing.T, unit string, code string) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {

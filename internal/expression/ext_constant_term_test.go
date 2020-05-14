@@ -36,17 +36,17 @@ import (
 )
 
 func TestExtConstantTerm(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
 	evaluator := ParseExtConstantTerm("ucum")
-	accessor, err := evaluator.Evaluate(ctx)
+	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, datatype.UCUMSystemURI, accessor)
 }
 
 func TestExtConstantTermDelimited(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
 	evaluator := ParseExtConstantTerm("`ucum`")
-	accessor, err := evaluator.Evaluate(ctx)
+	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, datatype.UCUMSystemURI, accessor)
 }
@@ -55,15 +55,15 @@ func TestExtConstantRoot(t *testing.T) {
 	root := datatype.NewString("test")
 	ctx := NewEvalContext(root, context.NewContext())
 	evaluator := ParseExtConstantTerm("context")
-	accessor, err := evaluator.Evaluate(ctx)
+	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, root, accessor)
 }
 
 func TestExtConstantTermNotDefined(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
 	evaluator := ParseExtConstantTerm("xxx")
-	accessor, err := evaluator.Evaluate(ctx)
+	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "no accessor expected due to error")
 }

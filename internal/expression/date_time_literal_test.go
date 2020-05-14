@@ -41,7 +41,7 @@ func TestFullDateTimeLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
@@ -59,7 +59,7 @@ func TestFluentDateTimeLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil)
+		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {

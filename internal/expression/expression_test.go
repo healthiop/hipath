@@ -35,8 +35,8 @@ import (
 	"testing"
 )
 
-func TestEvalContextRoot(t *testing.T) {
-	root := datatype.NewString("root")
+func TestEvalContextRootObj(t *testing.T) {
+	root := datatype.NewString("rootObj")
 	ctx := NewEvalContext(root, context.NewContext())
-	assert.Equal(t, root, ctx.Root())
+	assert.Equal(t, root, ctx.RootObj())
 }
