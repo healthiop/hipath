@@ -29,6 +29,8 @@
 package internal
 
 import (
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
 )
 
@@ -38,4 +40,15 @@ func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) i
 
 func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
 	return v.VisitFirstChild(ctx)
+}
+
+func (v *Visitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
+	return v.VisitFirstChild(ctx)
+}
+
+func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
+	return v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+		name := args[1].(string)
+		return expression.ParseExtConstantTerm(name), nil
+	})
 }

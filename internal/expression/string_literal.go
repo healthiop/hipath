@@ -30,22 +30,23 @@ package expression
 
 import (
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 	"strconv"
 	"strings"
 )
+
+const stringDelimiterChar = '\''
 
 type StringLiteral struct {
 	accessor datatype.StringAccessor
 }
 
-func ParseStringLiteral(value string) Executor {
-	return &StringLiteral{datatype.NewString(parseStringLiteral(value))}
+func ParseStringLiteral(value string) Evaluator {
+	return &StringLiteral{datatype.NewString(parseStringLiteral(value, stringDelimiterChar))}
 }
 
-func parseStringLiteral(value string) string {
+func parseStringLiteral(value string, delimiter byte) string {
 	l := len(value)
-	if l < 2 || value[0] != '\'' || value[l-1] != '\'' {
+	if l < 2 || value[0] != delimiter || value[l-1] != delimiter {
 		return value
 	}
 
@@ -100,6 +101,6 @@ func parseStringLiteral(value string) string {
 	return b.String()
 }
 
-func (e *StringLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *StringLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

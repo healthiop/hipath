@@ -26,28 +26,38 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package context
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"testing"
 )
 
-type DateLiteral struct {
-	accessor datatype.DateAccessor
+func TestNewContext(t *testing.T) {
+	c := NewContext()
+	value, found := c.EnvVar("ucum")
+	if assert.True(t, found, "ucum environment variable must be available") {
+		assert.Equal(t, datatype.UCUMSystemURI, value)
+	}
+	value, found = c.EnvVar("test")
+	assert.False(t, found, "test environment variable must not be available")
 }
 
-func ParseDateLiteral(value string) (Evaluator, error) {
-	if len(value) < 2 || value[0] != '@' {
-		return nil, fmt.Errorf("invalid date literal: %s", value)
-	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
-		return nil, err
-	} else {
-		return &DateLiteral{accessor}, nil
-	}
-}
+func TestNewContextWithEnvVars(t *testing.T) {
+	stringAccessor := datatype.NewString("Test")
+	envVars := make(map[string]datatype.Accessor)
+	envVars["test"] = stringAccessor
 
-func (e *DateLiteral) Evaluate(*EvalContext) (interface{}, error) {
-	return e.accessor, nil
+	c := NewContextWithEnvVars(envVars)
+	assert.Len(t, envVars, 1, "passed map must not have changed")
+
+	value, found := c.EnvVar("ucum")
+	if assert.True(t, found, "ucum environment variable must be available") {
+		assert.Equal(t, datatype.UCUMSystemURI, value)
+	}
+	value, found = c.EnvVar("test")
+	if assert.True(t, found, "test environment variable must be available") {
+		assert.Same(t, stringAccessor, value)
+	}
 }

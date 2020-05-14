@@ -35,12 +35,13 @@ import (
 )
 
 func TestQuantityLiteralUCUM(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "'ms'")
+	evaluator, err := ParseQuantityLiteral("-17.4", "'ms'")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if assert.NotNil(t, executor, "executor expected") {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
@@ -58,12 +59,13 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 }
 
 func TestQuantityLiteralNoUCUM(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "milliseconds")
+	evaluator, err := ParseQuantityLiteral("-17.4", "milliseconds")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if assert.NotNil(t, executor, "executor expected") {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
@@ -79,12 +81,13 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 }
 
 func TestQuantityLiteralUnitEmpty(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "")
+	evaluator, err := ParseQuantityLiteral("-17.4", "")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if assert.NotNil(t, executor, "executor expected") {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
@@ -98,12 +101,13 @@ func TestQuantityLiteralUnitEmpty(t *testing.T) {
 }
 
 func TestQuantityLiteralUnitEmptyStringLiteral(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", "''")
+	evaluator, err := ParseQuantityLiteral("-17.4", "''")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if assert.NotNil(t, executor, "executor expected") {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)
@@ -117,17 +121,17 @@ func TestQuantityLiteralUnitEmptyStringLiteral(t *testing.T) {
 }
 
 func TestQuantityLiteralValueInvalid(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.u", " 'test'")
+	evaluator, err := ParseQuantityLiteral("-17.u", " 'test'")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestQuantityLiteralUnitInvalid(t *testing.T) {
-	executor, err := ParseQuantityLiteral("-17.4", " 'test'")
+	evaluator, err := ParseQuantityLiteral("-17.4", " 'test'")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestQuantityLiteralUnits(t *testing.T) {
@@ -150,12 +154,13 @@ func TestQuantityLiteralUnits(t *testing.T) {
 }
 
 func testParseQuantityUnit(t *testing.T, unit string, code string) {
-	executor, err := ParseQuantityLiteral("-17.4", unit)
+	evaluator, err := ParseQuantityLiteral("-17.4", unit)
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if assert.NotNil(t, executor, "executor expected") {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.QuantityAccessor)(nil), accessor) {
 			quantityAccessor := accessor.(datatype.QuantityAccessor)

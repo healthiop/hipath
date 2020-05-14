@@ -30,7 +30,6 @@ package expression
 
 import (
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 	"strings"
 )
 
@@ -38,7 +37,7 @@ type NumberLiteral struct {
 	accessor datatype.NumberAccessor
 }
 
-func ParseNumberLiteral(value string) (Executor, error) {
+func ParseNumberLiteral(value string) (Evaluator, error) {
 	var accessor datatype.NumberAccessor
 	var err error
 
@@ -55,6 +54,6 @@ func ParseNumberLiteral(value string) (Executor, error) {
 	}
 }
 
-func (e *NumberLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *NumberLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

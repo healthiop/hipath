@@ -30,14 +30,13 @@ package expression
 
 import (
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 )
 
 type BooleanLiteral struct {
 	accessor datatype.BooleanAccessor
 }
 
-func ParseBooleanLiteral(value string) (Executor, error) {
+func ParseBooleanLiteral(value string) (Evaluator, error) {
 	if accessor, err := datatype.ParseBoolean(value); err != nil {
 		return nil, err
 	} else {
@@ -45,6 +44,6 @@ func ParseBooleanLiteral(value string) (Executor, error) {
 	}
 }
 
-func (e *BooleanLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *BooleanLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

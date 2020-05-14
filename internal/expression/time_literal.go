@@ -31,14 +31,13 @@ package expression
 import (
 	"fmt"
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 )
 
 type TimeLiteral struct {
 	accessor datatype.TimeAccessor
 }
 
-func ParseTimeLiteral(value string) (Executor, error) {
+func ParseTimeLiteral(value string) (Evaluator, error) {
 	if len(value) < 3 || value[0] != '@' || value[1] != 'T' {
 		return nil, fmt.Errorf("invalid time literal: %s", value)
 	}
@@ -49,6 +48,6 @@ func ParseTimeLiteral(value string) (Executor, error) {
 	}
 }
 
-func (e *TimeLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *TimeLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

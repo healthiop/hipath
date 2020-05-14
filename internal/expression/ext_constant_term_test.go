@@ -31,63 +31,39 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
 	"testing"
-	"time"
 )
 
-func TestFullDateLiteral(t *testing.T) {
-	evaluator, err := ParseDateLiteral("@2014-03-25")
-
+func TestExtConstantTerm(t *testing.T) {
+	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	evaluator := ParseExtConstantTerm("ucum")
+	accessor, err := evaluator.Evaluate(ctx)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, evaluator, "evaluator expected")
-	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.DateAccessor)(nil), accessor) {
-			expected := time.Date(2014, 3, 25, 0, 0, 0, 0, time.Local)
-			actual := accessor.(datatype.DateAccessor).Value()
-			assert.True(t, expected.Equal(actual), "expected %d, got %d",
-				expected.UnixNano(), actual.UnixNano())
-		}
-	}
+	assert.Equal(t, datatype.UCUMSystemURI, accessor)
 }
 
-func TestFluentDateLiteral(t *testing.T) {
-	evaluator, err := ParseDateLiteral("@2014")
-
+func TestExtConstantTermDelimited(t *testing.T) {
+	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	evaluator := ParseExtConstantTerm("`ucum`")
+	accessor, err := evaluator.Evaluate(ctx)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, evaluator, "evaluator expected")
-	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.DateAccessor)(nil), accessor) {
-			expected := time.Date(2014, 1, 1, 0, 0, 0, 0, time.Local)
-			actual := accessor.(datatype.DateAccessor).Value()
-			assert.True(t, expected.Equal(actual), "expected %d, got %d",
-				expected.UnixNano(), actual.UnixNano())
-		}
-	}
+	assert.Equal(t, datatype.UCUMSystemURI, accessor)
 }
 
-func TestDateLiteralInvalid(t *testing.T) {
-	evaluator, err := ParseDateLiteral("@4-01-25")
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, evaluator, "no evaluator expected")
+func TestExtConstantRoot(t *testing.T) {
+	root := datatype.NewString("test")
+	ctx := NewEvalContext(root, context.NewContext())
+	evaluator := ParseExtConstantTerm("context")
+	accessor, err := evaluator.Evaluate(ctx)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, root, accessor)
 }
 
-func TestDateLiteralInvalidStartToken(t *testing.T) {
-	evaluator, err := ParseDateLiteral("2014-01-25")
-
+func TestExtConstantTermNotDefined(t *testing.T) {
+	ctx := NewEvalContext(datatype.NewString("root"), context.NewContext())
+	evaluator := ParseExtConstantTerm("xxx")
+	accessor, err := evaluator.Evaluate(ctx)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, evaluator, "no evaluator expected")
-}
-
-func TestDateLiteralInvalidStart(t *testing.T) {
-	evaluator, err := ParseDateLiteral("@")
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, evaluator, "no evaluator expected")
+	assert.Nil(t, accessor, "no accessor expected due to error")
 }

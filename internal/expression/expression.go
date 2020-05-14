@@ -28,8 +28,33 @@
 
 package expression
 
-import "github.com/volsch/gohipath/context"
+import (
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
+)
 
-type Executor interface {
-	Execute(ctx *context.PathContext) interface{}
+type EvalContext struct {
+	root    datatype.Accessor
+	context *context.Context
+}
+
+type Evaluator interface {
+	Evaluate(ctx *EvalContext) (interface{}, error)
+}
+
+func NewEvalContext(root datatype.Accessor, context *context.Context) *EvalContext {
+	return &EvalContext{root, context}
+}
+
+func (c *EvalContext) Root() datatype.Accessor {
+	return c.root
+}
+
+func (c *EvalContext) EnvVar(name string) (accessor datatype.Accessor, found bool) {
+	if name == "context" {
+		accessor, found = c.root, true
+	} else {
+		accessor, found = c.context.EnvVar(name)
+	}
+	return
 }

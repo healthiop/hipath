@@ -30,7 +30,6 @@ package expression
 
 import (
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 )
 
 var (
@@ -48,7 +47,7 @@ type QuantityLiteral struct {
 	accessor datatype.QuantityAccessor
 }
 
-func ParseQuantityLiteral(number string, unit string) (Executor, error) {
+func ParseQuantityLiteral(number string, unit string) (Evaluator, error) {
 	value, err := datatype.ParseDecimal(number)
 	if err != nil {
 		return nil, err
@@ -86,7 +85,7 @@ func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.
 	case "millisecond", "milliseconds":
 		code = MillisecondQuantityCode
 	default:
-		code, err = datatype.ParseCode(parseStringLiteral(unit))
+		code, err = datatype.ParseCode(parseStringLiteral(unit, stringDelimiterChar))
 		if err != nil {
 			return
 		}
@@ -96,6 +95,6 @@ func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.
 	return
 }
 
-func (e *QuantityLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *QuantityLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

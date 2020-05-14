@@ -35,12 +35,13 @@ import (
 )
 
 func TestBooleanLiteralTrue(t *testing.T) {
-	executor, err := ParseBooleanLiteral("true")
+	evaluator, err := ParseBooleanLiteral("true")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
 			assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Value())
@@ -49,12 +50,13 @@ func TestBooleanLiteralTrue(t *testing.T) {
 }
 
 func TestBooleanLiteralFalse(t *testing.T) {
-	executor, err := ParseBooleanLiteral("false")
+	evaluator, err := ParseBooleanLiteral("false")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
 			assert.Equal(t, false, accessor.(datatype.BooleanAccessor).Value())
@@ -63,8 +65,8 @@ func TestBooleanLiteralFalse(t *testing.T) {
 }
 
 func TestBooleanLiteralInvalid(t *testing.T) {
-	executor, err := ParseBooleanLiteral("0")
+	evaluator, err := ParseBooleanLiteral("0")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }

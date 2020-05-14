@@ -26,28 +26,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package internal
 
 import (
-	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/internal/parser"
 )
 
-type DateLiteral struct {
-	accessor datatype.DateAccessor
-}
-
-func ParseDateLiteral(value string) (Evaluator, error) {
-	if len(value) < 2 || value[0] != '@' {
-		return nil, fmt.Errorf("invalid date literal: %s", value)
-	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
-		return nil, err
-	} else {
-		return &DateLiteral{accessor}, nil
-	}
-}
-
-func (e *DateLiteral) Evaluate(*EvalContext) (interface{}, error) {
-	return e.accessor, nil
+func (v *Visitor) VisitIdentifier(ctx *parser.IdentifierContext) interface{} {
+	return v.VisitFirstChild(ctx)
 }

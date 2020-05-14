@@ -36,12 +36,13 @@ import (
 )
 
 func TestFullDateTimeLiteral(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@2014-03-25T14:30:15.559Z")
+	evaluator, err := ParseDateTimeLiteral("@2014-03-25T14:30:15.559Z")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
 			expected := time.Date(2014, 3, 25, 14, 30, 15, 559000000, time.UTC)
@@ -53,12 +54,13 @@ func TestFullDateTimeLiteral(t *testing.T) {
 }
 
 func TestFluentDateTimeLiteral(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@2014-03-25T")
+	evaluator, err := ParseDateTimeLiteral("@2014-03-25T")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
 			expected := time.Date(2014, 3, 25, 0, 0, 0, 0, time.Local)
@@ -70,22 +72,22 @@ func TestFluentDateTimeLiteral(t *testing.T) {
 }
 
 func TestDateTimeLiteralInvalid(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@4-01-25T14:30:14.559Z")
+	evaluator, err := ParseDateTimeLiteral("@4-01-25T14:30:14.559Z")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestDateTimeLiteralInvalidStartToken(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("2014-01-25T14:30:14.559Z")
+	evaluator, err := ParseDateTimeLiteral("2014-01-25T14:30:14.559Z")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestDateTimeLiteralInvalidStart(t *testing.T) {
-	executor, err := ParseDateTimeLiteral("@")
+	evaluator, err := ParseDateTimeLiteral("@")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }

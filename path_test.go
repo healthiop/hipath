@@ -38,7 +38,7 @@ func TestCompileLiteral(t *testing.T) {
 
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, path, "path expected") {
-		assert.NotNil(t, path.executor, "executor expected")
+		assert.NotNil(t, path.evaluator, "evaluator expected")
 	}
 }
 

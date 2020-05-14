@@ -30,24 +30,26 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
 )
 
-type DateLiteral struct {
-	accessor datatype.DateAccessor
+const delimitedIdentifierChar = '`'
+
+type ExtConstantTerm struct {
+	name string
 }
 
-func ParseDateLiteral(value string) (Evaluator, error) {
-	if len(value) < 2 || value[0] != '@' {
-		return nil, fmt.Errorf("invalid date literal: %s", value)
+func ParseExtConstantTerm(value string) *ExtConstantTerm {
+	resultingValue := value
+	if len(resultingValue) > 1 && value[0] == delimitedIdentifierChar {
+		resultingValue = resultingValue[1 : len(resultingValue)-1]
 	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
-		return nil, err
-	} else {
-		return &DateLiteral{accessor}, nil
-	}
+	return &ExtConstantTerm{resultingValue}
 }
 
-func (e *DateLiteral) Evaluate(*EvalContext) (interface{}, error) {
-	return e.accessor, nil
+func (e *ExtConstantTerm) Evaluate(ctx *EvalContext) (interface{}, error) {
+	accessor, found := ctx.EnvVar(e.name)
+	if !found {
+		return nil, fmt.Errorf("Environment variable has not been defined: %s", e.name)
+	}
+	return accessor, nil
 }

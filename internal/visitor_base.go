@@ -48,18 +48,18 @@ func NewVisitor(errorItemCollection *ErrorItemCollection) *Visitor {
 	return v
 }
 
-func (v *Visitor) AddError(ctx antlr.ParserRuleContext, msg string) expression.Executor {
+func (v *Visitor) AddError(ctx antlr.ParserRuleContext, msg string) expression.Evaluator {
 	v.errorItemCollection.AddError(ctx.GetStart().GetLine(), ctx.GetStart().GetColumn(), msg)
 	return nil
 }
 
 func (v *Visitor) VisitChildren(node antlr.RuleNode) interface{} {
-	c := node.GetChildCount()
-	if c == 0 {
+	count := node.GetChildCount()
+	if count == 0 {
 		return nil
 	}
 
-	r := make([]interface{}, c)
+	r := make([]interface{}, count)
 	for pos, child := range node.GetChildren() {
 		r[pos] = v.evalNode(child)
 	}

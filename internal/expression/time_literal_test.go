@@ -36,12 +36,13 @@ import (
 )
 
 func TestFullTimeLiteral(t *testing.T) {
-	executor, err := ParseTimeLiteral("@T14:30:15.559")
+	evaluator, err := ParseTimeLiteral("@T14:30:15.559")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
 			now := time.Now()
@@ -54,12 +55,13 @@ func TestFullTimeLiteral(t *testing.T) {
 }
 
 func TestFluentTimeLiteral(t *testing.T) {
-	executor, err := ParseTimeLiteral("@T14:30")
+	evaluator, err := ParseTimeLiteral("@T14:30")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, executor, "executor expected")
-	if executor != nil {
-		accessor := executor.Execute(nil)
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		accessor, err := evaluator.Evaluate(nil)
+		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
 			now := time.Now()
@@ -72,22 +74,22 @@ func TestFluentTimeLiteral(t *testing.T) {
 }
 
 func TestTimeLiteralInvalid(t *testing.T) {
-	executor, err := ParseTimeLiteral("@T:30:14.559")
+	evaluator, err := ParseTimeLiteral("@T:30:14.559")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestTimeLiteralInvalidStartToken(t *testing.T) {
-	executor, err := ParseTimeLiteral("@14:30:14.559")
+	evaluator, err := ParseTimeLiteral("@14:30:14.559")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }
 
 func TestTimeLiteralInvalidStart(t *testing.T) {
-	executor, err := ParseTimeLiteral("@T")
+	evaluator, err := ParseTimeLiteral("@T")
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, executor, "no executor expected")
+	assert.Nil(t, evaluator, "no evaluator expected")
 }

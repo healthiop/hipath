@@ -31,14 +31,13 @@ package expression
 import (
 	"fmt"
 	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohipath/context"
 )
 
 type DateTimeLiteral struct {
 	accessor datatype.DateTimeAccessor
 }
 
-func ParseDateTimeLiteral(value string) (Executor, error) {
+func ParseDateTimeLiteral(value string) (Evaluator, error) {
 	if len(value) < 2 || value[0] != '@' {
 		return nil, fmt.Errorf("invalid date/time literal: %s", value)
 	}
@@ -49,6 +48,6 @@ func ParseDateTimeLiteral(value string) (Executor, error) {
 	}
 }
 
-func (e *DateTimeLiteral) Execute(*context.PathContext) interface{} {
-	return e.accessor
+func (e *DateTimeLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return e.accessor, nil
 }

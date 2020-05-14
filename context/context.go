@@ -28,5 +28,29 @@
 
 package context
 
-type PathContext struct {
+import "github.com/volsch/gohimodel/datatype"
+
+type Context struct {
+	envVars map[string]datatype.Accessor
+}
+
+func NewContext() *Context {
+	return NewContextWithEnvVars(nil)
+}
+
+func NewContextWithEnvVars(envVars map[string]datatype.Accessor) *Context {
+	c := new(Context)
+	c.envVars = make(map[string]datatype.Accessor)
+	if envVars != nil {
+		for key, value := range envVars {
+			c.envVars[key] = value
+		}
+	}
+	c.envVars["ucum"] = datatype.UCUMSystemURI
+	return c
+}
+
+func (c *Context) EnvVar(name string) (accessor datatype.Accessor, found bool) {
+	accessor, found = c.envVars[name]
+	return
 }

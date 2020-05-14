@@ -37,7 +37,7 @@ import (
 )
 
 type Path struct {
-	executor expression.Executor
+	evaluator expression.Evaluator
 }
 
 func Compile(pathString string) (*Path, *internal.Error) {
@@ -62,5 +62,5 @@ func Compile(pathString string) (*Path, *internal.Error) {
 			"error when parsing path expression", errorItemCollection.Items())
 	}
 
-	return &Path{executor: result.(expression.Executor)}, nil
+	return &Path{evaluator: result.(expression.Evaluator)}, nil
 }

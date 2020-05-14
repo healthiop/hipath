@@ -28,15 +28,13 @@
 
 package expression
 
-import "github.com/volsch/gohipath/context"
-
 type NullLiteral struct {
 }
 
-func NewNullLiteralExecutor() Executor {
+func NewNullLiteralExecutor() Evaluator {
 	return &NullLiteral{}
 }
 
-func (e *NullLiteral) Execute(*context.PathContext) interface{} {
-	return nil
+func (e *NullLiteral) Evaluate(*EvalContext) (interface{}, error) {
+	return nil, nil
 }
