@@ -42,7 +42,7 @@ func TestParseNullLiteral(t *testing.T) {
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	assert.IsType(t, (*expression.NullLiteral)(nil), result)
+	assert.IsType(t, (*expression.EmptyLiteral)(nil), result)
 }
 
 func TestParseBooleanLiteral(t *testing.T) {

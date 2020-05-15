@@ -26,26 +26,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
+	"fmt"
+	"github.com/volsch/gohimodel/datatype"
 )
 
-func (v *Visitor) VisitTermExpression(ctx *parser.TermExpressionContext) interface{} {
-	return v.VisitFirstChild(ctx)
+type NegatorExpression struct {
+	evaluator Evaluator
 }
 
-func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext) interface{} {
-	return v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
-		op := args[0].(string)
-		evaluator := args[1]
+func NewNegatorExpression(evaluator Evaluator) *NegatorExpression {
+	return &NegatorExpression{evaluator}
+}
 
-		if op == "-" && evaluator != nil {
-			evaluator = expression.NewNegatorExpression(evaluator.(expression.Evaluator))
-		}
-		return evaluator, nil
-	})
+func (e *NegatorExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (interface{}, error) {
+	accessor, err := e.evaluator.Evaluate(ctx, curObj)
+	if err != nil {
+		return nil, err
+	}
+
+	if accessor == nil {
+		return nil, nil
+	}
+
+	negator, ok := accessor.(datatype.Negator)
+	if !ok {
+		return nil, fmt.Errorf("cannot negate value of type: %s'",
+			accessor.(datatype.Accessor).TypeInfo().String())
+	}
+	return negator.Negate(), nil
 }

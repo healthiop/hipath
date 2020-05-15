@@ -26,26 +26,51 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
+	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/context"
+	"testing"
 )
 
-func (v *Visitor) VisitTermExpression(ctx *parser.TermExpressionContext) interface{} {
-	return v.VisitFirstChild(ctx)
+func TestNegatorExpressionEvaluate(t *testing.T) {
+	i, _ := ParseNumberLiteral("123.45")
+	evaluator := NewNegatorExpression(i)
+
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, accessor, "accessor expected")
+	if assert.Implements(t, (*datatype.DecimalAccessor)(nil), accessor) {
+		assert.Equal(t, float64(-123.45), accessor.(datatype.DecimalAccessor).Float64())
+	}
 }
 
-func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext) interface{} {
-	return v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
-		op := args[0].(string)
-		evaluator := args[1]
+func TestNegatorExpressionEvaluateNonNegator(t *testing.T) {
+	s := ParseStringLiteral("'Test'")
+	evaluator := NewNegatorExpression(s)
 
-		if op == "-" && evaluator != nil {
-			evaluator = expression.NewNegatorExpression(evaluator.(expression.Evaluator))
-		}
-		return evaluator, nil
-	})
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, accessor, "no accessor expected")
+}
+
+func TestNegatorExpressionEvaluateEmpty(t *testing.T) {
+	empty := NewEmptyLiteral()
+	evaluator := NewNegatorExpression(empty)
+
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, accessor, "no accessor expected")
+}
+
+func TestNegatorExpressionEvaluateError(t *testing.T) {
+	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	extConstant := ParseExtConstantTerm("xxx")
+	evaluator := NewNegatorExpression(extConstant)
+
+	accessor, err := evaluator.Evaluate(ctx, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, accessor, "no accessor expected")
 }

@@ -28,17 +28,15 @@
 
 package expression
 
-import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-)
+import "github.com/volsch/gohimodel/datatype"
 
-func TestNullLiteral(t *testing.T) {
-	evaluator := NewNullLiteralExecutor()
+type EmptyLiteral struct {
+}
 
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.Nil(t, accessor, "nil evaluator result expected")
-	}
+func NewEmptyLiteral() Evaluator {
+	return &EmptyLiteral{}
+}
+
+func (e *EmptyLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
+	return nil, nil
 }

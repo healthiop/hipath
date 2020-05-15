@@ -35,7 +35,7 @@ import (
 )
 
 func (v *Visitor) VisitNullLiteral(*parser.NullLiteralContext) interface{} {
-	return expression.NewNullLiteralExecutor()
+	return expression.NewEmptyLiteral()
 }
 
 func (v *Visitor) VisitBooleanLiteral(ctx *parser.BooleanLiteralContext) interface{} {
