@@ -81,3 +81,123 @@ func TestParseNegatorExpressionError(t *testing.T) {
 		assert.Nil(t, a, "no accessor expected")
 	}
 }
+
+func TestParseEqualityExpressionEqual(t *testing.T) {
+	result, errorItemCollection := testParse("123.45=123.45")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionEqualNot(t *testing.T) {
+	result, errorItemCollection := testParse("123.45=123.4")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionNotEqual(t *testing.T) {
+	result, errorItemCollection := testParse("123.45!=123.4")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionNotEqualNot(t *testing.T) {
+	result, errorItemCollection := testParse("123.45!=123.45")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionEquivalent(t *testing.T) {
+	result, errorItemCollection := testParse("123.45~123.4")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionEquivalentNot(t *testing.T) {
+	result, errorItemCollection := testParse("123.45~123.46")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionNotEquivalent(t *testing.T) {
+	result, errorItemCollection := testParse("123.45!~123.46")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseEqualityExpressionNotEquivalentNot(t *testing.T) {
+	result, errorItemCollection := testParse("123.45!~123.4")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		}
+	}
+}

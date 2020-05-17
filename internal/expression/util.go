@@ -28,26 +28,22 @@
 
 package expression
 
-import (
-	"fmt"
-	"github.com/volsch/gohimodel/datatype"
-)
+import "github.com/volsch/gohimodel/datatype"
 
-type DateLiteral struct {
-	accessor datatype.DateAccessor
-}
-
-func ParseDateLiteral(value string) (Evaluator, error) {
-	if len(value) < 2 || value[0] != '@' {
-		return nil, fmt.Errorf("invalid date literal: %s", value)
+func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
+	if accessor == nil {
+		return nil
 	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
-		return nil, err
+	if c, ok := accessor.(datatype.CollectionAccessor); !ok {
+		return accessor
 	} else {
-		return &DateLiteral{accessor}, nil
+		count := c.Count()
+		if count == 0 {
+			return nil
+		}
+		if count == 1 {
+			return c.Get(0)
+		}
+		return c
 	}
-}
-
-func (e *DateLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
 }

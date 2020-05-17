@@ -39,7 +39,7 @@ type EvalContext struct {
 }
 
 type Evaluator interface {
-	Evaluate(ctx *EvalContext, curObj datatype.Accessor) (interface{}, error)
+	Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error)
 }
 
 func NewEvalContext(root datatype.Accessor, context *context.Context) *EvalContext {

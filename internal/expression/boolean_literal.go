@@ -44,6 +44,6 @@ func ParseBooleanLiteral(value string) (Evaluator, error) {
 	}
 }
 
-func (e *BooleanLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
+func (e *BooleanLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
 	return e.accessor, nil
 }

@@ -37,6 +37,6 @@ func NewEmptyLiteral() Evaluator {
 	return &EmptyLiteral{}
 }
 
-func (e *EmptyLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
+func (e *EmptyLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
 	return nil, nil
 }

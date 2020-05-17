@@ -53,7 +53,7 @@ func TestParseBooleanLiteral(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, true, a.(datatype.BooleanAccessor).Value())
+		assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
 	}
 }
 
@@ -65,7 +65,7 @@ func TestParseStringLiteral(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.StringLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, "Test \nValue", a.(datatype.StringAccessor).Value())
+		assert.Equal(t, "Test \nValue", a.(datatype.StringAccessor).String())
 	}
 }
 
@@ -90,7 +90,7 @@ func TestParseDateTimeLiteral(t *testing.T) {
 	if assert.IsType(t, (*expression.DateTimeLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 14, 30, 14, 559000000, time.UTC),
-			a.(datatype.DateTimeAccessor).Value())
+			a.(datatype.DateTimeAccessor).Time())
 	}
 }
 
@@ -103,7 +103,7 @@ func TestParseDateLiteral(t *testing.T) {
 	if assert.IsType(t, (*expression.DateLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 0, 0, 0, 0, time.Local),
-			a.(datatype.DateAccessor).Value())
+			a.(datatype.DateAccessor).Time())
 	}
 }
 
@@ -117,7 +117,7 @@ func TestParseTimeLiteral(t *testing.T) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
 		now := time.Now()
 		assert.Equal(t, time.Date(now.Year(), now.Month(), now.Day(), 14, 30, 14, 559000000, time.Local),
-			a.(datatype.TimeAccessor).Value())
+			a.(datatype.TimeAccessor).Time())
 	}
 }
 
@@ -135,7 +135,7 @@ func TestParseQuantityLiteral(t *testing.T) {
 		}
 		assert.Nil(t, qa.System(), "no quantity unit system expected")
 		if assert.NotNil(t, qa.Code(), "quantity code expected") {
-			assert.Equal(t, "year", qa.Code().Value())
+			assert.Equal(t, "year", qa.Code().String())
 		}
 	}
 }
@@ -156,7 +156,7 @@ func TestParseQuantityLiteralUCUM(t *testing.T) {
 			assert.Equal(t, datatype.UCUMSystemURI, qa.System())
 		}
 		if assert.NotNil(t, qa.Code(), "quantity code expected") {
-			assert.Equal(t, "cm", qa.Code().Value())
+			assert.Equal(t, "cm", qa.Code().String())
 		}
 	}
 }

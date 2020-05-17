@@ -29,6 +29,7 @@
 package internal
 
 import (
+	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
@@ -48,4 +49,31 @@ func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext)
 		}
 		return evaluator, nil
 	})
+}
+
+func (v *Visitor) VisitEqualityExpression(ctx *parser.EqualityExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitEqualityExpression)
+}
+
+func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+	evalLeft := args[0].(expression.Evaluator)
+	op := args[1].(string)
+	evalRight := args[2].(expression.Evaluator)
+
+	not := false
+	equivalent := false
+	switch op {
+	case "=":
+	case "!=":
+		not = true
+	case "~":
+		equivalent = true
+	case "!~":
+		not = true
+		equivalent = true
+	default:
+		return nil, fmt.Errorf("invalid equality operator: %s", op)
+	}
+	return expression.NewEqualityExpression(not, equivalent,
+		evalLeft, evalRight), nil
 }

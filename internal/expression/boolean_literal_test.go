@@ -44,7 +44,7 @@ func TestBooleanLiteralTrue(t *testing.T) {
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Value())
+			assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -59,7 +59,7 @@ func TestBooleanLiteralFalse(t *testing.T) {
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, false, accessor.(datatype.BooleanAccessor).Value())
+			assert.Equal(t, false, accessor.(datatype.BooleanAccessor).Bool())
 		}
 	}
 }

@@ -44,7 +44,7 @@ func TestParseParenthesizedBooleanLiteral(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, false, a.(datatype.BooleanAccessor).Value())
+		assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
 	}
 }
 

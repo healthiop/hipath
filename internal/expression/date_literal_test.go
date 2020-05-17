@@ -46,7 +46,7 @@ func TestFullDateLiteral(t *testing.T) {
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateAccessor)(nil), accessor) {
 			expected := time.Date(2014, 3, 25, 0, 0, 0, 0, time.Local)
-			actual := accessor.(datatype.DateAccessor).Value()
+			actual := accessor.(datatype.DateAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}
@@ -64,7 +64,7 @@ func TestFluentDateLiteral(t *testing.T) {
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.DateAccessor)(nil), accessor) {
 			expected := time.Date(2014, 1, 1, 0, 0, 0, 0, time.Local)
-			actual := accessor.(datatype.DateAccessor).Value()
+			actual := accessor.(datatype.DateAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}

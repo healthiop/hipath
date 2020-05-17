@@ -41,7 +41,7 @@ func NewNegatorExpression(evaluator Evaluator) *NegatorExpression {
 	return &NegatorExpression{evaluator}
 }
 
-func (e *NegatorExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (interface{}, error) {
+func (e *NegatorExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
 	accessor, err := e.evaluator.Evaluate(ctx, curObj)
 	if err != nil {
 		return nil, err

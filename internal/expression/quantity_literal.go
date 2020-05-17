@@ -95,6 +95,6 @@ func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.
 	return
 }
 
-func (e *QuantityLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
+func (e *QuantityLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
 	return e.accessor, nil
 }

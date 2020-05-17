@@ -45,7 +45,7 @@ func TestStringLiteral(t *testing.T) {
 		assert.NotNil(t, accessor, "accessor expected")
 		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
 			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).Value())
+				accessor.(datatype.StringAccessor).String())
 		}
 	}
 }

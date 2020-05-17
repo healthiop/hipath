@@ -41,7 +41,7 @@ type StringLiteral struct {
 }
 
 func ParseStringLiteral(value string) Evaluator {
-	return &StringLiteral{datatype.NewString(parseStringLiteral(value, stringDelimiterChar))}
+	return &StringLiteral{datatype.NewStringUnchecked(parseStringLiteral(value, stringDelimiterChar))}
 }
 
 func parseStringLiteral(value string, delimiter byte) string {
@@ -101,6 +101,6 @@ func parseStringLiteral(value string, delimiter byte) string {
 	return b.String()
 }
 
-func (e *StringLiteral) Evaluate(*EvalContext, datatype.Accessor) (interface{}, error) {
+func (e *StringLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
 	return e.accessor, nil
 }

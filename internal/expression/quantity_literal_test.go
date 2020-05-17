@@ -49,10 +49,10 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
 			if assert.NotNil(t, quantityAccessor.System()) {
-				assert.Equal(t, "http://unitsofmeasure.org", quantityAccessor.System().Value())
+				assert.Equal(t, "http://unitsofmeasure.org", quantityAccessor.System().String())
 			}
 			if assert.NotNil(t, quantityAccessor.Code()) {
-				assert.Equal(t, "ms", quantityAccessor.Code().Value())
+				assert.Equal(t, "ms", quantityAccessor.Code().String())
 			}
 		}
 	}
@@ -74,7 +74,7 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 			}
 			assert.Nil(t, quantityAccessor.System())
 			if assert.NotNil(t, quantityAccessor.Code()) {
-				assert.Equal(t, MillisecondQuantityCode.Value(), quantityAccessor.Code().Value())
+				assert.Equal(t, MillisecondQuantityCode.String(), quantityAccessor.Code().String())
 			}
 		}
 	}
@@ -135,22 +135,22 @@ func TestQuantityLiteralUnitInvalid(t *testing.T) {
 }
 
 func TestQuantityLiteralUnits(t *testing.T) {
-	testParseQuantityUnit(t, "year", YearQuantityCode.Value())
-	testParseQuantityUnit(t, "years", YearQuantityCode.Value())
-	testParseQuantityUnit(t, "month", MonthQuantityCode.Value())
-	testParseQuantityUnit(t, "months", MonthQuantityCode.Value())
-	testParseQuantityUnit(t, "week", WeekQuantityCode.Value())
-	testParseQuantityUnit(t, "weeks", WeekQuantityCode.Value())
-	testParseQuantityUnit(t, "day", DayQuantityCode.Value())
-	testParseQuantityUnit(t, "days", DayQuantityCode.Value())
-	testParseQuantityUnit(t, "hour", HourQuantityCode.Value())
-	testParseQuantityUnit(t, "hours", HourQuantityCode.Value())
-	testParseQuantityUnit(t, "minute", MinuteQuantityCode.Value())
-	testParseQuantityUnit(t, "minutes", MinuteQuantityCode.Value())
-	testParseQuantityUnit(t, "second", SecondQuantityCode.Value())
-	testParseQuantityUnit(t, "seconds", SecondQuantityCode.Value())
-	testParseQuantityUnit(t, "millisecond", MillisecondQuantityCode.Value())
-	testParseQuantityUnit(t, "milliseconds", MillisecondQuantityCode.Value())
+	testParseQuantityUnit(t, "year", YearQuantityCode.String())
+	testParseQuantityUnit(t, "years", YearQuantityCode.String())
+	testParseQuantityUnit(t, "month", MonthQuantityCode.String())
+	testParseQuantityUnit(t, "months", MonthQuantityCode.String())
+	testParseQuantityUnit(t, "week", WeekQuantityCode.String())
+	testParseQuantityUnit(t, "weeks", WeekQuantityCode.String())
+	testParseQuantityUnit(t, "day", DayQuantityCode.String())
+	testParseQuantityUnit(t, "days", DayQuantityCode.String())
+	testParseQuantityUnit(t, "hour", HourQuantityCode.String())
+	testParseQuantityUnit(t, "hours", HourQuantityCode.String())
+	testParseQuantityUnit(t, "minute", MinuteQuantityCode.String())
+	testParseQuantityUnit(t, "minutes", MinuteQuantityCode.String())
+	testParseQuantityUnit(t, "second", SecondQuantityCode.String())
+	testParseQuantityUnit(t, "seconds", SecondQuantityCode.String())
+	testParseQuantityUnit(t, "millisecond", MillisecondQuantityCode.String())
+	testParseQuantityUnit(t, "milliseconds", MillisecondQuantityCode.String())
 }
 
 func testParseQuantityUnit(t *testing.T, unit string, code string) {
@@ -169,7 +169,7 @@ func testParseQuantityUnit(t *testing.T, unit string, code string) {
 			}
 			assert.Nil(t, quantityAccessor.System())
 			if assert.NotNil(t, quantityAccessor.Code()) {
-				assert.Equal(t, code, quantityAccessor.Code().Value())
+				assert.Equal(t, code, quantityAccessor.Code().String())
 			}
 		}
 	}

@@ -29,25 +29,31 @@
 package expression
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"testing"
 )
 
-type DateLiteral struct {
-	accessor datatype.DateAccessor
+func TestUnwrapCollectionNil(t *testing.T) {
+	assert.Nil(t, unwrapCollection(nil))
 }
 
-func ParseDateLiteral(value string) (Evaluator, error) {
-	if len(value) < 2 || value[0] != '@' {
-		return nil, fmt.Errorf("invalid date literal: %s", value)
-	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
-		return nil, err
-	} else {
-		return &DateLiteral{accessor}, nil
-	}
+func TestUnwrapCollectionZero(t *testing.T) {
+	assert.Nil(t, unwrapCollection(datatype.NewCollectionUndefined()))
 }
 
-func (e *DateLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func TestUnwrapCollectionOne(t *testing.T) {
+	i := datatype.NewString("test")
+	c := datatype.NewStringCollection()
+	c.Add(i)
+
+	assert.Same(t, i, unwrapCollection(c))
+}
+
+func TestUnwrapCollectionMore(t *testing.T) {
+	c := datatype.NewStringCollection()
+	c.Add(datatype.NewString("test1"))
+	c.Add(datatype.NewString("test2"))
+
+	assert.Same(t, c, unwrapCollection(c))
 }
