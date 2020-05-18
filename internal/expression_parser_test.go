@@ -222,3 +222,18 @@ func TestParseUnionExpression(t *testing.T) {
 		}
 	}
 }
+
+func TestParseIndexerExpression(t *testing.T) {
+	result, errorItemCollection := testParse("(10 | 17 | 11 | 14)[1]")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.IndexerExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.NumberAccessor)(nil), a) {
+			assert.Equal(t, int32(17), a.(datatype.NumberAccessor).Int())
+		}
+	}
+}

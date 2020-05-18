@@ -90,3 +90,14 @@ func visitUnionExpression(ctx antlr.ParserRuleContext, args []interface{}) (expr
 
 	return expression.NewUnionExpression(evalLeft, evalRight), nil
 }
+
+func (v *Visitor) VisitIndexerExpression(ctx *parser.IndexerExpressionContext) interface{} {
+	return v.visitTree(ctx, 4, visitIndexerExpression)
+}
+
+func visitIndexerExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	exprEvaluator := args[0].(expression.Evaluator)
+	indexEvaluator := args[2].(expression.Evaluator)
+
+	return expression.NewIndexerExpression(exprEvaluator, indexEvaluator), nil
+}
