@@ -32,7 +32,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
 	"testing"
-	"time"
 )
 
 func TestFullTimeLiteral(t *testing.T) {
@@ -44,12 +43,12 @@ func TestFullTimeLiteral(t *testing.T) {
 		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
-			now := time.Now()
-			expected := time.Date(now.Year(), now.Month(), now.Day(), 14, 30, 15, 559000000, time.Local)
-			actual := accessor.(datatype.DateTimeAccessor).Time()
-			assert.True(t, expected.Equal(actual), "expected %d, got %d",
-				expected.UnixNano(), actual.UnixNano())
+		if assert.Implements(t, (*datatype.TimeAccessor)(nil), accessor) {
+			ta := accessor.(datatype.TimeAccessor)
+			assert.Equal(t, 14, ta.Hour())
+			assert.Equal(t, 30, ta.Minute())
+			assert.Equal(t, 15, ta.Second())
+			assert.Equal(t, 559000000, ta.Nanosecond())
 		}
 	}
 }
@@ -63,12 +62,12 @@ func TestFluentTimeLiteral(t *testing.T) {
 		accessor, err := evaluator.Evaluate(nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.DateTimeAccessor)(nil), accessor) {
-			now := time.Now()
-			expected := time.Date(now.Year(), now.Month(), now.Day(), 14, 30, 0, 0, time.Local)
-			actual := accessor.(datatype.DateTimeAccessor).Time()
-			assert.True(t, expected.Equal(actual), "expected %d, got %d",
-				expected.UnixNano(), actual.UnixNano())
+		if assert.Implements(t, (*datatype.TimeAccessor)(nil), accessor) {
+			ta := accessor.(datatype.TimeAccessor)
+			assert.Equal(t, 14, ta.Hour())
+			assert.Equal(t, 30, ta.Minute())
+			assert.Equal(t, 0, ta.Second())
+			assert.Equal(t, 0, ta.Nanosecond())
 		}
 	}
 }

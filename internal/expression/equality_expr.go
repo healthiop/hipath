@@ -103,8 +103,12 @@ func (e *EqualityExpression) primitiveStringEqual(a1 datatype.Accessor, a2 datat
 }
 
 func isStringEqualityCheck(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	return (datatype.IsString(a1) && datatype.IsPrimitive(a2)) ||
-		(datatype.IsPrimitive(a1) && datatype.IsString(a2))
+	return (isStringBasedType(a1) && datatype.IsPrimitive(a2)) ||
+		(datatype.IsPrimitive(a1) && isStringBasedType(a2))
+}
+
+func isStringBasedType(accessor datatype.Accessor) bool {
+	return datatype.IsString(accessor) || datatype.IsURI(accessor)
 }
 
 func temporalTypeEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {

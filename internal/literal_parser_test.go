@@ -108,16 +108,18 @@ func TestParseDateLiteral(t *testing.T) {
 }
 
 func TestParseTimeLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("@T14:30:14.559")
+	result, errorItemCollection := testParse("@T14:30:17.559")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.TimeLiteral)(nil), result) {
 		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		now := time.Now()
-		assert.Equal(t, time.Date(now.Year(), now.Month(), now.Day(), 14, 30, 14, 559000000, time.Local),
-			a.(datatype.TimeAccessor).Time())
+		ta := a.(datatype.TimeAccessor)
+		assert.Equal(t, 14, ta.Hour())
+		assert.Equal(t, 30, ta.Minute())
+		assert.Equal(t, 17, ta.Second())
+		assert.Equal(t, 559000000, ta.Nanosecond())
 	}
 }
 

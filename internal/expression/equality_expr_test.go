@@ -65,6 +65,16 @@ func TestEqualityExpressionEquality(t *testing.T) {
 	}
 }
 
+func TestEqualityExpressionEqualityURI(t *testing.T) {
+	e := NewEqualityExpression(false, true,
+		ParseStringLiteral("testVALUE"), newTestExpression(datatype.NewURI("testVALUE")))
+	accessor, err := e.Evaluate(nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
+		assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Bool())
+	}
+}
+
 func TestEqualityExpressionEqualityNot(t *testing.T) {
 	e := NewEqualityExpression(false, true,
 		ParseStringLiteral("test VALUE"), ParseStringLiteral("TEST\nvTEST"))
