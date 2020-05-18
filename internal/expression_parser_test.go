@@ -201,3 +201,24 @@ func TestParseEqualityExpressionNotEquivalentNot(t *testing.T) {
 		}
 	}
 }
+
+func TestParseUnionExpression(t *testing.T) {
+	result, errorItemCollection := testParse("10 | 12 | 11 | 10")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.UnionExpression)(nil), result) {
+		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.CollectionAccessor)(nil), a) {
+			c := a.(datatype.CollectionAccessor)
+			if assert.Equal(t, 3, c.Count()) {
+				assert.Equal(t, datatype.NewInteger(10), c.Get(0))
+				assert.Equal(t, datatype.NewInteger(12), c.Get(1))
+				assert.Equal(t, datatype.NewInteger(11), c.Get(2))
+			}
+			assert.Equal(t, "FHIR.integer", c.ItemTypeInfo().String())
+		}
+	}
+}

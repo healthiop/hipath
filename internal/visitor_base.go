@@ -39,8 +39,8 @@ type Visitor struct {
 	errorItemCollection *ErrorItemCollection
 }
 
-type visitorFunc func(ctx antlr.ParserRuleContext) (interface{}, error)
-type visitorArgFunc func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error)
+type visitorFunc func(ctx antlr.ParserRuleContext) (expression.Evaluator, error)
+type visitorArgFunc func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error)
 
 func NewVisitor(errorItemCollection *ErrorItemCollection) *Visitor {
 	v := new(Visitor)
@@ -97,7 +97,7 @@ func (v *Visitor) visit(ctx antlr.ParserRuleContext, f visitorFunc) interface{} 
 	}
 }
 
-func (v *Visitor) visitTree(ctx antlr.ParserRuleContext, argCount int, f visitorArgFunc) interface{} {
+func (v *Visitor) visitTree(ctx antlr.ParserRuleContext, argCount int, f visitorArgFunc) expression.Evaluator {
 	c := v.VisitChildren(ctx)
 
 	args, ok := c.([]interface{})

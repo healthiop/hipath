@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohipath/internal/expression"
 	"testing"
 )
 
@@ -122,22 +123,23 @@ func TestVisitorVisitChildNotExist(t *testing.T) {
 }
 
 func TestVisitorVisit(t *testing.T) {
+	result := expression.NewEmptyLiteral()
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return "test result", nil
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+		return result, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
-	assert.Equal(t, "test result", r)
+	assert.Same(t, result, r)
 }
 
 func TestVisitorVisitError(t *testing.T) {
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
 		return nil, fmt.Errorf("test error")
 	})
 
@@ -151,6 +153,7 @@ func TestVisitorVisitError(t *testing.T) {
 }
 
 func TestVisitorTree(t *testing.T) {
+	result := expression.NewEmptyLiteral()
 	children := make([]antlr.Token, 2)
 	children[0] = newTokenMock(32, 2, "first")
 	children[1] = newTokenMock(32, 2, "second")
@@ -158,28 +161,29 @@ func TestVisitorTree(t *testing.T) {
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
 		if assert.Len(t, args, 2) {
 			assert.Equal(t, "first", args[0])
 			assert.Equal(t, "second", args[1])
 		}
-		return "test result", nil
+		return result, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
-	assert.Equal(t, "test result", r)
+	assert.Same(t, result, r)
 }
 
 func TestVisitorTreeMissingArgs(t *testing.T) {
+	result := expression.NewEmptyLiteral()
 	children := make([]antlr.Token, 1)
 	children[0] = newTokenMock(32, 2, "first")
 
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
-		return "test result", nil
+		return result, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
@@ -187,12 +191,13 @@ func TestVisitorTreeMissingArgs(t *testing.T) {
 }
 
 func TestVisitorTreeErrorChild(t *testing.T) {
+	result := expression.NewEmptyLiteral()
 	ctx := newRuleContextWithErrorChild(81, 32, newTokenMock(87, 32, "test"))
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
-		return "test result", nil
+		return result, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")

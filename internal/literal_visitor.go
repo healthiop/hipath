@@ -39,9 +39,11 @@ func (v *Visitor) VisitNullLiteral(*parser.NullLiteralContext) interface{} {
 }
 
 func (v *Visitor) VisitBooleanLiteral(ctx *parser.BooleanLiteralContext) interface{} {
-	return v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return expression.ParseBooleanLiteral(ctx.GetText())
-	})
+	return v.visit(ctx, visitBooleanLiteral)
+}
+
+func visitBooleanLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	return expression.ParseBooleanLiteral(ctx.GetText())
 }
 
 func (v *Visitor) VisitStringLiteral(ctx *parser.StringLiteralContext) interface{} {
@@ -49,35 +51,45 @@ func (v *Visitor) VisitStringLiteral(ctx *parser.StringLiteralContext) interface
 }
 
 func (v *Visitor) VisitNumberLiteral(ctx *parser.NumberLiteralContext) interface{} {
-	return v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return expression.ParseNumberLiteral(ctx.GetText())
-	})
+	return v.visit(ctx, visitNumberLiteral)
+}
+
+func visitNumberLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	return expression.ParseNumberLiteral(ctx.GetText())
 }
 
 func (v *Visitor) VisitDateLiteral(ctx *parser.DateLiteralContext) interface{} {
-	return v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return expression.ParseDateLiteral(ctx.GetText())
-	})
+	return v.visit(ctx, visitDateLiteral)
+}
+
+func visitDateLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	return expression.ParseDateLiteral(ctx.GetText())
 }
 
 func (v *Visitor) VisitDateTimeLiteral(ctx *parser.DateTimeLiteralContext) interface{} {
-	return v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return expression.ParseDateTimeLiteral(ctx.GetText())
-	})
+	return v.visit(ctx, visitDateTimeLiteral)
+}
+
+func visitDateTimeLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	return expression.ParseDateTimeLiteral(ctx.GetText())
 }
 
 func (v *Visitor) VisitTimeLiteral(ctx *parser.TimeLiteralContext) interface{} {
-	return v.visit(ctx, func(ctx antlr.ParserRuleContext) (interface{}, error) {
-		return expression.ParseTimeLiteral(ctx.GetText())
-	})
+	return v.visit(ctx, visitTimeLiteral)
+}
+
+func visitTimeLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	return expression.ParseTimeLiteral(ctx.GetText())
 }
 
 func (v *Visitor) VisitQuantity(ctx *parser.QuantityContext) interface{} {
-	return v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
-		number := args[0].(string)
-		unit := args[1].(string)
-		return expression.ParseQuantityLiteral(number, unit)
-	})
+	return v.visitTree(ctx, 2, visitQuantity)
+}
+
+func visitQuantity(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	number := args[0].(string)
+	unit := args[1].(string)
+	return expression.ParseQuantityLiteral(number, unit)
 }
 
 func (v *Visitor) VisitQuantityLiteral(ctx *parser.QuantityLiteralContext) interface{} {

@@ -40,22 +40,24 @@ func (v *Visitor) VisitTermExpression(ctx *parser.TermExpressionContext) interfa
 }
 
 func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext) interface{} {
-	return v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
-		op := args[0].(string)
-		evaluator := args[1]
+	return v.visitTree(ctx, 2, visitPolarityExpression)
+}
 
-		if op == "-" && evaluator != nil {
-			evaluator = expression.NewNegatorExpression(evaluator.(expression.Evaluator))
-		}
-		return evaluator, nil
-	})
+func visitPolarityExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	op := args[0].(string)
+	evaluator := args[1].(expression.Evaluator)
+
+	if op == "-" && evaluator != nil {
+		evaluator = expression.NewNegatorExpression(evaluator.(expression.Evaluator))
+	}
+	return evaluator, nil
 }
 
 func (v *Visitor) VisitEqualityExpression(ctx *parser.EqualityExpressionContext) interface{} {
 	return v.visitTree(ctx, 3, visitEqualityExpression)
 }
 
-func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (interface{}, error) {
+func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
 	evalLeft := args[0].(expression.Evaluator)
 	op := args[1].(string)
 	evalRight := args[2].(expression.Evaluator)
@@ -76,4 +78,15 @@ func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (i
 	}
 	return expression.NewEqualityExpression(not, equivalent,
 		evalLeft, evalRight), nil
+}
+
+func (v *Visitor) VisitUnionExpression(ctx *parser.UnionExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitUnionExpression)
+}
+
+func visitUnionExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	evalLeft := args[0].(expression.Evaluator)
+	evalRight := args[2].(expression.Evaluator)
+
+	return expression.NewUnionExpression(evalLeft, evalRight), nil
 }

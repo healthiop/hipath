@@ -86,7 +86,7 @@ func (e *EqualityExpression) evaluateInternally(ctx *EvalContext, curObj datatyp
 		r = datatype.ValueEquivalent(a1, a2)
 	} else {
 		r = datatype.ValueEqual(a1, a2)
-		if !r && temporalDataTypeEqual(a1, a2) && !temporalPrecisionEqual(a1, a2) {
+		if !r && temporalTypeEqual(a1, a2) && !temporalPrecisionEqual(a1, a2) {
 			return nil, nil
 		}
 	}
@@ -107,8 +107,8 @@ func isStringEqualityCheck(a1 datatype.Accessor, a2 datatype.Accessor) bool {
 		(datatype.IsPrimitive(a1) && datatype.IsString(a2))
 }
 
-func temporalDataTypeEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	return datatype.IsTemporal(a1) && datatype.DataTypeEqual(a1, a2)
+func temporalTypeEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {
+	return datatype.IsTemporal(a1) && datatype.TypeEqual(a1, a2)
 }
 
 func temporalPrecisionEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {

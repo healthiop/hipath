@@ -47,3 +47,45 @@ func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
 		return c
 	}
 }
+
+func newCollectionWithAccessorTypes(accessors []datatype.Accessor) datatype.CollectionModifier {
+	typeInfo := commonAccessorBaseType(accessors)
+	if typeInfo == nil {
+		return datatype.NewCollectionUndefined()
+	}
+	return datatype.NewCollection(typeInfo)
+}
+
+func commonAccessorBaseType(accessors []datatype.Accessor) datatype.TypeInfoAccessor {
+	var typeInfo datatype.TypeInfoAccessor
+	for _, accessor := range accessors {
+		if accessor != nil {
+			if c, ok := accessor.(datatype.CollectionAccessor); ok {
+				count := c.Count()
+				for i := 0; i < count; i++ {
+					a := c.Get(i)
+					if a != nil {
+						typeInfo = mergeCommonAccessorBaseType(a, typeInfo)
+						if typeInfo == nil {
+							return nil
+						}
+					}
+				}
+			} else {
+				typeInfo = mergeCommonAccessorBaseType(accessor, typeInfo)
+				if typeInfo == nil {
+					return nil
+				}
+			}
+		}
+	}
+	return typeInfo
+}
+
+func mergeCommonAccessorBaseType(accessor datatype.Accessor,
+	typeInfo datatype.TypeInfoAccessor) datatype.TypeInfoAccessor {
+	if typeInfo == nil {
+		return accessor.TypeInfo()
+	}
+	return datatype.CommonBaseType(typeInfo, accessor.TypeInfo())
+}

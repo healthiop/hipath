@@ -30,6 +30,10 @@ github.com/volsch/gohimodel v0.0.0-20200517150807-d64610d84117 h1:+z+QYj2Nun15Y2
 github.com/volsch/gohimodel v0.0.0-20200517150807-d64610d84117/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
 github.com/volsch/gohimodel v0.0.0-20200517160923-093349a64ba7 h1:+Iv3VuRiZJlvLDtk4jx8cKrqWmRo8dTfyCvqEXLvl94=
 github.com/volsch/gohimodel v0.0.0-20200517160923-093349a64ba7/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
+github.com/volsch/gohimodel v0.0.0-20200518103709-a489f84163a9 h1:83osNovzUEzKY+cATYMuPeoV8jiLtqZrGC1hBR55xoc=
+github.com/volsch/gohimodel v0.0.0-20200518103709-a489f84163a9/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
+github.com/volsch/gohimodel v0.0.0-20200518114638-ce9ab6125566 h1:FEKUnNZ4bZ0SzVNL7PLrxerf7zzijnEpmvRvgB0JYDY=
+github.com/volsch/gohimodel v0.0.0-20200518114638-ce9ab6125566/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=

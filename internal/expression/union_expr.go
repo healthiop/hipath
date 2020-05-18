@@ -26,31 +26,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohimodel/datatype"
 )
 
-func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
-	return v.VisitChild(ctx, 1)
+type UnionExpression struct {
+	evalLeft  Evaluator
+	evalRight Evaluator
 }
 
-func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
+func NewUnionExpression(evalLeft Evaluator, evalRight Evaluator) *UnionExpression {
+	return &UnionExpression{evalLeft, evalRight}
 }
 
-func (v *Visitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
+func (e *UnionExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
+	a1, err := e.evalLeft.Evaluate(ctx, curObj)
+	if err != nil {
+		return nil, err
+	}
+	a2, err := e.evalRight.Evaluate(ctx, curObj)
+	if err != nil {
+		return nil, err
+	}
+
+	if a1 == nil && a2 == nil {
+		return nil, nil
+	}
+
+	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
+	addUniqueCollectionItems(c, a1)
+	addUniqueCollectionItems(c, a2)
+
+	if c.Count() == 0 {
+		return nil, nil
+	}
+	return c, nil
 }
 
-func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
-	return v.visitTree(ctx, 2, visitExternalConstant)
-}
-
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	name := args[1].(string)
-	return expression.ParseExtConstantTerm(name), nil
+func addUniqueCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
+	if accessor == nil {
+		return
+	}
+	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+		collection.AddAllUnique(c)
+	} else {
+		collection.AddUnique(accessor)
+	}
 }

@@ -31,6 +31,7 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"testing"
 )
 
@@ -56,4 +57,94 @@ func TestUnwrapCollectionMore(t *testing.T) {
 	c.Add(datatype.NewString("test2"))
 
 	assert.Same(t, c, unwrapCollection(c))
+}
+
+func TestCommonAccessorBaseTypeColOnly(t *testing.T) {
+	c1 := datatype.NewCollectionUndefined()
+	c1.Add(datatype.NewPositiveInt(10))
+	c1.Add(datatype.NewPositiveInt(11))
+
+	c2 := datatype.NewCollectionUndefined()
+	c2.Add(datatype.NewUnsignedInt(12))
+	c2.Add(datatype.NewUnsignedInt(14))
+
+	ti := commonAccessorBaseType([]datatype.Accessor{c1, c2})
+	if assert.NotNil(t, ti, "common type expected") {
+		assert.Equal(t, "FHIR.integer", ti.String())
+	}
+}
+
+func TestCommonAccessorBaseTypeColOnlyNone(t *testing.T) {
+	c1 := datatype.NewCollectionUndefined()
+	c1.Add(datatype.NewPositiveInt(10))
+	c1.Add(datatype.NewPositiveInt(11))
+
+	c2 := datatype.NewCollectionUndefined()
+	c2.Add(resource.NewDynamicResource("Patient"))
+
+	ti := commonAccessorBaseType([]datatype.Accessor{c1, c2})
+	assert.Nil(t, ti, "no common type expected")
+}
+
+func TestCommonAccessorBaseTypeDiffer(t *testing.T) {
+	a1 := datatype.NewPositiveInt(10)
+	a2 := datatype.NewUnsignedInt(12)
+
+	ti := commonAccessorBaseType([]datatype.Accessor{a1, a2})
+	if assert.NotNil(t, ti, "common type expected") {
+		assert.Equal(t, "FHIR.integer", ti.String())
+	}
+}
+
+func TestCommonAccessorBaseTypeSame(t *testing.T) {
+	a1 := datatype.NewUnsignedInt(10)
+	a2 := datatype.NewUnsignedInt(12)
+
+	ti := commonAccessorBaseType([]datatype.Accessor{a1, a2})
+	if assert.NotNil(t, ti, "common type expected") {
+		assert.Equal(t, "FHIR.unsignedInt", ti.String())
+	}
+}
+
+func TestCommonAccessorBaseTypeNone(t *testing.T) {
+	a1 := datatype.NewPositiveInt(10)
+	a2 := resource.NewDynamicResource("Patient")
+
+	ti := commonAccessorBaseType([]datatype.Accessor{a1, a2})
+	assert.Nil(t, ti, "no common type expected")
+}
+
+func TestCommonAccessorBaseTypeMixed(t *testing.T) {
+	c1 := datatype.NewCollectionUndefined()
+	c1.Add(datatype.NewPositiveInt(10))
+	c1.Add(datatype.NewPositiveInt(11))
+
+	a2 := datatype.NewString("test")
+
+	ti := commonAccessorBaseType([]datatype.Accessor{c1, a2})
+	if assert.NotNil(t, ti, "common type expected") {
+		assert.Equal(t, "FHIR.Element", ti.String())
+	}
+}
+
+func TestNewCollectionWithAccessorType(t *testing.T) {
+	c1 := datatype.NewCollectionUndefined()
+	c1.Add(datatype.NewPositiveInt(10))
+	c1.Add(datatype.NewPositiveInt(11))
+
+	a2 := datatype.NewUnsignedInt(14)
+
+	result := newCollectionWithAccessorTypes([]datatype.Accessor{c1, a2})
+	assert.Equal(t, "FHIR.integer", result.ItemTypeInfo().String())
+}
+
+func TestNewCollectionWithAccessorTypeUndefined(t *testing.T) {
+	c1 := datatype.NewCollectionUndefined()
+	c1.Add(datatype.NewPositiveInt(10))
+	c1.Add(datatype.NewPositiveInt(11))
+
+	a2 := resource.NewDynamicResource("Patient")
+
+	result := newCollectionWithAccessorTypes([]datatype.Accessor{c1, a2})
+	assert.Equal(t, "", result.ItemTypeInfo().String())
 }
