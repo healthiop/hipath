@@ -31,12 +31,77 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
 
-func TestEvalContextRootObj(t *testing.T) {
-	root := datatype.NewString("rootObj")
-	ctx := NewEvalContext(root, context.NewContext())
-	assert.Equal(t, root, ctx.RootObj())
+func TestNewEvalContext(t *testing.T) {
+	res := resource.NewDynamicResource("Patient")
+	ctx := NewEvalContext(res, context.NewContext())
+	assert.Same(t, res, ctx.ContextObj())
+	v, _ := ctx.EnvVar("context")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("res")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("rootResource")
+	assert.Same(t, res, v)
+}
+
+func TestNewEvalContextWithRoot(t *testing.T) {
+	res := resource.NewDynamicResource("Patient")
+	root := resource.NewDynamicResource("Other")
+	ctx := NewEvalContextWithRoot(res, root, context.NewContext())
+	assert.Same(t, res, ctx.ContextObj())
+	v, _ := ctx.EnvVar("context")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("resource")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("rootResource")
+	assert.Same(t, root, v)
+}
+
+func TestNewEvalContextWithData(t *testing.T) {
+	dt := datatype.NewString("test")
+	res := resource.NewDynamicResource("Patient")
+	root := resource.NewDynamicResource("Other")
+	ctx := NewEvalContextWithData(dt, res, root, context.NewContext())
+	assert.Same(t, dt, ctx.ContextObj())
+	v, _ := ctx.EnvVar("context")
+	assert.Same(t, dt, v)
+	v, _ = ctx.EnvVar("resource")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("rootResource")
+	assert.Same(t, root, v)
+}
+
+func TestNewEvalContextWithQuantity(t *testing.T) {
+	dt := datatype.NewQuantity(datatype.NewDecimalInt(10), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewString("mo"))
+	res := resource.NewDynamicResource("Patient")
+	root := resource.NewDynamicResource("Other")
+	ctx := NewEvalContextWithData(dt, res, root, context.NewContext())
+	assert.NotSame(t, dt, ctx.ContextObj())
+	if assert.Implements(t, (*datatype.QuantityAccessor)(nil), ctx.ContextObj()) {
+		q := ctx.ContextObj().(datatype.QuantityAccessor)
+		assert.Nil(t, q.System(), "system must have been reset")
+		if assert.NotNil(t, q.Code()) {
+			assert.Equal(t, "month", q.Code().String())
+		}
+	}
+	v, _ := ctx.EnvVar("context")
+	assert.Same(t, ctx.ContextObj(), v)
+	v, _ = ctx.EnvVar("resource")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("rootResource")
+	assert.Same(t, root, v)
+}
+
+func TestEvalContextEnvVar(t *testing.T) {
+	res := resource.NewDynamicResource("Patient")
+	ctx := NewEvalContext(res, context.NewContext())
+	v, found := ctx.EnvVar("loinc")
+	if assert.True(t, found, "LOINC system must be defined") {
+		assert.Equal(t, datatype.LOINCSystemURI, v)
+	}
 }

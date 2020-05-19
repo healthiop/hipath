@@ -31,12 +31,13 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
 
 func TestExtConstantTerm(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	evaluator := ParseExtConstantTerm("ucum")
 	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.NoError(t, err, "no error expected")
@@ -44,7 +45,7 @@ func TestExtConstantTerm(t *testing.T) {
 }
 
 func TestExtConstantTermDelimited(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	evaluator := ParseExtConstantTerm("`ucum`")
 	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.NoError(t, err, "no error expected")
@@ -52,7 +53,7 @@ func TestExtConstantTermDelimited(t *testing.T) {
 }
 
 func TestExtConstantRoot(t *testing.T) {
-	root := datatype.NewString("test")
+	root := resource.NewDynamicResource("Patient")
 	ctx := NewEvalContext(root, context.NewContext())
 	evaluator := ParseExtConstantTerm("context")
 	accessor, err := evaluator.Evaluate(ctx, nil)
@@ -61,7 +62,7 @@ func TestExtConstantRoot(t *testing.T) {
 }
 
 func TestExtConstantTermNotDefined(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	evaluator := ParseExtConstantTerm("xxx")
 	accessor, err := evaluator.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")

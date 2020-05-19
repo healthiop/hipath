@@ -35,6 +35,74 @@ import (
 	"testing"
 )
 
+func TestConvertContextDataNil(t *testing.T) {
+	assert.Nil(t, convertContextData(nil))
+}
+
+func TestConvertContextDataUnconverted(t *testing.T) {
+	assert.Equal(t, datatype.NewString("test"), convertContextData(datatype.NewString("test")))
+}
+
+func TestConvertContextDataQuantityNoUCUM(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), datatype.LessThanQuantityComparator,
+		datatype.NewString("a"), nil, datatype.NewCode("a"))
+	assert.Same(t, q, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityOtherUCUM(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), datatype.LessThanQuantityComparator,
+		datatype.NewString("cm"), datatype.UCUMSystemURI, datatype.NewCode("cm"))
+	assert.Same(t, q, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityYear(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), datatype.LessThanQuantityComparator,
+		datatype.NewCode("Year"), datatype.UCUMSystemURI, datatype.NewCode("a"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), datatype.LessThanQuantityComparator,
+		datatype.NewCode("Year"), nil, datatype.NewCode("year"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityMonth(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewCode("mo"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		nil, datatype.NewCode("month"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityDay(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewCode("d"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		nil, datatype.NewCode("day"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityHour(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewCode("h"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		nil, datatype.NewCode("hour"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
+func TestConvertContextDataQuantityMinute(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewCode("min"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		nil, datatype.NewCode("minute"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
+func TestConvertContextDataQuantitySecond(t *testing.T) {
+	q := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		datatype.UCUMSystemURI, datatype.NewCode("s"))
+	e := datatype.NewQuantity(datatype.NewDecimalInt(1026), nil, nil,
+		nil, datatype.NewCode("second"))
+	assert.Equal(t, e, convertContextData(q))
+}
+
 func TestUnwrapCollectionNil(t *testing.T) {
 	assert.Nil(t, unwrapCollection(nil))
 }

@@ -43,8 +43,8 @@ func NewEqualityExpression(not bool, equivalent bool, evalLeft Evaluator, evalRi
 	return &EqualityExpression{not, equivalent, evalLeft, evalRight}
 }
 
-func (e *EqualityExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
-	accessor, err := e.evaluateInternally(ctx, curObj)
+func (e *EqualityExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	accessor, err := e.evaluateInternally(ctx, obj)
 	if err != nil {
 		return nil, err
 	}

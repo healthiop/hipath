@@ -31,6 +31,7 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
@@ -287,7 +288,7 @@ func TestEqualityExpressionEquivalentLeftNil(t *testing.T) {
 }
 
 func TestEqualityExpressionEqualLeftError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewEqualityExpression(false, false,
 		ParseExtConstantTerm("test"), ParseStringLiteral("test"))
 	accessor, err := e.Evaluate(ctx, nil)
@@ -296,7 +297,7 @@ func TestEqualityExpressionEqualLeftError(t *testing.T) {
 }
 
 func TestEqualityExpressionEqualRightError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("test"), ParseExtConstantTerm("test"))
 	accessor, err := e.Evaluate(ctx, nil)

@@ -40,6 +40,14 @@ func TestNewContext(t *testing.T) {
 	if assert.True(t, found, "ucum environment variable must be available") {
 		assert.Equal(t, datatype.UCUMSystemURI, value)
 	}
+	value, found = c.EnvVar("sct")
+	if assert.True(t, found, "sct environment variable must be available") {
+		assert.Equal(t, datatype.SCTSystemURI, value)
+	}
+	value, found = c.EnvVar("loinc")
+	if assert.True(t, found, "loinc environment variable must be available") {
+		assert.Equal(t, datatype.LOINCSystemURI, value)
+	}
 	value, found = c.EnvVar("test")
 	assert.False(t, found, "test environment variable must not be available")
 }

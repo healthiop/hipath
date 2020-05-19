@@ -47,6 +47,8 @@ func NewContextWithEnvVars(envVars map[string]datatype.Accessor) *Context {
 		}
 	}
 	c.envVars["ucum"] = datatype.UCUMSystemURI
+	c.envVars["sct"] = datatype.SCTSystemURI
+	c.envVars["loinc"] = datatype.LOINCSystemURI
 	return c
 }
 

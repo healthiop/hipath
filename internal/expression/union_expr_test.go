@@ -31,6 +31,7 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
@@ -114,7 +115,7 @@ func TestUnionExpressionBothNil(t *testing.T) {
 }
 
 func TestUnionExpressionLeftError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewUnionExpression(ParseExtConstantTerm("test"), ParseStringLiteral("test"))
 	accessor, err := e.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")
@@ -122,7 +123,7 @@ func TestUnionExpressionLeftError(t *testing.T) {
 }
 
 func TestUnionExpressionRightError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewUnionExpression(ParseStringLiteral("test"), ParseExtConstantTerm("test"))
 	accessor, err := e.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")

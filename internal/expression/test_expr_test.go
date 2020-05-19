@@ -40,6 +40,6 @@ func newTestExpression(accessor datatype.Accessor) *testExpression {
 	return &testExpression{accessor}
 }
 
-func (e *testExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
+func (e *testExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
 	return e.accessor, nil
 }

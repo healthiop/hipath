@@ -30,29 +30,46 @@ package expression
 
 import (
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 )
 
 type EvalContext struct {
-	rootObj datatype.Accessor
-	context *context.Context
+	contextObj      datatype.Accessor
+	resourceObj     resource.Accessor
+	rootResourceObj resource.Accessor
+	context         *context.Context
 }
 
 type Evaluator interface {
-	Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error)
+	Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error)
 }
 
-func NewEvalContext(root datatype.Accessor, context *context.Context) *EvalContext {
-	return &EvalContext{root, context}
+func NewEvalContext(resourceObj resource.Accessor, context *context.Context) *EvalContext {
+	return &EvalContext{resourceObj, resourceObj, resourceObj, context}
 }
 
-func (c *EvalContext) RootObj() datatype.Accessor {
-	return c.rootObj
+func NewEvalContextWithRoot(resourceObj resource.Accessor, rootResourceObj resource.Accessor,
+	context *context.Context) *EvalContext {
+	return &EvalContext{resourceObj, resourceObj, rootResourceObj, context}
+}
+
+func NewEvalContextWithData(contextObj datatype.Accessor, resourceObj resource.Accessor,
+	rootResourceObj resource.Accessor, context *context.Context) *EvalContext {
+	return &EvalContext{convertContextData(contextObj), resourceObj, rootResourceObj, context}
+}
+
+func (c *EvalContext) ContextObj() datatype.Accessor {
+	return c.contextObj
 }
 
 func (c *EvalContext) EnvVar(name string) (accessor datatype.Accessor, found bool) {
 	if name == "context" {
-		accessor, found = c.rootObj, true
+		accessor, found = c.contextObj, true
+	} else if name == "resource" {
+		accessor, found = c.resourceObj, true
+	} else if name == "rootResource" {
+		accessor, found = c.rootResourceObj, true
 	} else {
 		accessor, found = c.context.EnvVar(name)
 	}

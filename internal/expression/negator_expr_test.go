@@ -31,6 +31,7 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
@@ -66,7 +67,7 @@ func TestNegatorExpressionEvaluateEmpty(t *testing.T) {
 }
 
 func TestNegatorExpressionEvaluateError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	extConstant := ParseExtConstantTerm("xxx")
 	evaluator := NewNegatorExpression(extConstant)
 

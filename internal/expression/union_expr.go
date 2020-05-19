@@ -41,12 +41,12 @@ func NewUnionExpression(evalLeft Evaluator, evalRight Evaluator) *UnionExpressio
 	return &UnionExpression{evalLeft, evalRight}
 }
 
-func (e *UnionExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
-	a1, err := e.evalLeft.Evaluate(ctx, curObj)
+func (e *UnionExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	a1, err := e.evalLeft.Evaluate(ctx, obj)
 	if err != nil {
 		return nil, err
 	}
-	a2, err := e.evalRight.Evaluate(ctx, curObj)
+	a2, err := e.evalRight.Evaluate(ctx, obj)
 	if err != nil {
 		return nil, err
 	}

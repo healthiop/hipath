@@ -30,6 +30,55 @@ package expression
 
 import "github.com/volsch/gohimodel/datatype"
 
+func convertContextData(accessor datatype.Accessor) datatype.Accessor {
+	if accessor == nil {
+		return accessor
+	}
+
+	dt := accessor.DataType()
+	if dt == datatype.QuantityDataType {
+		return convertContextQuantity(accessor.(datatype.QuantityAccessor))
+	}
+	return accessor
+}
+
+func convertContextQuantity(quantity datatype.QuantityAccessor) datatype.QuantityAccessor {
+	code := quantity.Code()
+	system := quantity.System()
+	if code == nil || code.Nil() ||
+		!datatype.ValueEqual(system, datatype.UCUMSystemURI) {
+		return quantity
+	}
+
+	origCodeValue := code.String()
+	switch origCodeValue {
+	case "a":
+		code = YearQuantityCode
+		system = nil
+	case "mo":
+		code = MonthQuantityCode
+		system = nil
+	case "d":
+		code = DayQuantityCode
+		system = nil
+	case "h":
+		code = HourQuantityCode
+		system = nil
+	case "min":
+		code = MinuteQuantityCode
+		system = nil
+	case "s":
+		code = SecondQuantityCode
+		system = nil
+	}
+
+	if origCodeValue == code.String() {
+		return quantity
+	}
+	return datatype.NewQuantity(quantity.Value(), quantity.Comparator(), quantity.Unit(),
+		system, code)
+}
+
 func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
 	if accessor == nil {
 		return nil

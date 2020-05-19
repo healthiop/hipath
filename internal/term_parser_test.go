@@ -31,6 +31,7 @@ package internal
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"github.com/volsch/gohipath/internal/expression"
 	"testing"
@@ -55,7 +56,7 @@ func TestParseExtConstant(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Equal(t, datatype.UCUMSystemURI, a)
@@ -69,7 +70,7 @@ func TestParseExtConstantDelimited(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Equal(t, datatype.UCUMSystemURI, a)
@@ -83,7 +84,7 @@ func TestParseExtConstantNotDefined(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.Error(t, err, "evaluation error expected")
 		assert.Nil(t, a, "no accessor expected due to error")

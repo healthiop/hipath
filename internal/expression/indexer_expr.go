@@ -42,12 +42,12 @@ func NewIndexerExpression(exprEvaluator Evaluator, indexEvaluator Evaluator) *In
 	return &IndexerExpression{exprEvaluator, indexEvaluator}
 }
 
-func (e *IndexerExpression) Evaluate(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
-	accessor, err := e.exprEvaluator.Evaluate(ctx, curObj)
+func (e *IndexerExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	accessor, err := e.exprEvaluator.Evaluate(ctx, obj)
 	if err != nil {
 		return nil, err
 	}
-	index, err := e.indexEvaluator.Evaluate(ctx, curObj)
+	index, err := e.indexEvaluator.Evaluate(ctx, obj)
 	if err != nil {
 		return nil, err
 	}

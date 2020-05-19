@@ -31,6 +31,7 @@ package expression
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"testing"
 )
@@ -150,7 +151,7 @@ func TestIndexerExpressionExpressionError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewIndexerExpression(ParseExtConstantTerm("test"), i)
 	accessor, err := e.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")
@@ -158,7 +159,7 @@ func TestIndexerExpressionExpressionError(t *testing.T) {
 }
 
 func TestIndexerExpressionIndexError(t *testing.T) {
-	ctx := NewEvalContext(datatype.NewString("rootObj"), context.NewContext())
+	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 	e := NewIndexerExpression(ParseStringLiteral("test"), ParseExtConstantTerm("test"))
 	accessor, err := e.Evaluate(ctx, nil)
 	assert.Error(t, err, "error expected")

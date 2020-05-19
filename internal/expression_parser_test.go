@@ -31,6 +31,7 @@ package internal
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohimodel/resource"
 	"github.com/volsch/gohipath/context"
 	"github.com/volsch/gohipath/internal/expression"
 	"testing"
@@ -43,7 +44,7 @@ func TestParseNegatorExpression(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.NegatorExpression)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), a) {
@@ -59,7 +60,7 @@ func TestParseNegatorExpressionPos(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.NumberLiteral)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), a) {
@@ -75,7 +76,7 @@ func TestParseNegatorExpressionError(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.NegatorExpression)(nil), result) {
-		ctx := expression.NewEvalContext(datatype.NewString("root"), context.NewContext())
+		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
 		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
 		assert.Error(t, err, "evaluation error expected")
 		assert.Nil(t, a, "no accessor expected")
