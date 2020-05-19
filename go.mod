@@ -33,5 +33,5 @@ go 1.14
 require (
 	github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
 	github.com/stretchr/testify v1.5.1
-	github.com/volsch/gohimodel v0.0.0-20200519112542-2f079cf24508
+	github.com/volsch/gohimodel v0.0.0-20200519150910-2b2fa8d45505
 )

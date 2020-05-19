@@ -26,40 +26,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
-import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
-)
+import "github.com/volsch/gohimodel/datatype"
 
-func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
-	return v.VisitChild(ctx, 1)
-}
+func emptyPathFunc(ctx *EvalContext, obj datatype.Accessor, args []datatype.Accessor) (datatype.Accessor, error) {
+	if obj == nil {
+		return datatype.NewBoolean(true), nil
+	}
 
-func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
-
-func (v *Visitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
-
-func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
-	return v.visitTree(ctx, 2, visitExternalConstant)
-}
-
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	name := args[1].(string)
-	return expression.ParseExtConstantTerm(name), nil
-}
-
-func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interface{} {
-	return v.visitTree(ctx, 1, visitInvocationTerm)
-}
-
-func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	invocationEvaluator := args[0].(expression.Evaluator)
-	return expression.NewInvocationTerm(invocationEvaluator), nil
+	if c, ok := obj.(datatype.CollectionAccessor); ok {
+		return datatype.NewBoolean(c.Empty()), nil
+	} else {
+		return datatype.NewBoolean(false), nil
+	}
 }

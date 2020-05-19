@@ -34,50 +34,45 @@ import (
 	"testing"
 )
 
-func TestNewRawStringLiteral(t *testing.T) {
-	evaluator := NewRawStringLiteral("'Test\\n'")
+func TestInvocationExpressionEvaluate(t *testing.T) {
+	c := datatype.NewCollectionUndefined()
+	c.Add(datatype.NewInteger(123))
 
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "'Test\\n'", accessor.(datatype.StringAccessor).String())
-		}
+	f, err := LookupFunctionInvocation("empty", []Evaluator{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	evaluator := NewInvocationExpression(newTestExpression(c), f)
+
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, accessor, "accessor expected")
+	if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
+		assert.Equal(t, datatype.NewBoolean(false), accessor)
 	}
 }
 
-func TestStringLiteral(t *testing.T) {
-	evaluator := ParseStringLiteral(
-		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).String())
-		}
+func TestInvocationExpressionEvaluateExprError(t *testing.T) {
+	f, err := LookupFunctionInvocation("empty", []Evaluator{})
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	evaluator := NewInvocationExpression(newTestErrorExpression(), f)
+
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, accessor, "no accessor expected")
 }
 
-func TestParseStringLiteralShortUnicode(t *testing.T) {
-	assert.Equal(t, "u005", parseStringLiteral("'\\u005'", stringDelimiterChar))
-}
+func TestInvocationExpressionEvaluateFuncErr(t *testing.T) {
+	c := datatype.NewCollectionUndefined()
+	c.Add(datatype.NewInteger(123))
 
-func TestParseStringLiteralInvalidUnicode(t *testing.T) {
-	assert.Equal(t, "aux005b", parseStringLiteral("'a\\ux005b'", stringDelimiterChar))
-}
+	evaluator := NewInvocationExpression(newTestExpression(c), newTestErrorExpression())
 
-func TestParseStringLiteralNoEscapedChar(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("'\\'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralEmpty(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("", stringDelimiterChar))
-}
-
-func TestParseStringLiteralDelimited(t *testing.T) {
-	assert.Equal(t, "Test", parseStringLiteral("`Test`", '`'))
+	accessor, err := evaluator.Evaluate(nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, accessor, "no accessor expected")
 }

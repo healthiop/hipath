@@ -79,6 +79,58 @@ func convertContextQuantity(quantity datatype.QuantityAccessor) datatype.Quantit
 		system, code)
 }
 
+func uniteCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.CollectionModifier {
+	if a1 == nil && a2 == nil {
+		return nil
+	}
+
+	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
+	addUniqueCollectionItems(c, a1)
+	addUniqueCollectionItems(c, a2)
+
+	if c.Count() == 0 {
+		return nil
+	}
+	return c
+}
+
+func addUniqueCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
+	if accessor == nil {
+		return
+	}
+	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+		collection.AddAllUnique(c)
+	} else {
+		collection.AddUnique(accessor)
+	}
+}
+
+func combineCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.CollectionModifier {
+	if a1 == nil && a2 == nil {
+		return nil
+	}
+
+	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
+	addCollectionItems(c, a1)
+	addCollectionItems(c, a2)
+
+	if c.Count() == 0 {
+		return nil
+	}
+	return c
+}
+
+func addCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
+	if accessor == nil {
+		return
+	}
+	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+		collection.AddAll(c)
+	} else {
+		collection.Add(accessor)
+	}
+}
+
 func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
 	if accessor == nil {
 		return nil

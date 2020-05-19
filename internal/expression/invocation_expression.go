@@ -29,55 +29,23 @@
 package expression
 
 import (
-	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
-	"testing"
 )
 
-func TestNewRawStringLiteral(t *testing.T) {
-	evaluator := NewRawStringLiteral("'Test\\n'")
+type InvocationExpression struct {
+	exprEvaluator       Evaluator
+	invocationEvaluator Evaluator
+}
 
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "'Test\\n'", accessor.(datatype.StringAccessor).String())
-		}
+func NewInvocationExpression(exprEvaluator Evaluator, invocationEvaluator Evaluator) *InvocationExpression {
+	return &InvocationExpression{exprEvaluator, invocationEvaluator}
+}
+
+func (e *InvocationExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	exprAccessor, err := e.exprEvaluator.Evaluate(ctx, nil)
+	if err != nil {
+		return nil, err
 	}
-}
 
-func TestStringLiteral(t *testing.T) {
-	evaluator := ParseStringLiteral(
-		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).String())
-		}
-	}
-}
-
-func TestParseStringLiteralShortUnicode(t *testing.T) {
-	assert.Equal(t, "u005", parseStringLiteral("'\\u005'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralInvalidUnicode(t *testing.T) {
-	assert.Equal(t, "aux005b", parseStringLiteral("'a\\ux005b'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralNoEscapedChar(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("'\\'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralEmpty(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("", stringDelimiterChar))
-}
-
-func TestParseStringLiteralDelimited(t *testing.T) {
-	assert.Equal(t, "Test", parseStringLiteral("`Test`", '`'))
+	return e.invocationEvaluator.Evaluate(ctx, exprAccessor)
 }

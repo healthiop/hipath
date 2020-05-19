@@ -61,7 +61,11 @@ func (v *Visitor) VisitChildren(node antlr.RuleNode) interface{} {
 
 	r := make([]interface{}, count)
 	for pos, child := range node.GetChildren() {
-		r[pos] = v.evalNode(child)
+		n := v.evalNode(child)
+		if n == nil {
+			return nil
+		}
+		r[pos] = n
 	}
 	return r
 }
@@ -103,12 +107,6 @@ func (v *Visitor) visitTree(ctx antlr.ParserRuleContext, argCount int, f visitor
 	args, ok := c.([]interface{})
 	if !ok || len(args) < argCount {
 		return nil
-	}
-
-	for _, a := range args {
-		if a == nil {
-			return nil
-		}
 	}
 
 	if l, err := f(ctx, args); err != nil {

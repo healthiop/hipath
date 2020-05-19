@@ -66,17 +66,16 @@ func TestVisitorVisitChildren(t *testing.T) {
 	innerChildren := make([]antlr.Tree, 1)
 	innerChildren[0] = newTerminalNodeMock("inner")
 
-	children := make([]antlr.Tree, 3)
+	children := make([]antlr.Tree, 2)
 	children[0] = newRuleNodeMock(innerChildren)
 	children[1] = newTerminalNodeMock("outer")
-	children[2] = newOtherNodeMock()
 
 	v := NewVisitor(NewErrorItemCollection())
 	r := v.VisitChildren(newRuleNodeMock(children))
 
 	if assert.IsType(t, ([]interface{})(nil), r) {
 		a := r.([]interface{})
-		if assert.Len(t, a, 3) {
+		if assert.Len(t, a, 2) {
 			if assert.IsType(t, ([]interface{})(nil), a[0]) {
 				a0 := a[0].([]interface{})
 				if assert.Len(t, a0, 1) {
@@ -84,9 +83,21 @@ func TestVisitorVisitChildren(t *testing.T) {
 				}
 			}
 			assert.Equal(t, "outer", a[1])
-			assert.Nil(t, a[2])
 		}
 	}
+}
+
+func TestVisitorVisitChildrenNil(t *testing.T) {
+	innerChildren := make([]antlr.Tree, 1)
+	innerChildren[0] = newTerminalNodeMock("inner")
+
+	children := make([]antlr.Tree, 1)
+	children[0] = newOtherNodeMock()
+
+	v := NewVisitor(NewErrorItemCollection())
+	r := v.VisitChildren(newRuleNodeMock(children))
+
+	assert.Nil(t, r, "no result expected")
 }
 
 func TestVisitorVisitFirstChild(t *testing.T) {

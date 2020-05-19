@@ -101,3 +101,14 @@ func visitIndexerExpression(ctx antlr.ParserRuleContext, args []interface{}) (ex
 
 	return expression.NewIndexerExpression(exprEvaluator, indexEvaluator), nil
 }
+
+func (v *Visitor) VisitInvocationExpression(ctx *parser.InvocationExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitInvocationExpression)
+}
+
+func visitInvocationExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	exprEvaluator := args[0].(expression.Evaluator)
+	invocationEvaluator := args[2].(expression.Evaluator)
+
+	return expression.NewInvocationExpression(exprEvaluator, invocationEvaluator), nil
+}

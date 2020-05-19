@@ -238,3 +238,27 @@ func TestParseIndexerExpression(t *testing.T) {
 		}
 	}
 }
+
+func TestParseInvocationExpressionUnion(t *testing.T) {
+	result, errorItemCollection := testParse("(18 | 19).union(12 | 14)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), result) {
+		ctx := expression.NewEvalContextWithData(datatype.NewString("test"),
+			resource.NewDynamicResource("Patient"), context.NewContext())
+		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*datatype.CollectionAccessor)(nil), a) {
+			c := a.(datatype.CollectionAccessor)
+			if assert.Equal(t, 4, c.Count()) {
+				assert.Equal(t, datatype.NewInteger(18), c.Get(0))
+				assert.Equal(t, datatype.NewInteger(19), c.Get(1))
+				assert.Equal(t, datatype.NewInteger(12), c.Get(2))
+				assert.Equal(t, datatype.NewInteger(14), c.Get(3))
+			}
+			assert.Equal(t, "FHIR.integer", c.ItemTypeInfo().String())
+		}
+	}
+}

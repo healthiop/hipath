@@ -51,27 +51,5 @@ func (e *UnionExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (dat
 		return nil, err
 	}
 
-	if a1 == nil && a2 == nil {
-		return nil, nil
-	}
-
-	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
-	addUniqueCollectionItems(c, a1)
-	addUniqueCollectionItems(c, a2)
-
-	if c.Count() == 0 {
-		return nil, nil
-	}
-	return c, nil
-}
-
-func addUniqueCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
-	if accessor == nil {
-		return
-	}
-	if c, ok := accessor.(datatype.CollectionAccessor); ok {
-		collection.AddAllUnique(c)
-	} else {
-		collection.AddUnique(accessor)
-	}
+	return uniteCollections(a1, a2), nil
 }

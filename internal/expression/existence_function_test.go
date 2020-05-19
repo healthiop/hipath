@@ -34,50 +34,28 @@ import (
 	"testing"
 )
 
-func TestNewRawStringLiteral(t *testing.T) {
-	evaluator := NewRawStringLiteral("'Test\\n'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "'Test\\n'", accessor.(datatype.StringAccessor).String())
-		}
-	}
+func TestEmptyPathFuncNil(t *testing.T) {
+	result, err := emptyPathFunc(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, datatype.NewBoolean(true), result)
 }
 
-func TestStringLiteral(t *testing.T) {
-	evaluator := ParseStringLiteral(
-		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).String())
-		}
-	}
+func TestEmptyPathFuncValue(t *testing.T) {
+	result, err := emptyPathFunc(nil, datatype.NewStringNil(), nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, datatype.NewBoolean(false), result)
 }
 
-func TestParseStringLiteralShortUnicode(t *testing.T) {
-	assert.Equal(t, "u005", parseStringLiteral("'\\u005'", stringDelimiterChar))
+func TestEmptyPathFuncEmptyCollection(t *testing.T) {
+	result, err := emptyPathFunc(nil, datatype.NewCollectionUndefined(), nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, datatype.NewBoolean(true), result)
 }
 
-func TestParseStringLiteralInvalidUnicode(t *testing.T) {
-	assert.Equal(t, "aux005b", parseStringLiteral("'a\\ux005b'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralNoEscapedChar(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("'\\'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralEmpty(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("", stringDelimiterChar))
-}
-
-func TestParseStringLiteralDelimited(t *testing.T) {
-	assert.Equal(t, "Test", parseStringLiteral("`Test`", '`'))
+func TestEmptyPathFuncCollection(t *testing.T) {
+	c := datatype.NewCollectionUndefined()
+	c.Add(datatype.NewStringNil())
+	result, err := emptyPathFunc(nil, c, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, datatype.NewBoolean(false), result)
 }

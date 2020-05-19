@@ -40,6 +40,8 @@ github.com/volsch/gohimodel v0.0.0-20200518170155-c2c8ec560980 h1:URU9UVatiUAJ97
 github.com/volsch/gohimodel v0.0.0-20200518170155-c2c8ec560980/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
 github.com/volsch/gohimodel v0.0.0-20200519112542-2f079cf24508 h1:UEQtvUZ3beYsFcXn1iyT2OdxQvCYMqzvpZuRjMKBaVc=
 github.com/volsch/gohimodel v0.0.0-20200519112542-2f079cf24508/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
+github.com/volsch/gohimodel v0.0.0-20200519150910-2b2fa8d45505 h1:EQni1HVx9Jc+sqxnnSjWrPStg/Tp3gQrZrSejF9McVQ=
+github.com/volsch/gohimodel v0.0.0-20200519150910-2b2fa8d45505/go.mod h1:v3H0Ysig7n4X2WDKtUcv+hOmzPhLGtDUGufeTjpJ+6o=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=

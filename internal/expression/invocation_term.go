@@ -29,55 +29,17 @@
 package expression
 
 import (
-	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohimodel/datatype"
-	"testing"
 )
 
-func TestNewRawStringLiteral(t *testing.T) {
-	evaluator := NewRawStringLiteral("'Test\\n'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "'Test\\n'", accessor.(datatype.StringAccessor).String())
-		}
-	}
+type InvocationTerm struct {
+	evaluator Evaluator
 }
 
-func TestStringLiteral(t *testing.T) {
-	evaluator := ParseStringLiteral(
-		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
-
-	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
-		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).String())
-		}
-	}
+func NewInvocationTerm(evaluator Evaluator) *InvocationTerm {
+	return &InvocationTerm{evaluator}
 }
 
-func TestParseStringLiteralShortUnicode(t *testing.T) {
-	assert.Equal(t, "u005", parseStringLiteral("'\\u005'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralInvalidUnicode(t *testing.T) {
-	assert.Equal(t, "aux005b", parseStringLiteral("'a\\ux005b'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralNoEscapedChar(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("'\\'", stringDelimiterChar))
-}
-
-func TestParseStringLiteralEmpty(t *testing.T) {
-	assert.Equal(t, "", parseStringLiteral("", stringDelimiterChar))
-}
-
-func TestParseStringLiteralDelimited(t *testing.T) {
-	assert.Equal(t, "Test", parseStringLiteral("`Test`", '`'))
+func (t *InvocationTerm) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	return t.evaluator.Evaluate(ctx, ctx.ContextObj())
 }

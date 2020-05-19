@@ -26,85 +26,42 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package internal
 
 import (
-	"github.com/volsch/gohimodel/datatype"
-	"strconv"
-	"strings"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/internal/parser"
 )
 
-const stringDelimiterChar = '\''
-
-type StringLiteral struct {
-	accessor datatype.StringAccessor
+func (v *Visitor) VisitFunctionInvocation(ctx *parser.FunctionInvocationContext) interface{} {
+	return v.VisitFirstChild(ctx)
 }
 
-func NewRawStringLiteral(value string) Evaluator {
-	return &StringLiteral{datatype.NewString(value)}
+func (v *Visitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
+	return v.visitTree(ctx, 3, visitFunction)
 }
 
-func ParseStringLiteral(value string) Evaluator {
-	return &StringLiteral{datatype.NewStringUnchecked(parseStringLiteral(value, stringDelimiterChar))}
-}
+func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	name := args[0].(string)
 
-func parseStringLiteral(value string, delimiter byte) string {
-	l := len(value)
-	if l < 2 || value[0] != delimiter || value[l-1] != delimiter {
-		return value
-	}
-
-	var b strings.Builder
-	b.Grow(l)
-
-	var esc bool
-	var unicode bool
-	var unicodeValue strings.Builder
-	for _, char := range value[1 : l-1] {
-		if unicode {
-			unicodeValue.WriteRune(char)
-			if unicodeValue.Len() == 4 {
-				if r, err := strconv.ParseInt(unicodeValue.String(), 16, 32); err != nil {
-					b.WriteRune('u')
-					b.WriteString(unicodeValue.String())
-				} else {
-					b.WriteRune(int32(r))
-				}
-				unicode = false
+	var paramEvaluators []expression.Evaluator
+	if len(args) < 4 {
+		paramEvaluators = []expression.Evaluator{}
+	} else {
+		paramList := args[2].([]interface{})
+		// commas need to removed from argument list
+		paramEvaluators = make([]expression.Evaluator, (len(paramList)+1)/2)
+		for pos, param := range paramList {
+			if pos%2 == 0 {
+				paramEvaluators[pos/2] = param.(expression.Evaluator)
 			}
-		} else if esc {
-			switch char {
-			case 'r':
-				b.WriteRune('\r')
-			case 'n':
-				b.WriteRune('\n')
-			case 't':
-				b.WriteRune('\t')
-			case 'f':
-				b.WriteRune('\f')
-			case 'u':
-				unicode = true
-				unicodeValue.Grow(4)
-				unicodeValue.Reset()
-			default:
-				b.WriteRune(char)
-			}
-			esc = false
-		} else if char == '\\' {
-			esc = true
-		} else {
-			b.WriteRune(char)
 		}
 	}
 
-	if unicode {
-		b.WriteRune('u')
-		b.WriteString(unicodeValue.String())
-	}
-
-	return b.String()
+	return expression.LookupFunctionInvocation(name, paramEvaluators)
 }
 
-func (e *StringLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (v *Visitor) VisitParamList(ctx *parser.ParamListContext) interface{} {
+	return v.VisitChildren(ctx)
 }

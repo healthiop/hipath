@@ -42,7 +42,7 @@ func TestNewEvalContext(t *testing.T) {
 	assert.Same(t, res, ctx.ContextObj())
 	v, _ := ctx.EnvVar("context")
 	assert.Same(t, res, v)
-	v, _ = ctx.EnvVar("res")
+	v, _ = ctx.EnvVar("resource")
 	assert.Same(t, res, v)
 	v, _ = ctx.EnvVar("rootResource")
 	assert.Same(t, res, v)
@@ -64,8 +64,21 @@ func TestNewEvalContextWithRoot(t *testing.T) {
 func TestNewEvalContextWithData(t *testing.T) {
 	dt := datatype.NewString("test")
 	res := resource.NewDynamicResource("Patient")
+	ctx := NewEvalContextWithData(dt, res, context.NewContext())
+	assert.Same(t, dt, ctx.ContextObj())
+	v, _ := ctx.EnvVar("context")
+	assert.Same(t, dt, v)
+	v, _ = ctx.EnvVar("resource")
+	assert.Same(t, res, v)
+	v, _ = ctx.EnvVar("rootResource")
+	assert.Same(t, res, v)
+}
+
+func TestNewEvalContextWithDataAndRoot(t *testing.T) {
+	dt := datatype.NewString("test")
+	res := resource.NewDynamicResource("Patient")
 	root := resource.NewDynamicResource("Other")
-	ctx := NewEvalContextWithData(dt, res, root, context.NewContext())
+	ctx := NewEvalContextWithDataAndRoot(dt, res, root, context.NewContext())
 	assert.Same(t, dt, ctx.ContextObj())
 	v, _ := ctx.EnvVar("context")
 	assert.Same(t, dt, v)
@@ -80,7 +93,7 @@ func TestNewEvalContextWithQuantity(t *testing.T) {
 		datatype.UCUMSystemURI, datatype.NewString("mo"))
 	res := resource.NewDynamicResource("Patient")
 	root := resource.NewDynamicResource("Other")
-	ctx := NewEvalContextWithData(dt, res, root, context.NewContext())
+	ctx := NewEvalContextWithDataAndRoot(dt, res, root, context.NewContext())
 	assert.NotSame(t, dt, ctx.ContextObj())
 	if assert.Implements(t, (*datatype.QuantityAccessor)(nil), ctx.ContextObj()) {
 		q := ctx.ContextObj().(datatype.QuantityAccessor)

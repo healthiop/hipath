@@ -29,6 +29,7 @@
 package expression
 
 import (
+	"fmt"
 	"github.com/volsch/gohimodel/datatype"
 )
 
@@ -42,4 +43,15 @@ func newTestExpression(accessor datatype.Accessor) *testExpression {
 
 func (e *testExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
 	return e.accessor, nil
+}
+
+type testErrorExpression struct {
+}
+
+func newTestErrorExpression() *testErrorExpression {
+	return &testErrorExpression{}
+}
+
+func (e *testErrorExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+	return nil, fmt.Errorf("an error occurred")
 }

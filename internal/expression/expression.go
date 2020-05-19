@@ -55,6 +55,11 @@ func NewEvalContextWithRoot(resourceObj resource.Accessor, rootResourceObj resou
 }
 
 func NewEvalContextWithData(contextObj datatype.Accessor, resourceObj resource.Accessor,
+	context *context.Context) *EvalContext {
+	return &EvalContext{convertContextData(contextObj), resourceObj, resourceObj, context}
+}
+
+func NewEvalContextWithDataAndRoot(contextObj datatype.Accessor, resourceObj resource.Accessor,
 	rootResourceObj resource.Accessor, context *context.Context) *EvalContext {
 	return &EvalContext{convertContextData(contextObj), resourceObj, rootResourceObj, context}
 }
