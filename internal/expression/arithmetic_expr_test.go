@@ -30,6 +30,7 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohipath/internal/test"
 	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
@@ -78,7 +79,7 @@ func TestArithmeticExpressionRightNil(t *testing.T) {
 }
 
 func TestArithmeticExpressionLeftInvalidType(t *testing.T) {
-	e := NewArithmeticExpression(NewRawStringLiteral("test"),
+	e := NewArithmeticExpression(newTestExpression(test.NewTestModelNode(10, false)),
 		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
@@ -87,8 +88,36 @@ func TestArithmeticExpressionLeftInvalidType(t *testing.T) {
 
 func TestArithmeticExpressionRightInvalidType(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
-		pathsys.AdditionOp, NewRawStringLiteral("test"))
+		pathsys.AdditionOp, newTestExpression(test.NewTestModelNode(10, false)))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
+}
+
+func TestArithmeticExpressionBothString(t *testing.T) {
+	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
+		pathsys.AdditionOp, NewRawStringLiteral("Test2"))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+	}
+}
+
+func TestArithmeticExpressionBothStringSubtraction(t *testing.T) {
+	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
+		pathsys.SubtractionOp, NewRawStringLiteral("Test2"))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no res expected")
+}
+
+func TestArithmeticExpressionStringNil(t *testing.T) {
+	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
+		pathsys.AdditionOp, NewRawStringLiteral("Test2"))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+	}
 }

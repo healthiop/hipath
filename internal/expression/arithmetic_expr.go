@@ -60,12 +60,35 @@ func (e *ArithmeticExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 
 	leftOperand, ok := left.(pathsys.ArithmeticApplier)
 	if !ok {
-		return nil, fmt.Errorf("type of left operand does not support arithmetic operations: %T", left)
+		return applyNonNumberArithmetic(left, e.op, right)
 	}
 	rightOperand, ok := right.(pathsys.DecimalValueAccessor)
 	if !ok {
-		return nil, fmt.Errorf("type of right operand does not support arithmetic operations: %T", right)
+		return applyNonNumberArithmetic(left, e.op, right)
 	}
 
 	return leftOperand.Calc(rightOperand, e.op)
+}
+
+func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right interface{}) (pathsys.AnyAccessor, error) {
+	if op == pathsys.AdditionOp {
+		if s, ok := applyStringArithmetic(left, right); ok {
+			return s, nil
+		}
+	}
+
+	return nil, fmt.Errorf("operands %T and %T do not support arithmetic operation %c", left, op, right)
+}
+
+func applyStringArithmetic(left interface{}, right interface{}) (pathsys.StringAccessor, bool) {
+	var ok bool
+	var leftString, rightString pathsys.Stringifier
+	if leftString, ok = left.(pathsys.Stringifier); !ok {
+		return nil, false
+	}
+	if rightString, ok = right.(pathsys.Stringifier); !ok {
+		return nil, false
+	}
+
+	return pathsys.NewString(leftString.String() + rightString.String()), true
 }

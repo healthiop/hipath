@@ -132,6 +132,36 @@ func TestParseModExpression(t *testing.T) {
 	}
 }
 
+func TestParseStringAdditionExpression(t *testing.T) {
+	res, errorItemCollection := testParse("'Test1' + 'Test2'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+		}
+	}
+}
+
+func TestParseStringAdditionExpressionEmpty(t *testing.T) {
+	res, errorItemCollection := testParse("'Test1' + {} + 'Test2'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		assert.Nil(t, res, "empty result expected")
+	}
+}
+
 func TestParseStringConcatExpression(t *testing.T) {
 	res, errorItemCollection := testParse("'Test1' & {} & 'Test2'")
 
