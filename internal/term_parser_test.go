@@ -43,8 +43,8 @@ func TestParseParenthesizedBooleanLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), res) {
-		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
+		b, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, false, b.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -56,9 +56,9 @@ func TestParseExtConstant(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, a)
+		assert.Equal(t, pathsys.UCUMSystemURI, s)
 	}
 }
 
@@ -70,9 +70,9 @@ func TestParseExtConstantDelimited(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, a)
+		assert.Equal(t, pathsys.UCUMSystemURI, s)
 	}
 }
 
@@ -84,9 +84,9 @@ func TestParseExtConstantNotDefined(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.Error(t, err, "evaluation error expected")
-		assert.Nil(t, a, "no res expected due to error")
+		assert.Nil(t, s, "no res expected due to error")
 	}
 }
 
@@ -101,10 +101,10 @@ func TestParseInvocationTermEmptyCollection(t *testing.T) {
 		col := ctx.NewCollection()
 		col.Add(pathsys.NewString("test"))
 
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
+		b, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, pathsys.NewBoolean(false), a)
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
+			assert.Equal(t, pathsys.NewBoolean(false), b)
 		}
 	}
 }
@@ -119,10 +119,10 @@ func TestParseInvocationTermEmptyCollectionEmpty(t *testing.T) {
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		ctx = test.NewTestContextWithNode(t, ctx.NewCollection())
 
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		b, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, pathsys.NewBoolean(true), a)
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
+			assert.Equal(t, pathsys.NewBoolean(true), b)
 		}
 	}
 }
@@ -139,10 +139,10 @@ func TestParseInvocationTermUnion(t *testing.T) {
 		col.Add(pathsys.NewInteger(18))
 		col.Add(pathsys.NewInteger(19))
 
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
+		e, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
-			c := a.(pathsys.CollectionAccessor)
+		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), e) {
+			c := e.(pathsys.CollectionAccessor)
 			if assert.Equal(t, 4, c.Count()) {
 				assert.Equal(t, pathsys.NewInteger(18), c.Get(0))
 				assert.Equal(t, pathsys.NewInteger(19), c.Get(1))

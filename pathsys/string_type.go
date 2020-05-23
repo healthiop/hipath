@@ -30,6 +30,8 @@ package pathsys
 
 var StringTypeInfo = newAnyTypeInfo("String")
 
+var EmptyString = newString("")
+
 type stringType struct {
 	value string
 }

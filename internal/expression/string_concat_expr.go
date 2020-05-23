@@ -26,21 +26,55 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"testing"
+	"fmt"
+	"github.com/volsch/gohipath/pathsys"
 )
 
-func TestVisitEqualityExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = expression.NewEmptyLiteral()
-	res, err := visitEqualityExpression(nil, args)
+type StringConcatExpression struct {
+	evalLeft  pathsys.Evaluator
+	evalRight pathsys.Evaluator
+}
 
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
+func NewStringConcatExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *StringConcatExpression {
+	return &StringConcatExpression{evalLeft, evalRight}
+}
+
+func (e *StringConcatExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	left, err := e.evalLeft.Evaluate(ctx, node, loop)
+	if err != nil {
+		return nil, err
+	}
+	right, err := e.evalRight.Evaluate(ctx, node, loop)
+	if err != nil {
+		return nil, err
+	}
+
+	left, right = unwrapCollection(left), unwrapCollection(right)
+	if left == nil && right == nil {
+		return pathsys.EmptyString, nil
+	}
+
+	var ok bool
+	var leftString, rightString pathsys.Stringifier
+	if left != nil {
+		if leftString, ok = left.(pathsys.Stringifier); !ok {
+			return nil, fmt.Errorf("left operand is not string: %T", left)
+		}
+	}
+	if right != nil {
+		if rightString, ok = right.(pathsys.Stringifier); !ok {
+			return nil, fmt.Errorf("right operand is not string: %T", right)
+		}
+	}
+
+	if leftString == nil {
+		return rightString, nil
+	}
+	if rightString == nil {
+		return leftString, nil
+	}
+	return pathsys.NewString(leftString.String() + rightString.String()), nil
 }

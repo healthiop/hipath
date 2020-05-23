@@ -44,10 +44,10 @@ func TestParseAggregateTotal(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
-			assert.Equal(t, 32.0, a.(pathsys.NumberAccessor).Float64())
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, 32.0, res.(pathsys.NumberAccessor).Float64())
 		}
 	}
 }
@@ -60,10 +60,10 @@ func TestParseAggregateIndex(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
-			assert.Equal(t, 31.0, a.(pathsys.NumberAccessor).Float64())
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, 31.0, res.(pathsys.NumberAccessor).Float64())
 		}
 	}
 }

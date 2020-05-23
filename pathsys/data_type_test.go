@@ -49,8 +49,8 @@ func TestEqualNil(t *testing.T) {
 }
 
 func TestEqualSame(t *testing.T) {
-	a := NewString("test")
-	assert.Equal(t, true, Equal(a, a))
+	s := NewString("test")
+	assert.Equal(t, true, Equal(s, s))
 }
 
 func TestEqual(t *testing.T) {
@@ -74,8 +74,8 @@ func TestValueEquivalentRightNil(t *testing.T) {
 }
 
 func TestValueEquivalentSame(t *testing.T) {
-	a := newAccessorMockWithValue(1)
-	assert.Equal(t, true, Equivalent(a, a))
+	m := newAccessorMockWithValue(1)
+	assert.Equal(t, true, Equivalent(m, m))
 }
 
 func TestValueEquivalent(t *testing.T) {

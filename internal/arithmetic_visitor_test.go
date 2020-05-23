@@ -39,8 +39,8 @@ func TestVisitArithmeticExpressionInvalidOp(t *testing.T) {
 	args[0] = expression.NewNumberLiteralInt(1)
 	args[1] = "x"
 	args[2] = expression.NewNumberLiteralInt(1)
-	a, err := visitArithmeticExpression(nil, args)
+	res, err := visitArithmeticExpression(nil, args)
 
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, a, "no evaluator expected")
+	assert.Nil(t, res, "no evaluator expected")
 }

@@ -44,10 +44,10 @@ func TestParseNegatorExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.NegatorExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), a) {
-			assert.Equal(t, -123.45, a.(pathsys.DecimalAccessor).Float64())
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
+			assert.Equal(t, -123.45, res.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }
@@ -60,10 +60,10 @@ func TestParseNegatorExpressionPos(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.NumberLiteral)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), a) {
-			assert.Equal(t, 123.45, a.(pathsys.DecimalAccessor).Float64())
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
+			assert.Equal(t, 123.45, res.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }
@@ -76,9 +76,9 @@ func TestParseNegatorExpressionError(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.NegatorExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.Error(t, err, "evaluation error expected")
-		assert.Nil(t, a, "no res expected")
+		assert.Nil(t, res, "no res expected")
 	}
 }
 
@@ -90,10 +90,10 @@ func TestParseEqualityExpressionEqual(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -106,10 +106,10 @@ func TestParseEqualityExpressionEqualNot(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -122,10 +122,10 @@ func TestParseEqualityExpressionNotEqual(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -138,10 +138,10 @@ func TestParseEqualityExpressionNotEqualNot(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -154,10 +154,10 @@ func TestParseEqualityExpressionEquivalent(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -170,10 +170,10 @@ func TestParseEqualityExpressionEquivalentNot(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -186,10 +186,10 @@ func TestParseEqualityExpressionNotEquivalent(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -202,10 +202,10 @@ func TestParseEqualityExpressionNotEquivalentNot(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -218,10 +218,10 @@ func TestParseUnionExpression(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.UnionExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
-			c := a.(pathsys.CollectionAccessor)
+		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+			c := res.(pathsys.CollectionAccessor)
 			if assert.Equal(t, 3, c.Count()) {
 				assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
 				assert.Equal(t, pathsys.NewInteger(12), c.Get(1))
@@ -240,10 +240,10 @@ func TestParseIndexerExpression(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.IndexerExpression)(nil), res) {
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
-			assert.Equal(t, int32(17), a.(pathsys.NumberAccessor).Int())
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, int32(17), res.(pathsys.NumberAccessor).Int())
 		}
 	}
 }
@@ -256,10 +256,10 @@ func TestParseInvocationExpressionUnion(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
 		ctx := test.NewTestContextWithNode(t, pathsys.NewString("test"))
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
-			c := a.(pathsys.CollectionAccessor)
+		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+			c := res.(pathsys.CollectionAccessor)
 			if assert.Equal(t, 4, c.Count()) {
 				assert.Equal(t, pathsys.NewInteger(18), c.Get(0))
 				assert.Equal(t, pathsys.NewInteger(19), c.Get(1))

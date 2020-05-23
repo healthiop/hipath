@@ -63,6 +63,8 @@ func visitArithmeticExpression(ctx antlr.ParserRuleContext, args []interface{}) 
 		op = pathsys.DivOp
 	case "mod":
 		op = pathsys.ModOp
+	case "&":
+		return expression.NewStringConcatExpression(leftEvaluator, rightEvaluator), nil
 	default:
 		return nil, fmt.Errorf("unsupported arithmetic oparator: %s", stringOp)
 	}
