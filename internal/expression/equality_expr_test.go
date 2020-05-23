@@ -39,10 +39,10 @@ func TestEqualityExpressionEqual(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("test"), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -50,10 +50,10 @@ func TestEqualityExpressionEqualNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("test"), ParseStringLiteral("TEST"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -62,10 +62,10 @@ func TestEqualityExpressionLeftNoStringifier(t *testing.T) {
 	e := NewEqualityExpression(false, false,
 		newTestExpression(test.NewTestModelNode(10, false)),
 		ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -74,10 +74,10 @@ func TestEqualityExpressionRightStringifier(t *testing.T) {
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("test"),
 		newTestExpression(test.NewTestModelNode(10, false)))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -86,10 +86,10 @@ func TestEqualityExpressionEqualModel(t *testing.T) {
 	e := NewEqualityExpression(false, false,
 		newTestExpression(test.NewTestModelNode(10, false)),
 		newTestExpression(test.NewTestModelNode(10, false)))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -98,10 +98,10 @@ func TestEqualityExpressionEqualModelNot(t *testing.T) {
 	e := NewEqualityExpression(false, false,
 		newTestExpression(test.NewTestModelNode(10, false)),
 		newTestExpression(test.NewTestModelNode(11, false)))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -109,10 +109,10 @@ func TestEqualityExpressionEquality(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true,
 		ParseStringLiteral("test VALUE"), ParseStringLiteral("TEST\nvalue"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -120,10 +120,10 @@ func TestEqualityExpressionEqualityNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true,
 		ParseStringLiteral("test VALUE"), ParseStringLiteral("TEST\nvTEST"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -131,10 +131,10 @@ func TestEqualityExpressionNotEqual(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(true, false,
 		ParseStringLiteral("test"), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -142,10 +142,10 @@ func TestEqualityExpressionNotEqualNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(true, false,
 		ParseStringLiteral("test"), ParseStringLiteral("TEST"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -157,10 +157,10 @@ func TestEqualityExpressionEqualStringLeft(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("2020"), n)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -172,10 +172,10 @@ func TestEqualityExpressionEqualStringRight(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		n, ParseStringLiteral("2020"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -187,10 +187,10 @@ func TestEqualityExpressionEqualStringDiffers(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("2020"), n)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -205,10 +205,10 @@ func TestEqualityExpressionEqualNumber(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -223,10 +223,10 @@ func TestEqualityExpressionEqualNumberNot(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -241,10 +241,10 @@ func TestEqualityExpressionEqualTimeDiffers(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -256,10 +256,10 @@ func TestEqualityExpressionEqualRightNoTemporal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, n1,
 		newTestExpression(test.NewTestModelNode(10, false)))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -274,9 +274,9 @@ func TestEqualityExpressionEqualTimePrecisionDiffers(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestEqualityExpressionEquivalent(t *testing.T) {
@@ -290,10 +290,10 @@ func TestEqualityExpressionEquivalent(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -308,54 +308,54 @@ func TestEqualityExpressionEquivalentTimePrecisionDiffers(t *testing.T) {
 	}
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true, n1, n2)
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestEqualityExpressionEqualBothNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, NewEmptyLiteral(), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestEqualityExpressionEqualLeftNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, NewEmptyLiteral(), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestEqualityExpressionEqualRightNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false, ParseStringLiteral("test"), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestEqualityExpressionEquivalentBothNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true, NewEmptyLiteral(), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestEqualityExpressionEquivalentLeftNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, true, ParseStringLiteral("test"), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -363,16 +363,16 @@ func TestEqualityExpressionEqualLeftError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		newTestErrorExpression(), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, node, "empty collection expected")
 }
 
 func TestEqualityExpressionEqualRightError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewEqualityExpression(false, false,
 		ParseStringLiteral("test"), newTestErrorExpression())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	node, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, node, "empty collection expected")
 }

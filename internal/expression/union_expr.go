@@ -40,14 +40,14 @@ func NewUnionExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator)
 }
 
 func (e *UnionExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
-	a1, err := e.evalLeft.Evaluate(ctx, node, loop)
+	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
-	a2, err := e.evalRight.Evaluate(ctx, node, loop)
+	right, err := e.evalRight.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	return uniteCollections(ctx, a1, a2), nil
+	return uniteCollections(ctx, left, right), nil
 }

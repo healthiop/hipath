@@ -30,14 +30,13 @@ package gohipath
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-
 	"github.com/volsch/gohipath/internal"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type Path struct {
-	evaluator expression.Evaluator
+	evaluator pathsys.Evaluator
 }
 
 func Compile(pathString string) (*Path, *internal.Error) {
@@ -55,12 +54,12 @@ func Compile(pathString string) (*Path, *internal.Error) {
 	p.AddErrorListener(errorListener)
 
 	v := internal.NewVisitor(errorItemCollection)
-	result := p.Expression().Accept(v)
+	res := p.Expression().Accept(v)
 
 	if errorItemCollection.HasErrors() {
 		return nil, internal.NewPathError(
 			"error when parsing path expression", errorItemCollection.Items())
 	}
 
-	return &Path{evaluator: result.(expression.Evaluator)}, nil
+	return &Path{evaluator: res.(pathsys.Evaluator)}, nil
 }

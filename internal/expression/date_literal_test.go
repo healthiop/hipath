@@ -41,12 +41,12 @@ func TestFullDateLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.DateAccessor)(nil), accessor) {
+		assert.NotNil(t, node, "res expected")
+		if assert.Implements(t, (*pathsys.DateAccessor)(nil), node) {
 			expected := time.Date(2014, 3, 25, 0, 0, 0, 0, time.Local)
-			actual := accessor.(pathsys.DateAccessor).Time()
+			actual := node.(pathsys.DateAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}
@@ -59,12 +59,12 @@ func TestFluentDateLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.DateAccessor)(nil), accessor) {
+		assert.NotNil(t, node, "res expected")
+		if assert.Implements(t, (*pathsys.DateAccessor)(nil), node) {
 			expected := time.Date(2014, 1, 1, 0, 0, 0, 0, time.Local)
-			actual := accessor.(pathsys.DateAccessor).Time()
+			actual := node.(pathsys.DateAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}

@@ -43,18 +43,18 @@ func TestAggregatePathFuncEvaluatorNil(t *testing.T) {
 	col.Add(pathsys.NewInteger(14))
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(nil))
+	res, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(nil))
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, err, result, "empty result expected")
+	assert.Nil(t, err, res, "empty res expected")
 }
 
 func TestAggregatePathFuncNodeNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, nil, []interface{}{nil}, pathsys.NewLoop(nil))
+	res, err := f.Execute(ctx, nil, []interface{}{nil}, pathsys.NewLoop(nil))
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, err, result, "empty result expected")
+	assert.Nil(t, err, res, "empty res expected")
 }
 
 func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
@@ -65,9 +65,9 @@ func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
 	loopEvaluator := newTestErrorExpression()
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(7)}, pathsys.NewLoop(loopEvaluator))
+	res, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(7)}, pathsys.NewLoop(loopEvaluator))
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, result, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestAggregatePathFuncTotal(t *testing.T) {
@@ -81,10 +81,10 @@ func TestAggregatePathFuncTotal(t *testing.T) {
 		NewTotalInvocation(), pathsys.AdditionOp, NewThisInvocation())
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(7)}, pathsys.NewLoop(loopEvaluator))
+	res, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(7)}, pathsys.NewLoop(loopEvaluator))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), result) {
-		assert.Equal(t, pathsys.NewInteger(42), result)
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewInteger(42), res)
 	}
 }
 
@@ -99,10 +99,10 @@ func TestAggregatePathFuncIndex(t *testing.T) {
 		NewIndexInvocation(), pathsys.AdditionOp, NewThisInvocation())
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(loopEvaluator))
+	res, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(loopEvaluator))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), result) {
-		assert.Equal(t, pathsys.NewInteger(16), result)
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewInteger(16), res)
 	}
 }
 
@@ -114,9 +114,9 @@ func TestAggregatePathFuncColEmpty(t *testing.T) {
 		NewTotalInvocation(), pathsys.AdditionOp, NewThisInvocation())
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(loopEvaluator))
+	res, err := f.Execute(ctx, col, []interface{}{nil}, pathsys.NewLoop(loopEvaluator))
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, err, result, "empty result expected")
+	assert.Nil(t, err, res, "empty res expected")
 }
 
 func TestAggregatePathFuncColEmptyTotal(t *testing.T) {
@@ -127,9 +127,9 @@ func TestAggregatePathFuncColEmptyTotal(t *testing.T) {
 		NewTotalInvocation(), pathsys.AdditionOp, NewThisInvocation())
 
 	f := newAggregateFunction()
-	result, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(17)}, pathsys.NewLoop(loopEvaluator))
+	res, err := f.Execute(ctx, col, []interface{}{nil, pathsys.NewInteger(17)}, pathsys.NewLoop(loopEvaluator))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), result) {
-		assert.Equal(t, pathsys.NewInteger(17), result)
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewInteger(17), res)
 	}
 }

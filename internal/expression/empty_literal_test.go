@@ -37,8 +37,8 @@ func TestEmptyLiteral(t *testing.T) {
 	evaluator := NewEmptyLiteral()
 
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.Nil(t, accessor, "nil evaluator result expected")
+		assert.Nil(t, node, "nil evaluator res expected")
 	}
 }

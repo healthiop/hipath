@@ -47,11 +47,11 @@ func TestInvocationTermEvaluate(t *testing.T) {
 
 	evaluator := NewInvocationTerm(f)
 
-	accessor, err := evaluator.Evaluate(ctx, c, nil)
+	res, err := evaluator.Evaluate(ctx, c, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "result expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, pathsys.NewBoolean(false), accessor)
+	assert.NotNil(t, res, "res expected")
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewBoolean(false), res)
 	}
 }
 
@@ -62,7 +62,7 @@ func TestInvocationTermEvaluateFuncErr(t *testing.T) {
 
 	evaluator := NewInvocationTerm(newTestErrorExpression())
 
-	accessor, err := evaluator.Evaluate(ctx, nil, nil)
+	res, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }

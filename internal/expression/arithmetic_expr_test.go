@@ -37,58 +37,58 @@ import (
 func TestArithmeticExpression(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralInt(87),
 		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
-		result := accessor.(pathsys.DecimalAccessor)
-		assert.Equal(t, 99.43, result.Float64())
+	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), node) {
+		res := node.(pathsys.DecimalAccessor)
+		assert.Equal(t, 99.43, res.Float64())
 	}
 }
 
 func TestArithmeticExpressionLeftError(t *testing.T) {
 	e := NewArithmeticExpression(newTestErrorExpression(),
 		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, node, "no res expected")
 }
 
 func TestArithmeticExpressionRightError(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
 		pathsys.AdditionOp, newTestErrorExpression())
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, node, "no res expected")
 }
 
 func TestArithmeticExpressionLeftNil(t *testing.T) {
 	e := NewArithmeticExpression(newTestExpression(nil),
 		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, node, "empty res expected")
 }
 
 func TestArithmeticExpressionRightNil(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
 		pathsys.AdditionOp, newTestExpression(nil))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, node, "empty res expected")
 }
 
 func TestArithmeticExpressionLeftInvalidType(t *testing.T) {
 	e := NewArithmeticExpression(NewRawStringLiteral("test"),
 		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, node, "no res expected")
 }
 
 func TestArithmeticExpressionRightInvalidType(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
 		pathsys.AdditionOp, NewRawStringLiteral("test"))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, node, "no res expected")
 }

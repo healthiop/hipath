@@ -50,10 +50,10 @@ func TestFunctionInvocationArgs(t *testing.T) {
 		testExpression, nil, ParseStringLiteral("test2")})
 
 	tt := newTestingType(t)
-	accessor, err := e.Evaluate(ctx, tt, testLoop)
+	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
-		c := accessor.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 3, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Nil(t, c.Get(1))
@@ -76,9 +76,9 @@ func TestFunctionInvocationLoop(t *testing.T) {
 	e := newFunctionInvocation(function, []pathsys.Evaluator{loopExpression})
 
 	tt := newTestingType(t)
-	accessor, err := e.Evaluate(ctx, tt, testLoop)
+	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("testLoop"), accessor)
+	assert.Equal(t, pathsys.NewString("testLoop"), res)
 
 	assert.Equal(t, 1, loopExpression.invocationCount)
 	assert.NotSame(t, testLoop, loopExpression.loop)
@@ -94,9 +94,9 @@ func TestFunctionInvocationArgsError(t *testing.T) {
 	e := newFunctionInvocation(function, []pathsys.Evaluator{
 		ParseStringLiteral("test1"), ParseExtConstantTerm("xxx"), ParseStringLiteral("test2")})
 
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestFunctionInvocationError(t *testing.T) {
@@ -107,9 +107,9 @@ func TestFunctionInvocationError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := newFunctionInvocation(function, []pathsys.Evaluator{})
 
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestLookupFunctionInvocationNotFound(t *testing.T) {
@@ -154,8 +154,8 @@ type testInvocationLoopFunction struct {
 func (f *testInvocationLoopFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	t := f.t
 	if assert.NotNil(t, loop) && assert.NotNil(t, loop.Evaluator()) {
-		accessor, err := loop.Evaluator().Evaluate(nil, nil, nil)
-		return accessor, err
+		res, err := loop.Evaluator().Evaluate(nil, nil, nil)
+		return res, err
 	}
 	return nil, nil
 }

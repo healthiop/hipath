@@ -48,10 +48,10 @@ func TestIndexerExpressionCollection(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
-		assert.Equal(t, pathsys.NewString("test2"), accessor)
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewString("test2"), res)
 	}
 }
 
@@ -66,9 +66,9 @@ func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestIndexerExpressionCollectionInvalidIndexType(t *testing.T) {
@@ -77,9 +77,9 @@ func TestIndexerExpressionCollectionInvalidIndexType(t *testing.T) {
 	c.Add(pathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), ParseStringLiteral("0"))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestIndexerExpressionExpressionNil(t *testing.T) {
@@ -89,9 +89,9 @@ func TestIndexerExpressionExpressionNil(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(nil), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestIndexerExpressionIndexNil(t *testing.T) {
@@ -100,9 +100,9 @@ func TestIndexerExpressionIndexNil(t *testing.T) {
 	c.Add(pathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), newTestExpression(nil))
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
@@ -118,9 +118,9 @@ func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestIndexerExpressionCollectionNoCol(t *testing.T) {
@@ -130,10 +130,10 @@ func TestIndexerExpressionCollectionNoCol(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(ParseStringLiteral("test"), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
-		assert.Equal(t, pathsys.NewString("test"), accessor)
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, pathsys.NewString("test"), res)
 	}
 }
 
@@ -144,9 +144,9 @@ func TestIndexerExpressionCollectionNoColIndexExceeded(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(ParseStringLiteral("test"), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestIndexerExpressionExpressionError(t *testing.T) {
@@ -156,14 +156,14 @@ func TestIndexerExpressionExpressionError(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestErrorExpression(), i)
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestIndexerExpressionIndexError(t *testing.T) {
 	e := NewIndexerExpression(ParseStringLiteral("test"), newTestErrorExpression())
-	accessor, err := e.Evaluate(nil, nil, nil)
+	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }

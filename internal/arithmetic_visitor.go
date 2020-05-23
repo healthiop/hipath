@@ -26,24 +26,46 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package internal
 
 import (
+	"fmt"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/internal/parser"
 	"github.com/volsch/gohipath/pathsys"
 )
 
-type BooleanLiteral struct {
-	node pathsys.BooleanAccessor
+func (v *Visitor) VisitAdditiveExpression(ctx *parser.AdditiveExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitArithmeticExpression)
 }
 
-func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
-	if node, err := pathsys.ParseBoolean(value); err != nil {
-		return nil, err
-	} else {
-		return &BooleanLiteral{node}, nil
+func (v *Visitor) VisitMultiplicativeExpression(ctx *parser.MultiplicativeExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitArithmeticExpression)
+}
+
+func visitArithmeticExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	leftEvaluator := args[0].(pathsys.Evaluator)
+	stringOp := args[1].(string)
+	rightEvaluator := args[2].(pathsys.Evaluator)
+
+	var op pathsys.ArithmeticOps
+	switch stringOp {
+	case "+":
+		op = pathsys.AdditionOp
+	case "-":
+		op = pathsys.SubtractionOp
+	case "*":
+		op = pathsys.MultiplicationOp
+	case "/":
+		op = pathsys.DivisionOp
+	case "div":
+		op = pathsys.DivOp
+	case "mod":
+		op = pathsys.ModOp
+	default:
+		return nil, fmt.Errorf("unsupported arithmetic oparator: %s", stringOp)
 	}
-}
 
-func (e *BooleanLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
-	return e.node, nil
+	return expression.NewArithmeticExpression(leftEvaluator, op, rightEvaluator), nil
 }

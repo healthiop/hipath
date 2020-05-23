@@ -48,9 +48,9 @@ func ParseExtConstantTerm(value string) *ExtConstantTerm {
 }
 
 func (e *ExtConstantTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
-	accessor, found := ctx.EnvVar(e.name)
+	res, found := ctx.EnvVar(e.name)
 	if !found {
 		return nil, fmt.Errorf("Environment variable has not been defined: %s", e.name)
 	}
-	return accessor, nil
+	return res, nil
 }

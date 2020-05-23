@@ -38,23 +38,23 @@ import (
 func TestExtConstantTerm(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("ucum")
-	accessor, err := evaluator.Evaluate(ctx, nil, nil)
+	res, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.UCUMSystemURI, accessor)
+	assert.Equal(t, pathsys.UCUMSystemURI, res)
 }
 
 func TestExtConstantTermDelimited(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("`ucum`")
-	accessor, err := evaluator.Evaluate(ctx, nil, nil)
+	res, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.UCUMSystemURI, accessor)
+	assert.Equal(t, pathsys.UCUMSystemURI, res)
 }
 
 func TestExtConstantTermNotDefined(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("xxx")
-	accessor, err := evaluator.Evaluate(ctx, nil, nil)
+	res, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected due to error")
+	assert.Nil(t, res, "no res expected due to error")
 }

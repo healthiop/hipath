@@ -33,6 +33,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 func (v *Visitor) VisitTermExpression(ctx *parser.TermExpressionContext) interface{} {
@@ -43,12 +44,12 @@ func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext)
 	return v.visitTree(ctx, 2, visitPolarityExpression)
 }
 
-func visitPolarityExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+func visitPolarityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	op := args[0].(string)
-	evaluator := args[1].(expression.Evaluator)
+	evaluator := args[1].(pathsys.Evaluator)
 
 	if op == "-" && evaluator != nil {
-		evaluator = expression.NewNegatorExpression(evaluator.(expression.Evaluator))
+		evaluator = expression.NewNegatorExpression(evaluator.(pathsys.Evaluator))
 	}
 	return evaluator, nil
 }
@@ -57,10 +58,10 @@ func (v *Visitor) VisitEqualityExpression(ctx *parser.EqualityExpressionContext)
 	return v.visitTree(ctx, 3, visitEqualityExpression)
 }
 
-func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	evalLeft := args[0].(expression.Evaluator)
+func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evalLeft := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
-	evalRight := args[2].(expression.Evaluator)
+	evalRight := args[2].(pathsys.Evaluator)
 
 	not := false
 	equivalent := false
@@ -84,9 +85,9 @@ func (v *Visitor) VisitUnionExpression(ctx *parser.UnionExpressionContext) inter
 	return v.visitTree(ctx, 3, visitUnionExpression)
 }
 
-func visitUnionExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	evalLeft := args[0].(expression.Evaluator)
-	evalRight := args[2].(expression.Evaluator)
+func visitUnionExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evalLeft := args[0].(pathsys.Evaluator)
+	evalRight := args[2].(pathsys.Evaluator)
 
 	return expression.NewUnionExpression(evalLeft, evalRight), nil
 }
@@ -95,9 +96,9 @@ func (v *Visitor) VisitIndexerExpression(ctx *parser.IndexerExpressionContext) i
 	return v.visitTree(ctx, 4, visitIndexerExpression)
 }
 
-func visitIndexerExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	exprEvaluator := args[0].(expression.Evaluator)
-	indexEvaluator := args[2].(expression.Evaluator)
+func visitIndexerExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	exprEvaluator := args[0].(pathsys.Evaluator)
+	indexEvaluator := args[2].(pathsys.Evaluator)
 
 	return expression.NewIndexerExpression(exprEvaluator, indexEvaluator), nil
 }
@@ -106,9 +107,9 @@ func (v *Visitor) VisitInvocationExpression(ctx *parser.InvocationExpressionCont
 	return v.visitTree(ctx, 3, visitInvocationExpression)
 }
 
-func visitInvocationExpression(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	exprEvaluator := args[0].(expression.Evaluator)
-	invocationEvaluator := args[2].(expression.Evaluator)
+func visitInvocationExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	exprEvaluator := args[0].(pathsys.Evaluator)
+	invocationEvaluator := args[2].(pathsys.Evaluator)
 
 	return expression.NewInvocationExpression(exprEvaluator, invocationEvaluator), nil
 }

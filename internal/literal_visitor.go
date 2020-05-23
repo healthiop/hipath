@@ -32,6 +32,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 func (v *Visitor) VisitNullLiteral(*parser.NullLiteralContext) interface{} {
@@ -42,7 +43,7 @@ func (v *Visitor) VisitBooleanLiteral(ctx *parser.BooleanLiteralContext) interfa
 	return v.visit(ctx, visitBooleanLiteral)
 }
 
-func visitBooleanLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+func visitBooleanLiteral(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 	return expression.ParseBooleanLiteral(ctx.GetText())
 }
 
@@ -54,7 +55,7 @@ func (v *Visitor) VisitNumberLiteral(ctx *parser.NumberLiteralContext) interface
 	return v.visit(ctx, visitNumberLiteral)
 }
 
-func visitNumberLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+func visitNumberLiteral(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 	return expression.ParseNumberLiteral(ctx.GetText())
 }
 
@@ -62,7 +63,7 @@ func (v *Visitor) VisitDateLiteral(ctx *parser.DateLiteralContext) interface{} {
 	return v.visit(ctx, visitDateLiteral)
 }
 
-func visitDateLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+func visitDateLiteral(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 	return expression.ParseDateLiteral(ctx.GetText())
 }
 
@@ -70,7 +71,7 @@ func (v *Visitor) VisitDateTimeLiteral(ctx *parser.DateTimeLiteralContext) inter
 	return v.visit(ctx, visitDateTimeLiteral)
 }
 
-func visitDateTimeLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+func visitDateTimeLiteral(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 	return expression.ParseDateTimeLiteral(ctx.GetText())
 }
 
@@ -78,7 +79,7 @@ func (v *Visitor) VisitTimeLiteral(ctx *parser.TimeLiteralContext) interface{} {
 	return v.visit(ctx, visitTimeLiteral)
 }
 
-func visitTimeLiteral(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+func visitTimeLiteral(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 	return expression.ParseTimeLiteral(ctx.GetText())
 }
 
@@ -86,7 +87,7 @@ func (v *Visitor) VisitQuantity(ctx *parser.QuantityContext) interface{} {
 	return v.visitTree(ctx, 2, visitQuantity)
 }
 
-func visitQuantity(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+func visitQuantity(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	number := args[0].(string)
 	unit := args[1].(string)
 	return expression.ParseQuantityLiteral(number, unit)

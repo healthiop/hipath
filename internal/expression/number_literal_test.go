@@ -39,11 +39,11 @@ func TestNumberLiteralInteger(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), accessor) {
-			assert.Equal(t, int32(-72638), accessor.(pathsys.IntegerAccessor).Int())
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(-72638), res.(pathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -51,22 +51,22 @@ func TestNumberLiteralInteger(t *testing.T) {
 func TestNewNumberLiteralInt(t *testing.T) {
 	evaluator := NewNumberLiteralInt(-72638)
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "result expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), accessor) {
-		assert.Equal(t, int32(-72638), accessor.(pathsys.IntegerAccessor).Int())
+	assert.NotNil(t, res, "res expected")
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, int32(-72638), res.(pathsys.IntegerAccessor).Int())
 	}
 }
 
 func TestNewNumberLiteralFloat64(t *testing.T) {
 	evaluator := NewNumberLiteralFloat64(-72638.877)
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "result expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
-		assert.Equal(t, -72638.877, accessor.(pathsys.DecimalAccessor).Float64())
+	assert.NotNil(t, res, "res expected")
+	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, -72638.877, res.(pathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -82,11 +82,11 @@ func TestNumberLiteralDecimal(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
-			assert.Equal(t, -72638.1, accessor.(pathsys.DecimalAccessor).Float64())
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
+			assert.Equal(t, -72638.1, res.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }

@@ -39,16 +39,16 @@ func TestThisInvocation(t *testing.T) {
 	this := pathsys.NewString("test")
 	loop.IncIndex(this)
 	evaluator := NewThisInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, loop)
+	res, err := evaluator.Evaluate(nil, nil, loop)
 	assert.NoError(t, err, "error expected")
-	assert.Same(t, this, accessor)
+	assert.Same(t, this, res)
 }
 
 func TestThisInvocationOutsideLoop(t *testing.T) {
 	evaluator := NewThisInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestIndexInvocation(t *testing.T) {
@@ -57,16 +57,16 @@ func TestIndexInvocation(t *testing.T) {
 	this := pathsys.NewString("test")
 	loop.IncIndex(this)
 	evaluator := NewIndexInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, loop)
+	res, err := evaluator.Evaluate(nil, nil, loop)
 	assert.NoError(t, err, "error expected")
-	assert.Equal(t, pathsys.NewInteger(int32(1)), accessor)
+	assert.Equal(t, pathsys.NewInteger(int32(1)), res)
 }
 
 func TestIndexInvocationOutsideLoop(t *testing.T) {
 	evaluator := NewIndexInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestTotalInvocation(t *testing.T) {
@@ -76,14 +76,14 @@ func TestTotalInvocation(t *testing.T) {
 	total := pathsys.NewInteger(20)
 	loop.SetTotal(total)
 	evaluator := NewTotalInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, loop)
+	res, err := evaluator.Evaluate(nil, nil, loop)
 	assert.NoError(t, err, "error expected")
-	assert.Same(t, total, accessor)
+	assert.Same(t, total, res)
 }
 
 func TestTotalInvocationOutsideLoop(t *testing.T) {
 	evaluator := NewTotalInvocation()
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }

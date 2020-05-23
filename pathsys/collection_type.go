@@ -31,7 +31,7 @@ package pathsys
 var collectionTypeInfo = newAnyTypeInfo("Collection")
 
 type collectionType struct {
-	context      ContextAccessor
+	adapter      ModelAdapter
 	itemTypeInfo TypeInfoAccessor
 	items        []interface{}
 }
@@ -52,12 +52,12 @@ type CollectionModifier interface {
 	AddAllUnique(collection CollectionAccessor) int
 }
 
-func NewCollection(context ContextAccessor) CollectionModifier {
-	if context == nil {
-		panic("no context has been specified")
+func NewCollection(adapter ModelAdapter) CollectionModifier {
+	if adapter == nil {
+		panic("no adapter has been specified")
 	}
 	return &collectionType{
-		context: context,
+		adapter: adapter,
 	}
 }
 
@@ -101,14 +101,13 @@ func (c *collectionType) add(node interface{}, convert bool) {
 	}
 
 	if node != nil {
-		adapter := c.context.ModelAdapter()
 		if convert {
 			if _, ok := node.(AnyAccessor); !ok {
-				node = adapter.ConvertToSystem(node)
+				node = c.adapter.ConvertToSystem(node)
 			}
 		}
 
-		typeInfo := ModelTypeInfo(adapter, node)
+		typeInfo := ModelTypeInfo(c.adapter, node)
 		if c.itemTypeInfo == nil {
 			c.itemTypeInfo = typeInfo
 		} else {
@@ -144,10 +143,9 @@ func (c *collectionType) AddUnique(node interface{}) bool {
 				}
 			}
 		} else {
-			adapter := c.context.ModelAdapter()
-			node = adapter.ConvertToSystem(node)
+			node = c.adapter.ConvertToSystem(node)
 			for _, o := range c.items {
-				if o != nil && ModelEqual(adapter, node, o) {
+				if o != nil && ModelEqual(c.adapter, node, o) {
 					return false
 				}
 			}
@@ -182,7 +180,7 @@ func (c *collectionType) Equal(node interface{}) bool {
 		return false
 	} else {
 		return c.Count() == o.Count() &&
-			collectionDeepEqual(c.context.ModelAdapter(), c, o)
+			collectionDeepEqual(c.adapter, c, o)
 	}
 }
 
@@ -191,7 +189,7 @@ func (c *collectionType) Equivalent(node interface{}) bool {
 		return false
 	} else {
 		return c.Count() == o.Count() &&
-			collectionDeepEquivalent(c.context.ModelAdapter(), c, o)
+			collectionDeepEquivalent(c.adapter, c, o)
 	}
 }
 

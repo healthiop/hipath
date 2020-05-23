@@ -76,9 +76,9 @@ func TestWrapCollectionCollection(t *testing.T) {
 func TestWrapCollectionNoCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	item := pathsys.NewString("test")
-	result := wrapCollection(ctx, item)
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		col := result.(pathsys.CollectionAccessor)
+	res := wrapCollection(ctx, item)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, col.Count()) {
 			assert.Same(t, item, col.Get(0))
 		}

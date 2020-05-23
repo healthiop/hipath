@@ -30,235 +30,243 @@ package internal
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
 	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestParseNegatorExpression(t *testing.T) {
-	result, errorItemCollection := testParse("-123.45")
+	res, errorItemCollection := testParse("-123.45")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.NegatorExpression)(nil), result) {
-		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
+	if assert.IsType(t, (*expression.NegatorExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), a) {
-			assert.Equal(t, -123.45, a.(datatype.DecimalAccessor).Float64())
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), a) {
+			assert.Equal(t, -123.45, a.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }
 
 func TestParseNegatorExpressionPos(t *testing.T) {
-	result, errorItemCollection := testParse("+123.45")
+	res, errorItemCollection := testParse("+123.45")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.NumberLiteral)(nil), result) {
-		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
+	if assert.IsType(t, (*expression.NumberLiteral)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), a) {
-			assert.Equal(t, 123.45, a.(datatype.DecimalAccessor).Float64())
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), a) {
+			assert.Equal(t, 123.45, a.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }
 
 func TestParseNegatorExpressionError(t *testing.T) {
-	result, errorItemCollection := testParse("-'abc'")
+	res, errorItemCollection := testParse("-'abc'")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.NegatorExpression)(nil), result) {
-		ctx := expression.NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
+	if assert.IsType(t, (*expression.NegatorExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.Error(t, err, "evaluation error expected")
-		assert.Nil(t, a, "no accessor expected")
+		assert.Nil(t, a, "no res expected")
 	}
 }
 
 func TestParseEqualityExpressionEqual(t *testing.T) {
-	result, errorItemCollection := testParse("123.45=123.45")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45=123.45")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionEqualNot(t *testing.T) {
-	result, errorItemCollection := testParse("123.45=123.4")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45=123.4")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionNotEqual(t *testing.T) {
-	result, errorItemCollection := testParse("123.45!=123.4")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45!=123.4")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionNotEqualNot(t *testing.T) {
-	result, errorItemCollection := testParse("123.45!=123.45")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45!=123.45")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionEquivalent(t *testing.T) {
-	result, errorItemCollection := testParse("123.45~123.4")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45~123.4")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionEquivalentNot(t *testing.T) {
-	result, errorItemCollection := testParse("123.45~123.46")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45~123.46")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionNotEquivalent(t *testing.T) {
-	result, errorItemCollection := testParse("123.45!~123.46")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45!~123.46")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseEqualityExpressionNotEquivalentNot(t *testing.T) {
-	result, errorItemCollection := testParse("123.45!~123.4")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123.45!~123.4")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.EqualityExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.EqualityExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), a) {
-			assert.Equal(t, false, a.(datatype.BooleanAccessor).Bool())
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
+			assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
 
 func TestParseUnionExpression(t *testing.T) {
-	result, errorItemCollection := testParse("10 | 12 | 11 | 10")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10 | 12 | 11 | 10")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.UnionExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.UnionExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.CollectionAccessor)(nil), a) {
-			c := a.(datatype.CollectionAccessor)
+		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
+			c := a.(pathsys.CollectionAccessor)
 			if assert.Equal(t, 3, c.Count()) {
-				assert.Equal(t, datatype.NewInteger(10), c.Get(0))
-				assert.Equal(t, datatype.NewInteger(12), c.Get(1))
-				assert.Equal(t, datatype.NewInteger(11), c.Get(2))
+				assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
+				assert.Equal(t, pathsys.NewInteger(12), c.Get(1))
+				assert.Equal(t, pathsys.NewInteger(11), c.Get(2))
 			}
-			assert.Equal(t, "FHIR.integer", c.ItemTypeInfo().String())
+			assert.Equal(t, "System.Integer", c.ItemTypeInfo().String())
 		}
 	}
 }
 
 func TestParseIndexerExpression(t *testing.T) {
-	result, errorItemCollection := testParse("(10 | 17 | 11 | 14)[1]")
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("(10 | 17 | 11 | 14)[1]")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.IndexerExpression)(nil), result) {
-		a, err := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.IndexerExpression)(nil), res) {
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.NumberAccessor)(nil), a) {
-			assert.Equal(t, int32(17), a.(datatype.NumberAccessor).Int())
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
+			assert.Equal(t, int32(17), a.(pathsys.NumberAccessor).Int())
 		}
 	}
 }
 
 func TestParseInvocationExpressionUnion(t *testing.T) {
-	result, errorItemCollection := testParse("(18 | 19).union(12 | 14)")
+	res, errorItemCollection := testParse("(18 | 19).union(12 | 14)")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.InvocationExpression)(nil), result) {
-		ctx := expression.NewEvalContextWithData(datatype.NewString("test"),
-			resource.NewDynamicResource("Patient"), context.NewContext())
-		a, err := result.(expression.Evaluator).Evaluate(ctx, nil)
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
+		ctx := test.NewTestContextWithNode(t, pathsys.NewString("test"))
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*datatype.CollectionAccessor)(nil), a) {
-			c := a.(datatype.CollectionAccessor)
+		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
+			c := a.(pathsys.CollectionAccessor)
 			if assert.Equal(t, 4, c.Count()) {
-				assert.Equal(t, datatype.NewInteger(18), c.Get(0))
-				assert.Equal(t, datatype.NewInteger(19), c.Get(1))
-				assert.Equal(t, datatype.NewInteger(12), c.Get(2))
-				assert.Equal(t, datatype.NewInteger(14), c.Get(3))
+				assert.Equal(t, pathsys.NewInteger(18), c.Get(0))
+				assert.Equal(t, pathsys.NewInteger(19), c.Get(1))
+				assert.Equal(t, pathsys.NewInteger(12), c.Get(2))
+				assert.Equal(t, pathsys.NewInteger(14), c.Get(3))
 			}
-			assert.Equal(t, "FHIR.integer", c.ItemTypeInfo().String())
+			assert.Equal(t, "System.Integer", c.ItemTypeInfo().String())
 		}
 	}
 }

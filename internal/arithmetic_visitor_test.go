@@ -26,24 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package internal
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohipath/internal/expression"
+	"testing"
 )
 
-type BooleanLiteral struct {
-	node pathsys.BooleanAccessor
-}
+func TestVisitArithmeticExpressionInvalidOp(t *testing.T) {
+	args := make([]interface{}, 3)
+	args[0] = expression.NewNumberLiteralInt(1)
+	args[1] = "x"
+	args[2] = expression.NewNumberLiteralInt(1)
+	a, err := visitArithmeticExpression(nil, args)
 
-func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
-	if node, err := pathsys.ParseBoolean(value); err != nil {
-		return nil, err
-	} else {
-		return &BooleanLiteral{node}, nil
-	}
-}
-
-func (e *BooleanLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
-	return e.node, nil
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, a, "no evaluator expected")
 }

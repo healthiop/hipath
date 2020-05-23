@@ -35,21 +35,21 @@ import (
 )
 
 type testExpression struct {
-	result          interface{}
+	res             interface{}
 	invocationCount int
 	node            interface{}
 	loop            pathsys.Looper
 }
 
-func newTestExpression(result interface{}) *testExpression {
-	return &testExpression{result: result}
+func newTestExpression(res interface{}) *testExpression {
+	return &testExpression{res: res}
 }
 
 func (e *testExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
 	e.invocationCount = e.invocationCount + 1
 	e.node = node
 	e.loop = loop
-	return e.result, nil
+	return e.res, nil
 }
 
 type testErrorExpression struct {
@@ -74,17 +74,6 @@ type testingType struct {
 
 func newTestingType(t *testing.T) testingAccessor {
 	return &testingType{t}
-}
-
-func extractTesting(node interface{}) *testing.T {
-	if node == nil {
-		panic("cannot extract testing from nil")
-	}
-	if t, ok := node.(testingAccessor); !ok {
-		panic(fmt.Sprintf("cannot extract testing from %T", node))
-	} else {
-		return t.testing()
-	}
 }
 
 func (t *testingType) testing() *testing.T {

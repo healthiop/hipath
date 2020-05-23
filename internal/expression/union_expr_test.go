@@ -38,13 +38,13 @@ import (
 func TestUnionExpressionLiteral(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(ParseStringLiteral("test1"), ParseStringLiteral("test2"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
-		result := accessor.(pathsys.CollectionAccessor)
-		if assert.Equal(t, 2, result.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), result.Get(0))
-			assert.Equal(t, pathsys.NewString("test2"), result.Get(1))
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 2, col.Count()) {
+			assert.Equal(t, pathsys.NewString("test1"), col.Get(0))
+			assert.Equal(t, pathsys.NewString("test2"), col.Get(1))
 		}
 	}
 }
@@ -61,19 +61,19 @@ func TestUnionExpressionCollection(t *testing.T) {
 	c2.Add(pathsys.NewDecimalInt(12))
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(c2))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
-		result := accessor.(pathsys.CollectionAccessor)
-		if assert.Equal(t, 4, result.Count()) {
-			assert.Equal(t, pathsys.NewInteger(10), result.Get(0))
-			assert.Equal(t, pathsys.NewInteger(11), result.Get(1))
-			assert.Equal(t, pathsys.NewInteger(14), result.Get(2))
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 4, col.Count()) {
+			assert.Equal(t, pathsys.NewInteger(10), col.Get(0))
+			assert.Equal(t, pathsys.NewInteger(11), col.Get(1))
+			assert.Equal(t, pathsys.NewInteger(14), col.Get(2))
 			assert.Condition(t, func() bool {
-				return pathsys.NewDecimalInt(12).Equal(result.Get(3))
+				return pathsys.NewDecimalInt(12).Equal(col.Get(3))
 			})
 		}
-		assert.Equal(t, "System.Any", result.ItemTypeInfo().String())
+		assert.Equal(t, "System.Any", col.ItemTypeInfo().String())
 	}
 }
 
@@ -82,20 +82,20 @@ func TestUnionExpressionCollectionEmpty(t *testing.T) {
 	c1 := ctx.NewCollection()
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(nil))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestUnionExpressionLeftNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(NewEmptyLiteral(), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
-		result := accessor.(pathsys.CollectionAccessor)
-		if assert.Equal(t, 1, result.Count()) {
-			assert.Equal(t, pathsys.NewString("test"), result.Get(0))
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 1, col.Count()) {
+			assert.Equal(t, pathsys.NewString("test"), col.Get(0))
 		}
 	}
 }
@@ -103,12 +103,12 @@ func TestUnionExpressionLeftNil(t *testing.T) {
 func TestUnionExpressionRightNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(ParseStringLiteral("test"), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
-		result := accessor.(pathsys.CollectionAccessor)
-		if assert.Equal(t, 1, result.Count()) {
-			assert.Equal(t, pathsys.NewString("test"), result.Get(0))
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 1, col.Count()) {
+			assert.Equal(t, pathsys.NewString("test"), col.Get(0))
 		}
 	}
 }
@@ -116,23 +116,23 @@ func TestUnionExpressionRightNil(t *testing.T) {
 func TestUnionExpressionBothNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(NewEmptyLiteral(), NewEmptyLiteral())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestUnionExpressionLeftError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(newTestErrorExpression(), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }
 
 func TestUnionExpressionRightError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(ParseStringLiteral("test"), newTestErrorExpression())
-	accessor, err := e.Evaluate(ctx, nil, nil)
+	res, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "empty collection expected")
+	assert.Nil(t, res, "empty collection expected")
 }

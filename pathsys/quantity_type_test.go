@@ -315,7 +315,7 @@ func TestQuantityCalcNotSupportedOp(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(2.5), NewString("m"))
 	r, err := q1.Calc(q2, DivOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, r, "no result expected")
+	assert.Nil(t, r, "no res expected")
 }
 
 func TestQuantityCalcCodesDiffers(t *testing.T) {
@@ -323,7 +323,7 @@ func TestQuantityCalcCodesDiffers(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(2.5), NewString("g"))
 	r, err := q1.Calc(q2, AdditionOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, r, "no result expected")
+	assert.Nil(t, r, "no res expected")
 }
 
 func TestQuantityCalcLeftNil(t *testing.T) {
@@ -331,7 +331,7 @@ func TestQuantityCalcLeftNil(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(2.5), NewString("g"))
 	r, err := q1.Calc(q2, AdditionOp)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, r, "empty result expected")
+	assert.Nil(t, r, "empty res expected")
 }
 
 func TestQuantityCalcRightNil(t *testing.T) {
@@ -339,5 +339,5 @@ func TestQuantityCalcRightNil(t *testing.T) {
 	q2 := NewQuantity(nil, NewString("g"))
 	r, err := q1.Calc(q2, AdditionOp)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, r, "empty result expected")
+	assert.Nil(t, r, "empty res expected")
 }

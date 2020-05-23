@@ -33,6 +33,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/stretchr/testify/assert"
 	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -74,15 +75,15 @@ func TestVisitorVisitChildren(t *testing.T) {
 	r := v.VisitChildren(newRuleNodeMock(children))
 
 	if assert.IsType(t, ([]interface{})(nil), r) {
-		a := r.([]interface{})
-		if assert.Len(t, a, 2) {
-			if assert.IsType(t, ([]interface{})(nil), a[0]) {
-				a0 := a[0].([]interface{})
-				if assert.Len(t, a0, 1) {
-					assert.Equal(t, "inner", a0[0])
+		res := r.([]interface{})
+		if assert.Len(t, res, 2) {
+			if assert.IsType(t, ([]interface{})(nil), res[0]) {
+				n0 := res[0].([]interface{})
+				if assert.Len(t, n0, 1) {
+					assert.Equal(t, "inner", n0[0])
 				}
 			}
-			assert.Equal(t, "outer", a[1])
+			assert.Equal(t, "outer", res[1])
 		}
 	}
 }
@@ -97,7 +98,7 @@ func TestVisitorVisitChildrenNil(t *testing.T) {
 	v := NewVisitor(NewErrorItemCollection())
 	r := v.VisitChildren(newRuleNodeMock(children))
 
-	assert.Nil(t, r, "no result expected")
+	assert.Nil(t, r, "no res expected")
 }
 
 func TestVisitorVisitFirstChild(t *testing.T) {
@@ -134,23 +135,23 @@ func TestVisitorVisitChildNotExist(t *testing.T) {
 }
 
 func TestVisitorVisit(t *testing.T) {
-	result := expression.NewEmptyLiteral()
+	res := expression.NewEmptyLiteral()
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
-		return result, nil
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
+		return res, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
-	assert.Same(t, result, r)
+	assert.Same(t, res, r)
 }
 
 func TestVisitorVisitError(t *testing.T) {
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (expression.Evaluator, error) {
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
 		return nil, fmt.Errorf("test error")
 	})
 
@@ -164,7 +165,7 @@ func TestVisitorVisitError(t *testing.T) {
 }
 
 func TestVisitorTree(t *testing.T) {
-	result := expression.NewEmptyLiteral()
+	res := expression.NewEmptyLiteral()
 	children := make([]antlr.Token, 2)
 	children[0] = newTokenMock(32, 2, "first")
 	children[1] = newTokenMock(32, 2, "second")
@@ -172,29 +173,29 @@ func TestVisitorTree(t *testing.T) {
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 		if assert.Len(t, args, 2) {
 			assert.Equal(t, "first", args[0])
 			assert.Equal(t, "second", args[1])
 		}
-		return result, nil
+		return res, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
-	assert.Same(t, result, r)
+	assert.Same(t, res, r)
 }
 
 func TestVisitorTreeMissingArgs(t *testing.T) {
-	result := expression.NewEmptyLiteral()
+	res := expression.NewEmptyLiteral()
 	children := make([]antlr.Token, 1)
 	children[0] = newTokenMock(32, 2, "first")
 
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
-		return result, nil
+		return res, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
@@ -202,13 +203,13 @@ func TestVisitorTreeMissingArgs(t *testing.T) {
 }
 
 func TestVisitorTreeErrorChild(t *testing.T) {
-	result := expression.NewEmptyLiteral()
+	res := expression.NewEmptyLiteral()
 	ctx := newRuleContextWithErrorChild(81, 32, newTokenMock(87, 32, "test"))
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
-		return result, nil
+		return res, nil
 	})
 
 	assert.False(t, c.HasErrors(), "no errors expected")
@@ -341,7 +342,7 @@ func (r ruleNodeMock) GetText() string {
 	panic("implement me")
 }
 
-func (r ruleNodeMock) ToStringTree(strings []string, recognizer antlr.Recognizer) string {
+func (r ruleNodeMock) ToStringTree([]string, antlr.Recognizer) string {
 	panic("implement me")
 }
 
@@ -397,7 +398,7 @@ func (t terminalNodeMock) GetText() string {
 	return t.text
 }
 
-func (t terminalNodeMock) ToStringTree(strings []string, recognizer antlr.Recognizer) string {
+func (t terminalNodeMock) ToStringTree([]string, antlr.Recognizer) string {
 	panic("implement me")
 }
 

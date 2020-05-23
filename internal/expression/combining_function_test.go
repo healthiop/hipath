@@ -47,10 +47,10 @@ func TestUnionPathFunc(t *testing.T) {
 	c2.Add(pathsys.NewDecimalInt(12))
 
 	f := newUnionFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 4, c.Count()) {
 			assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
 			assert.Equal(t, pathsys.NewInteger(11), c.Get(1))
@@ -69,10 +69,10 @@ func TestUnionPathFuncNoCollection(t *testing.T) {
 	c2 := pathsys.NewString("test2")
 
 	f := newUnionFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 2, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
@@ -86,10 +86,10 @@ func TestUnionPathFuncArgNil(t *testing.T) {
 	c1 := pathsys.NewString("test1")
 
 	f := newUnionFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
@@ -102,10 +102,10 @@ func TestUnionPathFuncObjNil(t *testing.T) {
 	c1 := pathsys.NewString("test1")
 
 	f := newUnionFunction()
-	result, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
@@ -115,17 +115,17 @@ func TestUnionPathFuncObjNil(t *testing.T) {
 
 func TestUnionPathFuncBothNil(t *testing.T) {
 	f := newUnionFunction()
-	result, err := f.Execute(nil, nil, []interface{}{nil}, nil)
+	res, err := f.Execute(nil, nil, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, result, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestUnionPathFuncBothEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newUnionFunction()
-	result, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
+	res, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, result, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestCombinePathFunc(t *testing.T) {
@@ -140,10 +140,10 @@ func TestCombinePathFunc(t *testing.T) {
 	c2.Add(pathsys.NewDecimalInt(12))
 
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 5, c.Count()) {
 			assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
 			assert.Equal(t, pathsys.NewInteger(11), c.Get(1))
@@ -165,10 +165,10 @@ func TestCombinePathFuncNoCollection(t *testing.T) {
 	c2 := pathsys.NewString("test2")
 
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 2, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
@@ -182,10 +182,10 @@ func TestCombinePathFuncArgNil(t *testing.T) {
 	c1 := pathsys.NewString("test1")
 
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
@@ -198,10 +198,10 @@ func TestCombinePathFuncObjNil(t *testing.T) {
 	c1 := pathsys.NewString("test1")
 
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), result) {
-		c := result.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
@@ -212,15 +212,15 @@ func TestCombinePathFuncObjNil(t *testing.T) {
 func TestCombinePathFuncBothNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, nil, []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, result, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }
 
 func TestCombinePathFuncBothEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newCombineFunction()
-	result, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
+	res, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, result, "empty result expected")
+	assert.Nil(t, res, "empty res expected")
 }

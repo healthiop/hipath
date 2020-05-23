@@ -32,6 +32,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
@@ -50,7 +51,7 @@ func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) int
 	return v.visitTree(ctx, 2, visitExternalConstant)
 }
 
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	name := args[1].(string)
 	return expression.ParseExtConstantTerm(name), nil
 }
@@ -59,7 +60,7 @@ func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interfa
 	return v.visitTree(ctx, 1, visitInvocationTerm)
 }
 
-func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
-	invocationEvaluator := args[0].(expression.Evaluator)
+func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	invocationEvaluator := args[0].(pathsys.Evaluator)
 	return expression.NewInvocationTerm(invocationEvaluator), nil
 }

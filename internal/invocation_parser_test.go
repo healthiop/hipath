@@ -26,24 +26,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package expression
+package internal
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/internal/test"
 	"github.com/volsch/gohipath/pathsys"
+	"testing"
 )
 
-type BooleanLiteral struct {
-	node pathsys.BooleanAccessor
-}
+func TestParseAggregateTotal(t *testing.T) {
+	res, errorItemCollection := testParse("(10 | 14 | 3).aggregate($total + $this, 5)")
 
-func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
-	if node, err := pathsys.ParseBoolean(value); err != nil {
-		return nil, err
-	} else {
-		return &BooleanLiteral{node}, nil
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
+			assert.Equal(t, 32.0, a.(pathsys.NumberAccessor).Float64())
+		}
 	}
 }
 
-func (e *BooleanLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
-	return e.node, nil
+func TestParseAggregateIndex(t *testing.T) {
+	res, errorItemCollection := testParse("(10 | 14 | 3).aggregate($index + $this + $total, 1)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), a) {
+			assert.Equal(t, 31.0, a.(pathsys.NumberAccessor).Float64())
+		}
+	}
 }

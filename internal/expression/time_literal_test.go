@@ -42,7 +42,7 @@ func TestFullTimeLiteral(t *testing.T) {
 	if evaluator != nil {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, node, "result expected")
+		assert.NotNil(t, node, "res expected")
 		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), node) {
 			ta := node.(pathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
@@ -59,11 +59,11 @@ func TestFluentTimeLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), accessor) {
-			ta := accessor.(pathsys.TimeAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), res) {
+			ta := res.(pathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
 			assert.Equal(t, 30, ta.Minute())
 			assert.Equal(t, 0, ta.Second())

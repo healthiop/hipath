@@ -91,13 +91,13 @@ func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 			this := col.Get(i)
 			loop.IncIndex(this)
 
-			result, err := loopEvaluator.Evaluate(ctx, this, loop)
+			res, err := loopEvaluator.Evaluate(ctx, this, loop)
 			if err != nil {
 				return nil, err
 			}
-			if result != nil {
-				if b, ok := result.(pathsys.BooleanAccessor); !ok {
-					return nil, fmt.Errorf("filter expression must return boolean, but returned %T", result)
+			if res != nil {
+				if b, ok := res.(pathsys.BooleanAccessor); !ok {
+					return nil, fmt.Errorf("filter expression must return boolean, but returned %T", res)
 				} else if b.Bool() {
 					return pathsys.NewBoolean(true), nil
 				}

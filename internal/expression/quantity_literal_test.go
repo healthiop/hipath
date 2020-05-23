@@ -39,11 +39,11 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), accessor) {
-			quantityAccessor := accessor.(pathsys.QuantityAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(pathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -59,11 +59,11 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), accessor) {
-			quantityAccessor := accessor.(pathsys.QuantityAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(pathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -79,11 +79,11 @@ func TestQuantityLiteralUnitEmpty(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), accessor) {
-			quantityAccessor := accessor.(pathsys.QuantityAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(pathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -97,11 +97,11 @@ func TestQuantityLiteralUnitEmptyStringLiteral(t *testing.T) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), accessor) {
-			quantityAccessor := accessor.(pathsys.QuantityAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(pathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -148,11 +148,11 @@ func testParseQuantityUnit(t *testing.T, unit string, Unit string) {
 
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), accessor) {
-			quantityAccessor := accessor.(pathsys.QuantityAccessor)
+		assert.NotNil(t, res, "res expected")
+		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(pathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}

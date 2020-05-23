@@ -32,6 +32,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 func (v *Visitor) VisitFunctionInvocation(ctx *parser.FunctionInvocationContext) interface{} {
@@ -42,19 +43,19 @@ func (v *Visitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
 	return v.visitTree(ctx, 3, visitFunction)
 }
 
-func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error) {
+func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	name := args[0].(string)
 
-	var paramEvaluators []expression.Evaluator
+	var paramEvaluators []pathsys.Evaluator
 	if len(args) < 4 {
-		paramEvaluators = []expression.Evaluator{}
+		paramEvaluators = []pathsys.Evaluator{}
 	} else {
 		paramList := args[2].([]interface{})
 		// commas need to removed from argument list
-		paramEvaluators = make([]expression.Evaluator, (len(paramList)+1)/2)
+		paramEvaluators = make([]pathsys.Evaluator, (len(paramList)+1)/2)
 		for pos, param := range paramList {
 			if pos%2 == 0 {
-				paramEvaluators[pos/2] = param.(expression.Evaluator)
+				paramEvaluators[pos/2] = param.(pathsys.Evaluator)
 			}
 		}
 	}
@@ -64,4 +65,16 @@ func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (expression.
 
 func (v *Visitor) VisitParamList(ctx *parser.ParamListContext) interface{} {
 	return v.VisitChildren(ctx)
+}
+
+func (v *Visitor) VisitThisInvocation(*parser.ThisInvocationContext) interface{} {
+	return expression.NewThisInvocation()
+}
+
+func (v *Visitor) VisitIndexInvocation(*parser.IndexInvocationContext) interface{} {
+	return expression.NewIndexInvocation()
+}
+
+func (v *Visitor) VisitTotalInvocation(*parser.TotalInvocationContext) interface{} {
+	return expression.NewTotalInvocation()
 }

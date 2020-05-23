@@ -40,11 +40,11 @@ func TestBooleanLiteralTrue(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
+		assert.NotNil(t, node, "res expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -55,11 +55,11 @@ func TestBooleanLiteralFalse(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "result expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
+		assert.NotNil(t, node, "res expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }

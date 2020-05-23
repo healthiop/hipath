@@ -44,18 +44,18 @@ func NewEqualityExpression(not bool, equivalent bool, evalLeft pathsys.Evaluator
 }
 
 func (e *EqualityExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
-	accessor, err := e.evaluateInternally(ctx, node, loop)
+	res, err := e.evaluateInternally(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	if accessor == nil {
+	if res == nil {
 		return nil, nil
 	}
 	if e.not {
-		return accessor.(pathsys.BooleanAccessor).Negate(), nil
+		return res.(pathsys.BooleanAccessor).Negate(), nil
 	}
-	return accessor, nil
+	return res, nil
 }
 
 func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {

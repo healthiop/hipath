@@ -30,8 +30,8 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
 	"github.com/volsch/gohipath/internal/parser"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type Visitor struct {
@@ -39,8 +39,8 @@ type Visitor struct {
 	errorItemCollection *ErrorItemCollection
 }
 
-type visitorFunc func(ctx antlr.ParserRuleContext) (expression.Evaluator, error)
-type visitorArgFunc func(ctx antlr.ParserRuleContext, args []interface{}) (expression.Evaluator, error)
+type visitorFunc func(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error)
+type visitorArgFunc func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error)
 
 func NewVisitor(errorItemCollection *ErrorItemCollection) *Visitor {
 	v := new(Visitor)
@@ -48,7 +48,7 @@ func NewVisitor(errorItemCollection *ErrorItemCollection) *Visitor {
 	return v
 }
 
-func (v *Visitor) AddError(ctx antlr.ParserRuleContext, msg string) expression.Evaluator {
+func (v *Visitor) AddError(ctx antlr.ParserRuleContext, msg string) pathsys.Evaluator {
 	v.errorItemCollection.AddError(ctx.GetStart().GetLine(), ctx.GetStart().GetColumn(), msg)
 	return nil
 }
@@ -101,7 +101,7 @@ func (v *Visitor) visit(ctx antlr.ParserRuleContext, f visitorFunc) interface{} 
 	}
 }
 
-func (v *Visitor) visitTree(ctx antlr.ParserRuleContext, argCount int, f visitorArgFunc) expression.Evaluator {
+func (v *Visitor) visitTree(ctx antlr.ParserRuleContext, argCount int, f visitorArgFunc) pathsys.Evaluator {
 	c := v.VisitChildren(ctx)
 
 	args, ok := c.([]interface{})

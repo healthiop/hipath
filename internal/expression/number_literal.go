@@ -46,19 +46,19 @@ func NewNumberLiteralFloat64(value float64) pathsys.Evaluator {
 }
 
 func ParseNumberLiteral(value string) (pathsys.Evaluator, error) {
-	var accessor pathsys.NumberAccessor
+	var node pathsys.NumberAccessor
 	var err error
 
 	if strings.ContainsRune(value, '.') {
-		accessor, err = pathsys.ParseDecimal(value)
+		node, err = pathsys.ParseDecimal(value)
 	} else {
-		accessor, err = pathsys.ParseInteger(value)
+		node, err = pathsys.ParseInteger(value)
 	}
 
 	if err != nil {
 		return nil, err
 	} else {
-		return &NumberLiteral{accessor}, nil
+		return &NumberLiteral{node}, nil
 	}
 }
 

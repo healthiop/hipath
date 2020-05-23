@@ -33,7 +33,7 @@ import (
 	"github.com/volsch/gohipath/internal/parser"
 )
 
-func testParse(pathString string) (result interface{}, errorItemCollection *ErrorItemCollection) {
+func testParse(pathString string) (res interface{}, errorItemCollection *ErrorItemCollection) {
 	is := antlr.NewInputStream(pathString)
 	lexer := parser.NewFHIRPathLexer(is)
 	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
@@ -41,7 +41,7 @@ func testParse(pathString string) (result interface{}, errorItemCollection *Erro
 
 	errorItemCollection = NewErrorItemCollection()
 	v := NewVisitor(errorItemCollection)
-	result = p.Expression().Accept(v)
+	res = p.Expression().Accept(v)
 
 	return
 }

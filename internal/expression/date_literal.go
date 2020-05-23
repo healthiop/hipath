@@ -41,10 +41,10 @@ func ParseDateLiteral(value string) (pathsys.Evaluator, error) {
 	if len(value) < 2 || value[0] != '@' {
 		return nil, fmt.Errorf("invalid date literal: %s", value)
 	}
-	if accessor, err := pathsys.ParseDate(value[1:]); err != nil {
+	if node, err := pathsys.ParseDate(value[1:]); err != nil {
 		return nil, err
 	} else {
-		return &DateLiteral{accessor}, nil
+		return &DateLiteral{node}, nil
 	}
 }
 

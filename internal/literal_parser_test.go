@@ -30,92 +30,92 @@ package internal
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
 	"github.com/volsch/gohipath/internal/expression"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
 
 func TestParseNullLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("{}")
+	res, errorItemCollection := testParse("{}")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	assert.IsType(t, (*expression.EmptyLiteral)(nil), result)
+	assert.IsType(t, (*expression.EmptyLiteral)(nil), res)
 }
 
 func TestParseBooleanLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("true")
+	res, errorItemCollection := testParse("true")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.BooleanLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, true, a.(datatype.BooleanAccessor).Bool())
+	if assert.IsType(t, (*expression.BooleanLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, true, a.(pathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestParseStringLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("'Test \\nValue'")
+	res, errorItemCollection := testParse("'Test \\nValue'")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.StringLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, "Test \nValue", a.(datatype.StringAccessor).String())
+	if assert.IsType(t, (*expression.StringLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, "Test \nValue", a.(pathsys.StringAccessor).String())
 	}
 }
 
 func TestParseNumberLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("183.2889")
+	res, errorItemCollection := testParse("183.2889")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.NumberLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		assert.Equal(t, 183.2889, a.(datatype.NumberAccessor).Float64())
+	if assert.IsType(t, (*expression.NumberLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, 183.2889, a.(pathsys.NumberAccessor).Float64())
 	}
 }
 
 func TestParseDateTimeLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("@2014-05-25T14:30:14.559Z")
+	res, errorItemCollection := testParse("@2014-05-25T14:30:14.559Z")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.DateTimeLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.DateTimeLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 14, 30, 14, 559000000, time.UTC),
-			a.(datatype.DateTimeAccessor).Time())
+			a.(pathsys.DateTimeAccessor).Time())
 	}
 }
 
 func TestParseDateLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("@2014-05-25")
+	res, errorItemCollection := testParse("@2014-05-25")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.DateLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
+	if assert.IsType(t, (*expression.DateLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 0, 0, 0, 0, time.Local),
-			a.(datatype.DateAccessor).Time())
+			a.(pathsys.DateAccessor).Time())
 	}
 }
 
 func TestParseTimeLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("@T14:30:17.559")
+	res, errorItemCollection := testParse("@T14:30:17.559")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.TimeLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		ta := a.(datatype.TimeAccessor)
+	if assert.IsType(t, (*expression.TimeLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		ta := a.(pathsys.TimeAccessor)
 		assert.Equal(t, 14, ta.Hour())
 		assert.Equal(t, 30, ta.Minute())
 		assert.Equal(t, 17, ta.Second())
@@ -124,50 +124,46 @@ func TestParseTimeLiteral(t *testing.T) {
 }
 
 func TestParseQuantityLiteral(t *testing.T) {
-	result, errorItemCollection := testParse("736.2321 years")
+	res, errorItemCollection := testParse("736.2321 years")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.QuantityLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		qa := a.(datatype.QuantityAccessor)
+	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		qa := a.(pathsys.QuantityAccessor)
 		if assert.NotNil(t, qa.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, qa.Value().Float64())
 		}
-		assert.Nil(t, qa.System(), "no quantity unit system expected")
-		if assert.NotNil(t, qa.Code(), "quantity code expected") {
-			assert.Equal(t, "year", qa.Code().String())
+		if assert.NotNil(t, qa.Unit(), "quantity code expected") {
+			assert.Equal(t, "year", qa.Unit().String())
 		}
 	}
 }
 
 func TestParseQuantityLiteralUCUM(t *testing.T) {
-	result, errorItemCollection := testParse("736.2321 'cm'")
+	res, errorItemCollection := testParse("736.2321 'cm'")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.QuantityLiteral)(nil), result) {
-		a, _ := result.(expression.Evaluator).Evaluate(nil, nil)
-		qa := a.(datatype.QuantityAccessor)
+	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
+		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		qa := a.(pathsys.QuantityAccessor)
 		if assert.NotNil(t, qa.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, qa.Value().Float64())
 		}
-		if assert.NotNil(t, qa.System(), "quantity unit system expected") {
-			assert.Equal(t, datatype.UCUMSystemURI, qa.System())
-		}
-		if assert.NotNil(t, qa.Code(), "quantity code expected") {
-			assert.Equal(t, "cm", qa.Code().String())
+		if assert.NotNil(t, qa.Unit(), "quantity code expected") {
+			assert.Equal(t, "cm", qa.Unit().String())
 		}
 	}
 }
 
 func TestParseQuantityLiteralUnitInvalid(t *testing.T) {
-	result, errorItemCollection := testParse("736.2321 ' cm'")
+	res, errorItemCollection := testParse("736.2321 ' cm'")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.True(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	assert.Nil(t, result, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }

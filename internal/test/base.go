@@ -26,75 +26,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package pathsys
+package test
 
 import (
-	"strconv"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
-type nodeMock struct {
-	value int
-}
-
-type nodeMockAccessor interface {
-	AnyAccessor
-	Value() int
-}
-
-func newAccessorMock() AnyAccessor {
-	return &nodeMock{}
-}
-
-func newAccessorMockWithValue(value int) AnyAccessor {
-	return &nodeMock{value}
-}
-
-func (a *nodeMock) DataType() DataTypes {
-	return UndefinedDataType
-}
-
-func (a *nodeMock) TypeInfo() TypeInfoAccessor {
-	return newAnyTypeInfo("Test")
-}
-
-func (a *nodeMock) Equal(node interface{}) bool {
-	if o, ok := node.(nodeMockAccessor); !ok {
-		return false
-	} else {
-		return a.Value() == o.Value()
-	}
-}
-
-func (a *nodeMock) Equivalent(node interface{}) bool {
-	return a.Equal(node)
-}
-
-func (a *nodeMock) String() string {
-	return strconv.FormatInt(int64(a.value), 10)
-}
-
-func (a *nodeMock) Value() int {
-	return a.value
-}
-
-var testBaseTypeInfo = NewTypeInfo(NewFQTypeName("base", "TEST"))
-var testTypeInfo = NewTypeInfoWithBase(NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
+var testBaseTypeInfo = pathsys.NewTypeInfo(pathsys.NewFQTypeName("base", "TEST"))
+var testTypeInfo = pathsys.NewTypeInfoWithBase(pathsys.NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
 
 type testModelNode struct {
-	value    float64
-	sys      bool
-	typeInfo TypeInfoAccessor
+	value float64
+	sys   bool
 }
 
 type testModelNodeAccessor interface {
 	testValue() float64
 	testSys() bool
-	testTypeInfo() TypeInfoAccessor
 }
 
-func newTestModelNode(value float64, sys bool, typeInfo TypeInfoAccessor) *testModelNode {
-	return &testModelNode{value, sys, typeInfo}
+func NewTestModelNode(value float64, sys bool) *testModelNode {
+	return &testModelNode{value, sys}
 }
 
 func (n *testModelNode) testValue() float64 {
@@ -105,15 +58,11 @@ func (n *testModelNode) testSys() bool {
 	return n.sys
 }
 
-func (n *testModelNode) testTypeInfo() TypeInfoAccessor {
-	return n.typeInfo
-}
-
 type testModel struct {
 	t *testing.T
 }
 
-func newTestModel(t *testing.T) ModelAdapter {
+func newTestModel(t *testing.T) pathsys.ModelAdapter {
 	return &testModel{t}
 }
 
@@ -123,21 +72,21 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 		return nil
 	} else {
 		if n.testSys() {
-			return NewDecimalFloat64(n.testValue())
+			return pathsys.NewDecimalFloat64(n.testValue())
 		}
 		return n
 	}
 }
 
-func (a *testModel) TypeInfo(node interface{}) TypeInfoAccessor {
+func (a *testModel) TypeInfo(node interface{}) pathsys.TypeInfoAccessor {
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		a.t.Errorf("not a test model node: %T", node)
-		return UndefinedTypeInfo
+		return pathsys.UndefinedTypeInfo
 	} else {
 		if n.testSys() {
 			a.t.Errorf("type of system node must not be requested")
 		}
-		return n.testTypeInfo()
+		return testTypeInfo
 	}
 }
 
@@ -174,25 +123,33 @@ func (a *testModel) Equivalent(node1 interface{}, node2 interface{}) bool {
 }
 
 type testContext struct {
-	modelAdapter ModelAdapter
+	modelAdapter pathsys.ModelAdapter
+	node         interface{}
 }
 
-func newTestContext(t *testing.T) ContextAccessor {
-	return &testContext{newTestModel(t)}
+func NewTestContext(t *testing.T) pathsys.ContextAccessor {
+	return &testContext{modelAdapter: newTestModel(t)}
 }
 
-func (t *testContext) EnvVar(string) (interface{}, bool) {
+func NewTestContextWithNode(t *testing.T, node interface{}) pathsys.ContextAccessor {
+	return &testContext{modelAdapter: newTestModel(t), node: node}
+}
+
+func (t *testContext) EnvVar(name string) (interface{}, bool) {
+	if name == "ucum" {
+		return pathsys.UCUMSystemURI, true
+	}
 	return nil, false
 }
 
-func (t *testContext) ModelAdapter() ModelAdapter {
+func (t *testContext) ModelAdapter() pathsys.ModelAdapter {
 	return t.modelAdapter
 }
 
-func (t *testContext) NewCollection() CollectionModifier {
-	return NewCollection(t.modelAdapter)
+func (t *testContext) NewCollection() pathsys.CollectionModifier {
+	return pathsys.NewCollection(t.modelAdapter)
 }
 
 func (t *testContext) ContextNode() interface{} {
-	return nil
+	return t.node
 }

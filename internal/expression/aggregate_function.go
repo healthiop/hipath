@@ -59,11 +59,11 @@ func (f *aggregateFunction) Execute(ctx pathsys.ContextAccessor, node interface{
 			this := col.Get(i)
 			loop.IncIndex(this)
 
-			result, err := loopEvaluator.Evaluate(ctx, this, loop)
+			res, err := loopEvaluator.Evaluate(ctx, this, loop)
 			if err != nil {
 				return nil, err
 			}
-			loop.SetTotal(result)
+			loop.SetTotal(res)
 		}
 	}
 

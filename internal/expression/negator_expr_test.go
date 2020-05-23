@@ -38,11 +38,11 @@ func TestNegatorExpressionEvaluate(t *testing.T) {
 	i, _ := ParseNumberLiteral("123.45")
 	evaluator := NewNegatorExpression(i)
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "result expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
-		assert.Equal(t, float64(-123.45), accessor.(pathsys.DecimalAccessor).Float64())
+	assert.NotNil(t, res, "res expected")
+	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, float64(-123.45), res.(pathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -50,24 +50,24 @@ func TestNegatorExpressionEvaluateNonNegator(t *testing.T) {
 	s := ParseStringLiteral("'Test'")
 	evaluator := NewNegatorExpression(s)
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestNegatorExpressionEvaluateEmpty(t *testing.T) {
 	empty := NewEmptyLiteral()
 	evaluator := NewNegatorExpression(empty)
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }
 
 func TestNegatorExpressionEvaluateError(t *testing.T) {
 	evaluator := NewNegatorExpression(newTestErrorExpression())
 
-	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no result expected")
+	assert.Nil(t, res, "no res expected")
 }

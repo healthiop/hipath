@@ -36,119 +36,98 @@ import (
 	"testing"
 )
 
-func TestParseParenthesizedBooleanLiteral(t *testing.T) {
-	res, errorItemCollection := testParse("(false)")
+func TestParseAdditionExpression(t *testing.T) {
+	res, errorItemCollection := testParse("10 + 14")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.BooleanLiteral)(nil), res) {
-		a, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, false, a.(pathsys.BooleanAccessor).Bool())
-	}
-}
-
-func TestParseExtConstant(t *testing.T) {
-	res, errorItemCollection := testParse("%ucum")
-
-	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
-		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
-	}
-	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
 		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, a)
-	}
-}
-
-func TestParseExtConstantDelimited(t *testing.T) {
-	res, errorItemCollection := testParse("%`ucum`")
-
-	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
-		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
-	}
-	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
-		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
-		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, a)
-	}
-}
-
-func TestParseExtConstantNotDefined(t *testing.T) {
-	res, errorItemCollection := testParse("%xxx")
-
-	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
-		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
-	}
-	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
-		ctx := test.NewTestContext(t)
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
-		assert.Error(t, err, "evaluation error expected")
-		assert.Nil(t, a, "no res expected due to error")
-	}
-}
-
-func TestParseInvocationTermEmptyCollection(t *testing.T) {
-	ctx := test.NewTestContext(t)
-	res, errorItemCollection := testParse("empty()")
-
-	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
-		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
-	}
-	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		col := ctx.NewCollection()
-		col.Add(pathsys.NewString("test"))
-
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
-		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, pathsys.NewBoolean(false), a)
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), a) {
+			assert.Equal(t, int32(24), a.(pathsys.IntegerAccessor).Int())
 		}
 	}
 }
 
-func TestParseInvocationTermEmptyCollectionEmpty(t *testing.T) {
-	ctx := test.NewTestContext(t)
-	res, errorItemCollection := testParse("empty()")
+func TestParseSubtractionExpression(t *testing.T) {
+	res, errorItemCollection := testParse("14 - 8")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		ctx = test.NewTestContextWithNode(t, ctx.NewCollection())
-
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
 		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), a) {
-			assert.Equal(t, pathsys.NewBoolean(true), a)
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), a) {
+			assert.Equal(t, int32(6), a.(pathsys.IntegerAccessor).Int())
 		}
 	}
 }
 
-func TestParseInvocationTermUnion(t *testing.T) {
-	ctx := test.NewTestContext(t)
-	res, errorItemCollection := testParse("union(12 | 14)")
+func TestParseMultiplicationExpression(t *testing.T) {
+	res, errorItemCollection := testParse("14 * 8")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
-	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		col := ctx.NewCollection()
-		col.Add(pathsys.NewInteger(18))
-		col.Add(pathsys.NewInteger(19))
-
-		a, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), a) {
-			c := a.(pathsys.CollectionAccessor)
-			if assert.Equal(t, 4, c.Count()) {
-				assert.Equal(t, pathsys.NewInteger(18), c.Get(0))
-				assert.Equal(t, pathsys.NewInteger(19), c.Get(1))
-				assert.Equal(t, pathsys.NewInteger(12), c.Get(2))
-				assert.Equal(t, pathsys.NewInteger(14), c.Get(3))
-			}
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), a) {
+			assert.Equal(t, int32(112), a.(pathsys.IntegerAccessor).Int())
+		}
+	}
+}
+
+func TestParseDivisionExpression(t *testing.T) {
+	res, errorItemCollection := testParse("14 / 8")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), a) {
+			assert.Equal(t, 1.75, a.(pathsys.DecimalAccessor).Float64())
+		}
+	}
+}
+
+func TestParseDivExpression(t *testing.T) {
+	res, errorItemCollection := testParse("18 div 8")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), a) {
+			assert.Equal(t, int32(2), a.(pathsys.IntegerAccessor).Int())
+		}
+	}
+}
+
+func TestParseModExpression(t *testing.T) {
+	res, errorItemCollection := testParse("19 mod 8")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		a, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), a) {
+			assert.Equal(t, 3.0, a.(pathsys.IntegerAccessor).Float64())
 		}
 	}
 }
