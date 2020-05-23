@@ -30,40 +30,39 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestInvocationTermEvaluate(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewInteger(123))
-	ctx := NewEvalContextWithData(c, resource.NewDynamicResource("Patient"), context.NewContext())
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString(""))
 
-	f, err := LookupFunctionInvocation("empty", []Evaluator{})
+	f, err := LookupFunctionInvocation("empty", []pathsys.Evaluator{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	evaluator := NewInvocationTerm(f)
 
-	accessor, err := evaluator.Evaluate(ctx, nil)
+	accessor, err := evaluator.Evaluate(ctx, c, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "accessor expected")
-	if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, datatype.NewBoolean(false), accessor)
+	assert.NotNil(t, accessor, "result expected")
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
+		assert.Equal(t, pathsys.NewBoolean(false), accessor)
 	}
 }
 
 func TestInvocationTermEvaluateFuncErr(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewInteger(123))
-	ctx := NewEvalContextWithData(c, resource.NewDynamicResource("Patient"), context.NewContext())
+	ctx := test.NewTestContextWithNode(t, pathsys.NewString(""))
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewInteger(123))
 
 	evaluator := NewInvocationTerm(newTestErrorExpression())
 
-	accessor, err := evaluator.Evaluate(ctx, nil)
+	accessor, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected")
+	assert.Nil(t, accessor, "no result expected")
 }

@@ -28,12 +28,32 @@
 
 package expression
 
-import "github.com/volsch/gohimodel/datatype"
+import "github.com/volsch/gohipath/pathsys"
 
-func unionPathFunc(ctx *EvalContext, obj datatype.Accessor, args []datatype.Accessor) (datatype.Accessor, error) {
-	return uniteCollections(obj, args[0]), nil
+type unionFunction struct {
+	pathsys.BaseFunction
 }
 
-func combinePathFunc(ctx *EvalContext, obj datatype.Accessor, args []datatype.Accessor) (datatype.Accessor, error) {
-	return combineCollections(obj, args[0]), nil
+func newUnionFunction() *unionFunction {
+	return &unionFunction{
+		BaseFunction: pathsys.NewBaseFunction("union", -1, 1, 1),
+	}
+}
+
+func (f *unionFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	return uniteCollections(ctx, node, args[0]), nil
+}
+
+type combineFunction struct {
+	pathsys.BaseFunction
+}
+
+func newCombineFunction() *combineFunction {
+	return &combineFunction{
+		BaseFunction: pathsys.NewBaseFunction("combine", -1, 1, 1),
+	}
+}
+
+func (f *combineFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	return combineCollections(ctx, node, args[0]), nil
 }

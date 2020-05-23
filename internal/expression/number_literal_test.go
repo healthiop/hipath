@@ -30,7 +30,7 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -38,14 +38,35 @@ func TestNumberLiteralInteger(t *testing.T) {
 	evaluator, err := ParseNumberLiteral("-72638")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, evaluator, "evaluator expected")
-	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.IntegerAccessor)(nil), accessor) {
-			assert.Equal(t, int32(-72638), accessor.(datatype.IntegerAccessor).Int())
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), accessor) {
+			assert.Equal(t, int32(-72638), accessor.(pathsys.IntegerAccessor).Int())
 		}
+	}
+}
+
+func TestNewNumberLiteralInt(t *testing.T) {
+	evaluator := NewNumberLiteralInt(-72638)
+
+	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, accessor, "result expected")
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), accessor) {
+		assert.Equal(t, int32(-72638), accessor.(pathsys.IntegerAccessor).Int())
+	}
+}
+
+func TestNewNumberLiteralFloat64(t *testing.T) {
+	evaluator := NewNumberLiteralFloat64(-72638.877)
+
+	accessor, err := evaluator.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.NotNil(t, accessor, "result expected")
+	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
+		assert.Equal(t, -72638.877, accessor.(pathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -60,13 +81,12 @@ func TestNumberLiteralDecimal(t *testing.T) {
 	evaluator, err := ParseNumberLiteral("-72638.1")
 
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, evaluator, "evaluator expected")
-	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+	if assert.NotNil(t, evaluator, "evaluator expected") {
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.DecimalAccessor)(nil), accessor) {
-			assert.Equal(t, -72638.1, accessor.(datatype.DecimalAccessor).Float64())
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), accessor) {
+			assert.Equal(t, -72638.1, accessor.(pathsys.DecimalAccessor).Float64())
 		}
 	}
 }

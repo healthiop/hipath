@@ -28,65 +28,16 @@
 
 package expression
 
-import "github.com/volsch/gohimodel/datatype"
+import "github.com/volsch/gohipath/pathsys"
 
-func convertContextData(accessor datatype.Accessor) datatype.Accessor {
-	if accessor == nil {
-		return accessor
-	}
-
-	dt := accessor.DataType()
-	if dt == datatype.QuantityDataType {
-		return convertContextQuantity(accessor.(datatype.QuantityAccessor))
-	}
-	return accessor
-}
-
-func convertContextQuantity(quantity datatype.QuantityAccessor) datatype.QuantityAccessor {
-	code := quantity.Code()
-	system := quantity.System()
-	if code == nil || code.Nil() ||
-		!datatype.ValueEqual(system, datatype.UCUMSystemURI) {
-		return quantity
-	}
-
-	origCodeValue := code.String()
-	switch origCodeValue {
-	case "a":
-		code = YearQuantityCode
-		system = nil
-	case "mo":
-		code = MonthQuantityCode
-		system = nil
-	case "d":
-		code = DayQuantityCode
-		system = nil
-	case "h":
-		code = HourQuantityCode
-		system = nil
-	case "min":
-		code = MinuteQuantityCode
-		system = nil
-	case "s":
-		code = SecondQuantityCode
-		system = nil
-	}
-
-	if origCodeValue == code.String() {
-		return quantity
-	}
-	return datatype.NewQuantity(quantity.Value(), quantity.Comparator(), quantity.Unit(),
-		system, code)
-}
-
-func uniteCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.CollectionModifier {
-	if a1 == nil && a2 == nil {
+func uniteCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{}) pathsys.CollectionModifier {
+	if n1 == nil && n2 == nil {
 		return nil
 	}
 
-	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
-	addUniqueCollectionItems(c, a1)
-	addUniqueCollectionItems(c, a2)
+	c := ctx.NewCollection()
+	addUniqueCollectionItems(c, n1)
+	addUniqueCollectionItems(c, n2)
 
 	if c.Count() == 0 {
 		return nil
@@ -94,25 +45,25 @@ func uniteCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.Colle
 	return c
 }
 
-func addUniqueCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
-	if accessor == nil {
+func addUniqueCollectionItems(collection pathsys.CollectionModifier, node interface{}) {
+	if node == nil {
 		return
 	}
-	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+	if c, ok := node.(pathsys.CollectionAccessor); ok {
 		collection.AddAllUnique(c)
 	} else {
-		collection.AddUnique(accessor)
+		collection.AddUnique(node)
 	}
 }
 
-func combineCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.CollectionModifier {
-	if a1 == nil && a2 == nil {
+func combineCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{}) pathsys.CollectionModifier {
+	if n1 == nil && n2 == nil {
 		return nil
 	}
 
-	c := newCollectionWithAccessorTypes([]datatype.Accessor{a1, a2})
-	addCollectionItems(c, a1)
-	addCollectionItems(c, a2)
+	c := ctx.NewCollection()
+	addCollectionItems(c, n1)
+	addCollectionItems(c, n2)
 
 	if c.Count() == 0 {
 		return nil
@@ -120,23 +71,23 @@ func combineCollections(a1 datatype.Accessor, a2 datatype.Accessor) datatype.Col
 	return c
 }
 
-func addCollectionItems(collection datatype.CollectionModifier, accessor datatype.Accessor) {
-	if accessor == nil {
+func addCollectionItems(collection pathsys.CollectionModifier, node interface{}) {
+	if node == nil {
 		return
 	}
-	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+	if c, ok := node.(pathsys.CollectionAccessor); ok {
 		collection.AddAll(c)
 	} else {
-		collection.Add(accessor)
+		collection.Add(node)
 	}
 }
 
-func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
-	if accessor == nil {
+func unwrapCollection(node interface{}) interface{} {
+	if node == nil {
 		return nil
 	}
-	if c, ok := accessor.(datatype.CollectionAccessor); !ok {
-		return accessor
+	if c, ok := node.(pathsys.CollectionAccessor); !ok {
+		return node
 	} else {
 		count := c.Count()
 		if count == 0 {
@@ -149,44 +100,16 @@ func unwrapCollection(accessor datatype.Accessor) datatype.Accessor {
 	}
 }
 
-func newCollectionWithAccessorTypes(accessors []datatype.Accessor) datatype.CollectionModifier {
-	typeInfo := commonAccessorBaseType(accessors)
-	if typeInfo == nil {
-		return datatype.NewCollectionUndefined()
+func wrapCollection(ctx pathsys.ContextAccessor, node interface{}) pathsys.CollectionAccessor {
+	if node == nil {
+		return nil
 	}
-	return datatype.NewCollection(typeInfo)
-}
 
-func commonAccessorBaseType(accessors []datatype.Accessor) datatype.TypeInfoAccessor {
-	var typeInfo datatype.TypeInfoAccessor
-	for _, accessor := range accessors {
-		if accessor != nil {
-			if c, ok := accessor.(datatype.CollectionAccessor); ok {
-				count := c.Count()
-				for i := 0; i < count; i++ {
-					a := c.Get(i)
-					if a != nil {
-						typeInfo = mergeCommonAccessorBaseType(a, typeInfo)
-						if typeInfo == nil {
-							return nil
-						}
-					}
-				}
-			} else {
-				typeInfo = mergeCommonAccessorBaseType(accessor, typeInfo)
-				if typeInfo == nil {
-					return nil
-				}
-			}
-		}
+	if col, ok := node.(pathsys.CollectionAccessor); ok {
+		return col
 	}
-	return typeInfo
-}
 
-func mergeCommonAccessorBaseType(accessor datatype.Accessor,
-	typeInfo datatype.TypeInfoAccessor) datatype.TypeInfoAccessor {
-	if typeInfo == nil {
-		return accessor.TypeInfo()
-	}
-	return datatype.CommonBaseType(typeInfo, accessor.TypeInfo())
+	col := ctx.NewCollection()
+	col.Add(node)
+	return col
 }

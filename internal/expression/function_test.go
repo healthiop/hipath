@@ -30,33 +30,36 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"reflect"
-	"runtime"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 var functionTests = []struct {
-	name      string
-	function  invocationFunc
-	minParams int
-	maxParams int
+	name           string
+	executor       pathsys.FunctionExecutor
+	evaluatorParam int
+	minParams      int
+	maxParams      int
 }{
-	{"empty", emptyPathFunc, 0, 0},
-	{"union", unionPathFunc, 1, 1},
-	{"combine", combinePathFunc, 1, 1},
+	{"empty", newEmptyFunction(), -1, 0, 0},
+	{"exists", newExistsFunction(), 0, 0, 1},
+	{"union", newUnionFunction(), -1, 1, 1},
+	{"combine", newCombineFunction(), -1, 1, 1},
+	{"aggregate", newAggregateFunction(), 0, 1, 2},
 }
 
 func TestFunctions(t *testing.T) {
 	for _, tt := range functionTests {
 		t.Run(tt.name, func(t *testing.T) {
-			def, found := functionDefinitionsByName[tt.name]
+			fe, found := functionsByName[tt.name]
 			if found {
-				assert.Equal(t, runtime.FuncForPC(reflect.ValueOf(tt.function).Pointer()).Name(),
-					runtime.FuncForPC(reflect.ValueOf(def.function).Pointer()).Name())
-				assert.Equal(t, tt.minParams, def.minParams)
-				assert.Equal(t, tt.maxParams, def.maxParams)
+				assert.Equal(t, tt.executor, fe)
+				assert.LessOrEqual(t, fe.EvaluatorParam(), tt.maxParams)
+				assert.Equal(t, tt.evaluatorParam, fe.EvaluatorParam())
+				assert.Equal(t, tt.minParams, fe.MinParams())
+				assert.Equal(t, tt.maxParams, fe.MaxParams())
 			} else {
-				t.Errorf("function %s has not been defined", tt.name)
+				t.Errorf("executor %s has not been defined", tt.name)
 			}
 		})
 	}

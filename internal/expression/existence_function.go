@@ -28,16 +28,82 @@
 
 package expression
 
-import "github.com/volsch/gohimodel/datatype"
+import (
+	"fmt"
+	"github.com/volsch/gohipath/pathsys"
+)
 
-func emptyPathFunc(ctx *EvalContext, obj datatype.Accessor, args []datatype.Accessor) (datatype.Accessor, error) {
-	if obj == nil {
-		return datatype.NewBoolean(true), nil
+type emptyFunction struct {
+	pathsys.BaseFunction
+}
+
+func newEmptyFunction() *emptyFunction {
+	return &emptyFunction{
+		BaseFunction: pathsys.NewBaseFunction("empty", -1, 0, 0),
+	}
+}
+
+func (f *emptyFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	if node == nil {
+		return pathsys.NewBoolean(true), nil
 	}
 
-	if c, ok := obj.(datatype.CollectionAccessor); ok {
-		return datatype.NewBoolean(c.Empty()), nil
+	if col, ok := node.(pathsys.CollectionAccessor); ok {
+		return pathsys.NewBoolean(col.Empty()), nil
 	} else {
-		return datatype.NewBoolean(false), nil
+		return pathsys.NewBoolean(false), nil
 	}
+}
+
+type existsFunction struct {
+	pathsys.BaseFunction
+}
+
+func newExistsFunction() *existsFunction {
+	return &existsFunction{
+		BaseFunction: pathsys.NewBaseFunction("exists", 0, 0, 1),
+	}
+}
+
+func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	if node == nil {
+		return pathsys.NewBoolean(false), nil
+	}
+
+	loopEvaluator := loop.Evaluator()
+	col, ok := node.(pathsys.CollectionAccessor)
+	if !ok {
+		if loopEvaluator == nil {
+			return pathsys.NewBoolean(true), nil
+		}
+
+		nc := ctx.NewCollection()
+		nc.Add(node)
+		col = nc
+	}
+	count := col.Count()
+
+	found := false
+	if loopEvaluator == nil {
+		found = count > 0
+	} else {
+		for i := 0; i < count; i++ {
+			this := col.Get(i)
+			loop.IncIndex(this)
+
+			result, err := loopEvaluator.Evaluate(ctx, this, loop)
+			if err != nil {
+				return nil, err
+			}
+			if result != nil {
+				if b, ok := result.(pathsys.BooleanAccessor); !ok {
+					return nil, fmt.Errorf("filter expression must return boolean, but returned %T", result)
+				} else if b.Bool() {
+					return pathsys.NewBoolean(true), nil
+				}
+			}
+		}
+	}
+
+	return pathsys.NewBoolean(found), nil
 }

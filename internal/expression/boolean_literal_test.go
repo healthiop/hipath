@@ -30,7 +30,7 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -40,11 +40,11 @@ func TestBooleanLiteralTrue(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, true, accessor.(datatype.BooleanAccessor).Bool())
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
+			assert.Equal(t, true, accessor.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -55,11 +55,11 @@ func TestBooleanLiteralFalse(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-			assert.Equal(t, false, accessor.(datatype.BooleanAccessor).Bool())
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
+			assert.Equal(t, false, accessor.(pathsys.BooleanAccessor).Bool())
 		}
 	}
 }

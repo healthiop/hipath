@@ -28,15 +28,17 @@
 
 package expression
 
-import "github.com/volsch/gohimodel/datatype"
+import "github.com/volsch/gohipath/pathsys"
 
 type EmptyLiteral struct {
 }
 
-func NewEmptyLiteral() Evaluator {
-	return &EmptyLiteral{}
+var emptyLiteral = &EmptyLiteral{}
+
+func NewEmptyLiteral() pathsys.Evaluator {
+	return emptyLiteral
 }
 
-func (e *EmptyLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
+func (e *EmptyLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
 	return nil, nil
 }

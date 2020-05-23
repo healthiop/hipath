@@ -30,24 +30,24 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type DateLiteral struct {
-	accessor datatype.DateAccessor
+	node pathsys.DateAccessor
 }
 
-func ParseDateLiteral(value string) (Evaluator, error) {
+func ParseDateLiteral(value string) (pathsys.Evaluator, error) {
 	if len(value) < 2 || value[0] != '@' {
 		return nil, fmt.Errorf("invalid date literal: %s", value)
 	}
-	if accessor, err := datatype.ParseDate(value[1:]); err != nil {
+	if accessor, err := pathsys.ParseDate(value[1:]); err != nil {
 		return nil, err
 	} else {
 		return &DateLiteral{accessor}, nil
 	}
 }
 
-func (e *DateLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *DateLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

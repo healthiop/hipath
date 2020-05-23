@@ -26,46 +26,57 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package context
+package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"testing"
+	"fmt"
+	"github.com/volsch/gohipath/pathsys"
 )
 
-func TestNewContext(t *testing.T) {
-	c := NewContext()
-	value, found := c.EnvVar("ucum")
-	if assert.True(t, found, "ucum environment variable must be available") {
-		assert.Equal(t, datatype.UCUMSystemURI, value)
-	}
-	value, found = c.EnvVar("sct")
-	if assert.True(t, found, "sct environment variable must be available") {
-		assert.Equal(t, datatype.SCTSystemURI, value)
-	}
-	value, found = c.EnvVar("loinc")
-	if assert.True(t, found, "loinc environment variable must be available") {
-		assert.Equal(t, datatype.LOINCSystemURI, value)
-	}
-	value, found = c.EnvVar("test")
-	assert.False(t, found, "test environment variable must not be available")
+type ThisInvocation struct {
 }
 
-func TestNewContextWithEnvVars(t *testing.T) {
-	stringAccessor := datatype.NewString("Test")
-	envVars := make(map[string]datatype.Accessor)
-	envVars["test"] = stringAccessor
+var thisInvocation = &ThisInvocation{}
 
-	c := NewContextWithEnvVars(envVars)
-	assert.Len(t, envVars, 1, "passed map must not have changed")
+func NewThisInvocation() *ThisInvocation {
+	return thisInvocation
+}
 
-	value, found := c.EnvVar("ucum")
-	if assert.True(t, found, "ucum environment variable must be available") {
-		assert.Equal(t, datatype.UCUMSystemURI, value)
+func (t *ThisInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	if loop == nil {
+		return nil, fmt.Errorf("this invocation can only be used inside a loop")
 	}
-	value, found = c.EnvVar("test")
-	if assert.True(t, found, "test environment variable must be available") {
-		assert.Same(t, stringAccessor, value)
+	return loop.This(), nil
+}
+
+type IndexInvocation struct {
+}
+
+var indexInvocation = &IndexInvocation{}
+
+func NewIndexInvocation() *IndexInvocation {
+	return indexInvocation
+}
+
+func (t *IndexInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	if loop == nil {
+		return nil, fmt.Errorf("index invocation can only be used inside a loop")
 	}
+	return pathsys.NewInteger(int32(loop.Index())), nil
+}
+
+type TotalInvocation struct {
+}
+
+var totalInvocation = &TotalInvocation{}
+
+func NewTotalInvocation() *TotalInvocation {
+	return totalInvocation
+}
+
+func (t *TotalInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	if loop == nil {
+		return nil, fmt.Errorf("index invocation can only be used inside a loop")
+	}
+	return loop.Total(), nil
 }

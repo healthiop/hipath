@@ -30,102 +30,109 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestUnionExpressionLiteral(t *testing.T) {
+	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(ParseStringLiteral("test1"), ParseStringLiteral("test2"))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.CollectionAccessor)(nil), accessor) {
-		result := accessor.(datatype.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
+		result := accessor.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 2, result.Count()) {
-			assert.Equal(t, datatype.NewString("test1"), result.Get(0))
-			assert.Equal(t, datatype.NewString("test2"), result.Get(1))
+			assert.Equal(t, pathsys.NewString("test1"), result.Get(0))
+			assert.Equal(t, pathsys.NewString("test2"), result.Get(1))
 		}
 	}
 }
 
 func TestUnionExpressionCollection(t *testing.T) {
-	c1 := datatype.NewCollectionUndefined()
-	c1.Add(datatype.NewPositiveInt(10))
-	c1.Add(datatype.NewPositiveInt(11))
-	c1.Add(datatype.NewPositiveInt(14))
+	ctx := test.NewTestContext(t)
+	c1 := ctx.NewCollection()
+	c1.Add(pathsys.NewInteger(10))
+	c1.Add(pathsys.NewInteger(11))
+	c1.Add(pathsys.NewInteger(14))
 
-	c2 := datatype.NewCollectionUndefined()
-	c2.Add(datatype.NewUnsignedInt(11))
-	c2.Add(datatype.NewUnsignedInt(12))
+	c2 := ctx.NewCollection()
+	c2.Add(pathsys.NewDecimalInt(11))
+	c2.Add(pathsys.NewDecimalInt(12))
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(c2))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.CollectionAccessor)(nil), accessor) {
-		result := accessor.(datatype.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
+		result := accessor.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 4, result.Count()) {
-			assert.Equal(t, datatype.NewPositiveInt(10), result.Get(0))
-			assert.Equal(t, datatype.NewPositiveInt(11), result.Get(1))
-			assert.Equal(t, datatype.NewPositiveInt(14), result.Get(2))
-			assert.Equal(t, datatype.NewUnsignedInt(12), result.Get(3))
+			assert.Equal(t, pathsys.NewInteger(10), result.Get(0))
+			assert.Equal(t, pathsys.NewInteger(11), result.Get(1))
+			assert.Equal(t, pathsys.NewInteger(14), result.Get(2))
+			assert.Condition(t, func() bool {
+				return pathsys.NewDecimalInt(12).Equal(result.Get(3))
+			})
 		}
-		assert.Equal(t, "FHIR.integer", result.ItemTypeInfo().String())
+		assert.Equal(t, "System.Any", result.ItemTypeInfo().String())
 	}
 }
 
 func TestUnionExpressionCollectionEmpty(t *testing.T) {
-	c1 := datatype.NewCollectionUndefined()
+	ctx := test.NewTestContext(t)
+	c1 := ctx.NewCollection()
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(nil))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
 
 func TestUnionExpressionLeftNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(NewEmptyLiteral(), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.CollectionAccessor)(nil), accessor) {
-		result := accessor.(datatype.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
+		result := accessor.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, result.Count()) {
-			assert.Equal(t, datatype.NewString("test"), result.Get(0))
+			assert.Equal(t, pathsys.NewString("test"), result.Get(0))
 		}
 	}
 }
 
 func TestUnionExpressionRightNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(ParseStringLiteral("test"), NewEmptyLiteral())
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.CollectionAccessor)(nil), accessor) {
-		result := accessor.(datatype.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
+		result := accessor.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 1, result.Count()) {
-			assert.Equal(t, datatype.NewString("test"), result.Get(0))
+			assert.Equal(t, pathsys.NewString("test"), result.Get(0))
 		}
 	}
 }
 
 func TestUnionExpressionBothNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
 	e := NewUnionExpression(NewEmptyLiteral(), NewEmptyLiteral())
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty collection expected")
 }
 
 func TestUnionExpressionLeftError(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := NewUnionExpression(ParseExtConstantTerm("test"), ParseStringLiteral("test"))
-	accessor, err := e.Evaluate(ctx, nil)
+	ctx := test.NewTestContext(t)
+	e := NewUnionExpression(newTestErrorExpression(), ParseStringLiteral("test"))
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "empty collection expected")
 }
 
 func TestUnionExpressionRightError(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := NewUnionExpression(ParseStringLiteral("test"), ParseExtConstantTerm("test"))
-	accessor, err := e.Evaluate(ctx, nil)
+	ctx := test.NewTestContext(t)
+	e := NewUnionExpression(ParseStringLiteral("test"), newTestErrorExpression())
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "empty collection expected")
 }

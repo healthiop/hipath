@@ -31,82 +31,139 @@ package expression
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
+var testLoop = pathsys.NewLoop(nil)
+
 func TestFunctionInvocationArgs(t *testing.T) {
-	definition := &functionDefinition{"test", testInvocationFunctionArgs, 0, 100}
+	function := &testInvocationArgsFunction{
+		t:            t,
+		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+	}
 
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := newFunctionInvocation(definition, []Evaluator{
-		ParseStringLiteral("test1"), nil, ParseStringLiteral("test2")})
+	testExpression := newTestExpression(pathsys.NewString("test1"))
+	ctx := test.NewTestContext(t)
+	e := newFunctionInvocation(function, []pathsys.Evaluator{
+		testExpression, nil, ParseStringLiteral("test2")})
 
-	accessor, err := e.Evaluate(ctx, nil)
+	tt := newTestingType(t)
+	accessor, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.CollectionAccessor)(nil), accessor) {
-		c := accessor.(datatype.CollectionAccessor)
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), accessor) {
+		c := accessor.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 3, c.Count()) {
-			assert.Equal(t, datatype.NewString("test1"), c.Get(0))
+			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Nil(t, c.Get(1))
-			assert.Equal(t, datatype.NewString("test2"), c.Get(2))
+			assert.Equal(t, pathsys.NewString("test2"), c.Get(2))
 		}
 	}
+	assert.Equal(t, 1, testExpression.invocationCount)
+	assert.Same(t, tt, testExpression.node)
+	assert.Same(t, testLoop, testExpression.loop)
+}
+
+func TestFunctionInvocationLoop(t *testing.T) {
+	function := &testInvocationLoopFunction{
+		t:            t,
+		BaseFunction: pathsys.NewBaseFunction("test", 0, 0, 100),
+	}
+
+	loopExpression := newTestExpression(pathsys.NewString("testLoop"))
+	ctx := test.NewTestContext(t)
+	e := newFunctionInvocation(function, []pathsys.Evaluator{loopExpression})
+
+	tt := newTestingType(t)
+	accessor, err := e.Evaluate(ctx, tt, testLoop)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewString("testLoop"), accessor)
+
+	assert.Equal(t, 1, loopExpression.invocationCount)
+	assert.NotSame(t, testLoop, loopExpression.loop)
 }
 
 func TestFunctionInvocationArgsError(t *testing.T) {
-	definition := &functionDefinition{"test", testInvocationFunctionArgs, 0, 100}
+	function := &testInvocationArgsFunction{
+		t:            t,
+		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+	}
 
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := newFunctionInvocation(definition, []Evaluator{
+	ctx := test.NewTestContext(t)
+	e := newFunctionInvocation(function, []pathsys.Evaluator{
 		ParseStringLiteral("test1"), ParseExtConstantTerm("xxx"), ParseStringLiteral("test2")})
 
-	accessor, err := e.Evaluate(ctx, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "no result expected")
 }
 
 func TestFunctionInvocationError(t *testing.T) {
-	definition := &functionDefinition{"test", testInvocationFunctionErr, 0, 100}
+	function := &testInvocationErrFunction{
+		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+	}
 
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := newFunctionInvocation(definition, []Evaluator{})
+	ctx := test.NewTestContext(t)
+	e := newFunctionInvocation(function, []pathsys.Evaluator{})
 
-	accessor, err := e.Evaluate(ctx, nil)
+	accessor, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "no result expected")
 }
 
 func TestLookupFunctionInvocationNotFound(t *testing.T) {
-	fi, err := LookupFunctionInvocation("test", make([]Evaluator, 0))
-	assert.EqualError(t, err, "function has not been defined: test", "error expected")
-	assert.Nil(t, fi, "no function invocation expected")
+	fi, err := LookupFunctionInvocation("test", make([]pathsys.Evaluator, 0))
+	assert.EqualError(t, err, "executor has not been defined: test", "error expected")
+	assert.Nil(t, fi, "no executor invocation expected")
 }
 
 func TestLookupFunctionInvocationTooLessArgs(t *testing.T) {
-	fi, err := LookupFunctionInvocation("union", make([]Evaluator, 0))
-	assert.EqualError(t, err, "function union requires at least 1 parameters", "error expected")
-	assert.Nil(t, fi, "no function invocation expected")
+	fi, err := LookupFunctionInvocation("union", make([]pathsys.Evaluator, 0))
+	assert.EqualError(t, err, "executor union requires at least 1 parameters", "error expected")
+	assert.Nil(t, fi, "no executor invocation expected")
 }
 
 func TestLookupFunctionInvocationTooManyArgs(t *testing.T) {
-	fi, err := LookupFunctionInvocation("union", make([]Evaluator, 2))
-	assert.EqualError(t, err, "function union accepts at most 1 parameters", "error expected")
-	assert.Nil(t, fi, "no function invocation expected")
+	fi, err := LookupFunctionInvocation("union", make([]pathsys.Evaluator, 2))
+	assert.EqualError(t, err, "executor union accepts at most 1 parameters", "error expected")
+	assert.Nil(t, fi, "no executor invocation expected")
 }
 
-func testInvocationFunctionArgs(ctx *EvalContext, obj datatype.Accessor,
-	args []datatype.Accessor) (datatype.Accessor, error) {
-	c := datatype.NewCollectionUndefined()
+type testInvocationArgsFunction struct {
+	pathsys.BaseFunction
+	t *testing.T
+}
+
+func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	t := f.t
+	assert.Same(t, testLoop, loop)
+
+	c := ctx.NewCollection()
 	for _, a := range args {
 		c.Add(a)
 	}
 	return c, nil
 }
 
-func testInvocationFunctionErr(ctx *EvalContext, obj datatype.Accessor,
-	args []datatype.Accessor) (datatype.Accessor, error) {
+type testInvocationLoopFunction struct {
+	pathsys.BaseFunction
+	t *testing.T
+}
+
+func (f *testInvocationLoopFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	t := f.t
+	if assert.NotNil(t, loop) && assert.NotNil(t, loop.Evaluator()) {
+		accessor, err := loop.Evaluator().Evaluate(nil, nil, nil)
+		return accessor, err
+	}
+	return nil, nil
+}
+
+type testInvocationErrFunction struct {
+	pathsys.BaseFunction
+}
+
+func (f *testInvocationErrFunction) Execute(pathsys.ContextAccessor, interface{}, []interface{}, pathsys.Looper) (interface{}, error) {
 	return nil, fmt.Errorf("an error occurred")
 }

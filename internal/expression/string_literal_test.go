@@ -30,7 +30,7 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -38,11 +38,11 @@ func TestNewRawStringLiteral(t *testing.T) {
 	evaluator := NewRawStringLiteral("'Test\\n'")
 
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-			assert.Equal(t, "'Test\\n'", accessor.(datatype.StringAccessor).String())
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
+			assert.Equal(t, "'Test\\n'", accessor.(pathsys.StringAccessor).String())
 		}
 	}
 }
@@ -52,12 +52,12 @@ func TestStringLiteral(t *testing.T) {
 		"'x\\ra\\nb\\tc\\fd\\\\e\\'f\\\"g\\`h\\u0076i\\u23DAj\\pk'")
 
 	if assert.NotNil(t, evaluator, "evaluator expected") {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
 			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				accessor.(datatype.StringAccessor).String())
+				accessor.(pathsys.StringAccessor).String())
 		}
 	}
 }

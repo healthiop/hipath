@@ -26,33 +26,61 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package context
+package pathsys
 
-import "github.com/volsch/gohimodel/datatype"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-type Context struct {
-	envVars map[string]datatype.Accessor
+func TestLoopEvaluator(t *testing.T) {
+	evaluator := newTestEvaluator()
+	loop := NewLoop(evaluator)
+	assert.Same(t, evaluator, loop.Evaluator())
 }
 
-func NewContext() *Context {
-	return NewContextWithEnvVars(nil)
+func TestLoopIncIndex(t *testing.T) {
+	evaluator := newTestEvaluator()
+	loop := NewLoop(evaluator)
+	assert.Equal(t, 0, loop.IncIndex(NewString("test")))
+	assert.Equal(t, 0, loop.Index())
+	this := NewString("test2")
+	assert.Equal(t, 1, loop.IncIndex(this))
+	assert.Equal(t, 1, loop.Index())
+	assert.Same(t, this, loop.This())
+	assert.Same(t, evaluator, loop.Evaluator())
 }
 
-func NewContextWithEnvVars(envVars map[string]datatype.Accessor) *Context {
-	c := new(Context)
-	c.envVars = make(map[string]datatype.Accessor)
-	if envVars != nil {
-		for key, value := range envVars {
-			c.envVars[key] = value
-		}
-	}
-	c.envVars["ucum"] = datatype.UCUMSystemURI
-	c.envVars["sct"] = datatype.SCTSystemURI
-	c.envVars["loinc"] = datatype.LOINCSystemURI
-	return c
+func TestLoopThisOutsideLoop(t *testing.T) {
+	evaluator := newTestEvaluator()
+	loop := NewLoop(evaluator)
+	assert.Panics(t, func() { loop.This() })
 }
 
-func (c *Context) EnvVar(name string) (accessor datatype.Accessor, found bool) {
-	accessor, found = c.envVars[name]
-	return
+func TestLoopSetTotal(t *testing.T) {
+	this := NewString("test")
+	loop := NewLoop(nil)
+	loop.IncIndex(this)
+	total := NewString("total")
+	loop.SetTotal(total)
+	assert.Same(t, total, loop.Total())
+}
+
+func TestNewBaseFunction(t *testing.T) {
+	bf := NewBaseFunction("test", 2, 1, 5)
+	assert.Equal(t, "test", bf.Name())
+	assert.Equal(t, 2, bf.EvaluatorParam())
+	assert.Equal(t, 1, bf.MinParams())
+	assert.Equal(t, 5, bf.MaxParams())
+}
+
+type testEvaluator struct {
+}
+
+func newTestEvaluator() Evaluator {
+	return &testEvaluator{}
+}
+
+func (t testEvaluator) Evaluate(ContextAccessor, interface{}, Looper) (interface{}, error) {
+	return nil, nil
 }

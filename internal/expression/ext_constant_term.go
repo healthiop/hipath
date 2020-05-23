@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 const delimitedIdentifierChar = '`'
@@ -47,7 +47,7 @@ func ParseExtConstantTerm(value string) *ExtConstantTerm {
 	return &ExtConstantTerm{resultingValue}
 }
 
-func (e *ExtConstantTerm) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
+func (e *ExtConstantTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
 	accessor, found := ctx.EnvVar(e.name)
 	if !found {
 		return nil, fmt.Errorf("Environment variable has not been defined: %s", e.name)

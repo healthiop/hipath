@@ -29,22 +29,30 @@
 package expression
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"strings"
 )
 
 type NumberLiteral struct {
-	accessor datatype.NumberAccessor
+	node pathsys.NumberAccessor
 }
 
-func ParseNumberLiteral(value string) (Evaluator, error) {
-	var accessor datatype.NumberAccessor
+func NewNumberLiteralInt(value int32) pathsys.Evaluator {
+	return &NumberLiteral{pathsys.NewInteger(value)}
+}
+
+func NewNumberLiteralFloat64(value float64) pathsys.Evaluator {
+	return &NumberLiteral{pathsys.NewDecimalFloat64(value)}
+}
+
+func ParseNumberLiteral(value string) (pathsys.Evaluator, error) {
+	var accessor pathsys.NumberAccessor
 	var err error
 
 	if strings.ContainsRune(value, '.') {
-		accessor, err = datatype.ParseDecimal(value)
+		accessor, err = pathsys.ParseDecimal(value)
 	} else {
-		accessor, err = datatype.ParseInteger(value)
+		accessor, err = pathsys.ParseInteger(value)
 	}
 
 	if err != nil {
@@ -54,6 +62,6 @@ func ParseNumberLiteral(value string) (Evaluator, error) {
 	}
 }
 
-func (e *NumberLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *NumberLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

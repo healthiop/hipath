@@ -29,7 +29,7 @@
 package expression
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"strconv"
 	"strings"
 )
@@ -37,15 +37,15 @@ import (
 const stringDelimiterChar = '\''
 
 type StringLiteral struct {
-	accessor datatype.StringAccessor
+	node pathsys.StringAccessor
 }
 
-func NewRawStringLiteral(value string) Evaluator {
-	return &StringLiteral{datatype.NewString(value)}
+func NewRawStringLiteral(value string) pathsys.Evaluator {
+	return &StringLiteral{pathsys.NewString(value)}
 }
 
-func ParseStringLiteral(value string) Evaluator {
-	return &StringLiteral{datatype.NewStringUnchecked(parseStringLiteral(value, stringDelimiterChar))}
+func ParseStringLiteral(value string) pathsys.Evaluator {
+	return &StringLiteral{pathsys.NewString(parseStringLiteral(value, stringDelimiterChar))}
 }
 
 func parseStringLiteral(value string, delimiter byte) string {
@@ -105,6 +105,6 @@ func parseStringLiteral(value string, delimiter byte) string {
 	return b.String()
 }
 
-func (e *StringLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *StringLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

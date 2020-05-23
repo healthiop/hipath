@@ -30,24 +30,24 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type TimeLiteral struct {
-	accessor datatype.TimeAccessor
+	node pathsys.TimeAccessor
 }
 
-func ParseTimeLiteral(value string) (Evaluator, error) {
+func ParseTimeLiteral(value string) (pathsys.Evaluator, error) {
 	if len(value) < 3 || value[0] != '@' || value[1] != 'T' {
 		return nil, fmt.Errorf("invalid time literal: %s", value)
 	}
-	if accessor, err := datatype.ParseFluentTime(value[2:]); err != nil {
+	if node, err := pathsys.ParseTime(value[2:]); err != nil {
 		return nil, err
 	} else {
-		return &TimeLiteral{accessor}, nil
+		return &TimeLiteral{node}, nil
 	}
 }
 
-func (e *TimeLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *TimeLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

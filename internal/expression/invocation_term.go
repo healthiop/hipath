@@ -28,18 +28,16 @@
 
 package expression
 
-import (
-	"github.com/volsch/gohimodel/datatype"
-)
+import "github.com/volsch/gohipath/pathsys"
 
 type InvocationTerm struct {
-	evaluator Evaluator
+	evaluator pathsys.Evaluator
 }
 
-func NewInvocationTerm(evaluator Evaluator) *InvocationTerm {
+func NewInvocationTerm(evaluator pathsys.Evaluator) *InvocationTerm {
 	return &InvocationTerm{evaluator}
 }
 
-func (t *InvocationTerm) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	return t.evaluator.Evaluate(ctx, ctx.ContextObj())
+func (t *InvocationTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	return t.evaluator.Evaluate(ctx, node, loop)
 }

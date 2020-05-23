@@ -29,72 +29,74 @@
 package expression
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"fmt"
+	"github.com/volsch/gohipath/pathsys"
+	"regexp"
 )
 
 var (
-	YearQuantityCode        datatype.CodeAccessor = datatype.NewCode("year")
-	MonthQuantityCode       datatype.CodeAccessor = datatype.NewCode("month")
-	WeekQuantityCode        datatype.CodeAccessor = datatype.NewCode("week")
-	DayQuantityCode         datatype.CodeAccessor = datatype.NewCode("day")
-	HourQuantityCode        datatype.CodeAccessor = datatype.NewCode("hour")
-	MinuteQuantityCode      datatype.CodeAccessor = datatype.NewCode("minute")
-	SecondQuantityCode      datatype.CodeAccessor = datatype.NewCode("second")
-	MillisecondQuantityCode datatype.CodeAccessor = datatype.NewCode("millisecond")
+	YearQuantityUnit        = pathsys.NewString("year")
+	MonthQuantityUnit       = pathsys.NewString("month")
+	WeekQuantityUnit        = pathsys.NewString("week")
+	DayQuantityUnit         = pathsys.NewString("day")
+	HourQuantityUnit        = pathsys.NewString("hour")
+	MinuteQuantityUnit      = pathsys.NewString("minute")
+	SecondQuantityUnit      = pathsys.NewString("second")
+	MillisecondQuantityUnit = pathsys.NewString("millisecond")
 )
 
+var quantityUnitRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
+
 type QuantityLiteral struct {
-	accessor datatype.QuantityAccessor
+	node pathsys.QuantityAccessor
 }
 
-func ParseQuantityLiteral(number string, unit string) (Evaluator, error) {
-	value, err := datatype.ParseDecimal(number)
+func ParseQuantityLiteral(number string, unit string) (pathsys.Evaluator, error) {
+	value, err := pathsys.ParseDecimal(number)
+	if err != nil {
+		return nil, err
+	}
+	convertedUnit, err := parseQuantityUnit(unit)
 	if err != nil {
 		return nil, err
 	}
 
-	system, code, err := parseQuantityUnit(unit)
-	if err != nil {
-		return nil, err
-	}
-
-	accessor := datatype.NewQuantity(value, nil, nil, system, code)
-	return &QuantityLiteral{accessor}, nil
+	return &QuantityLiteral{pathsys.NewQuantity(value, convertedUnit)}, nil
 }
 
-func parseQuantityUnit(unit string) (system datatype.URIAccessor, code datatype.CodeAccessor, err error) {
+func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
 	if len(unit) == 0 || unit == "''" {
-		return
+		return nil, nil
 	}
 
+	var convertedUnit pathsys.StringAccessor
 	switch unit {
 	case "year", "years":
-		code = YearQuantityCode
+		convertedUnit = YearQuantityUnit
 	case "month", "months":
-		code = MonthQuantityCode
+		convertedUnit = MonthQuantityUnit
 	case "week", "weeks":
-		code = WeekQuantityCode
+		convertedUnit = WeekQuantityUnit
 	case "day", "days":
-		code = DayQuantityCode
+		convertedUnit = DayQuantityUnit
 	case "hour", "hours":
-		code = HourQuantityCode
+		convertedUnit = HourQuantityUnit
 	case "minute", "minutes":
-		code = MinuteQuantityCode
+		convertedUnit = MinuteQuantityUnit
 	case "second", "seconds":
-		code = SecondQuantityCode
+		convertedUnit = SecondQuantityUnit
 	case "millisecond", "milliseconds":
-		code = MillisecondQuantityCode
+		convertedUnit = MillisecondQuantityUnit
 	default:
-		code, err = datatype.ParseCode(parseStringLiteral(unit, stringDelimiterChar))
-		if err != nil {
-			return
+		u := parseStringLiteral(unit, stringDelimiterChar)
+		if !quantityUnitRegexp.MatchString(u) {
+			return nil, fmt.Errorf("invalid quantity unit: %s", u)
 		}
-		system = datatype.UCUMSystemURI
+		convertedUnit = pathsys.NewString(u)
 	}
-
-	return
+	return convertedUnit, nil
 }
 
-func (e *QuantityLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *QuantityLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

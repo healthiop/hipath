@@ -30,49 +30,52 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestInvocationExpressionEvaluate(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewInteger(123))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewInteger(123))
 
-	f, err := LookupFunctionInvocation("empty", []Evaluator{})
+	f, err := LookupFunctionInvocation("empty", []pathsys.Evaluator{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	evaluator := NewInvocationExpression(newTestExpression(c), f)
 
-	accessor, err := evaluator.Evaluate(nil, nil)
+	accessor, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, accessor, "accessor expected")
-	if assert.Implements(t, (*datatype.BooleanAccessor)(nil), accessor) {
-		assert.Equal(t, datatype.NewBoolean(false), accessor)
+	assert.NotNil(t, accessor, "result expected")
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), accessor) {
+		assert.Equal(t, pathsys.NewBoolean(false), accessor)
 	}
 }
 
 func TestInvocationExpressionEvaluateExprError(t *testing.T) {
-	f, err := LookupFunctionInvocation("empty", []Evaluator{})
+	f, err := LookupFunctionInvocation("empty", []pathsys.Evaluator{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	evaluator := NewInvocationExpression(newTestErrorExpression(), f)
 
-	accessor, err := evaluator.Evaluate(nil, nil)
+	accessor, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected")
+	assert.Nil(t, accessor, "no result expected")
 }
 
 func TestInvocationExpressionEvaluateFuncErr(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewInteger(123))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewInteger(123))
 
 	evaluator := NewInvocationExpression(newTestExpression(c), newTestErrorExpression())
 
-	accessor, err := evaluator.Evaluate(nil, nil)
+	accessor, err := evaluator.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected")
+	assert.Nil(t, accessor, "no result expected")
 }

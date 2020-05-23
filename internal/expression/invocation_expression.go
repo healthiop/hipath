@@ -28,24 +28,22 @@
 
 package expression
 
-import (
-	"github.com/volsch/gohimodel/datatype"
-)
+import "github.com/volsch/gohipath/pathsys"
 
 type InvocationExpression struct {
-	exprEvaluator       Evaluator
-	invocationEvaluator Evaluator
+	exprEvaluator       pathsys.Evaluator
+	invocationEvaluator pathsys.Evaluator
 }
 
-func NewInvocationExpression(exprEvaluator Evaluator, invocationEvaluator Evaluator) *InvocationExpression {
+func NewInvocationExpression(exprEvaluator pathsys.Evaluator, invocationEvaluator pathsys.Evaluator) *InvocationExpression {
 	return &InvocationExpression{exprEvaluator, invocationEvaluator}
 }
 
-func (e *InvocationExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	exprAccessor, err := e.exprEvaluator.Evaluate(ctx, nil)
+func (e *InvocationExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	exprNode, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	return e.invocationEvaluator.Evaluate(ctx, exprAccessor)
+	return e.invocationEvaluator.Evaluate(ctx, exprNode, loop)
 }

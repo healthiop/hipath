@@ -28,28 +28,26 @@
 
 package expression
 
-import (
-	"github.com/volsch/gohimodel/datatype"
-)
+import "github.com/volsch/gohipath/pathsys"
 
 type UnionExpression struct {
-	evalLeft  Evaluator
-	evalRight Evaluator
+	evalLeft  pathsys.Evaluator
+	evalRight pathsys.Evaluator
 }
 
-func NewUnionExpression(evalLeft Evaluator, evalRight Evaluator) *UnionExpression {
+func NewUnionExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *UnionExpression {
 	return &UnionExpression{evalLeft, evalRight}
 }
 
-func (e *UnionExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	a1, err := e.evalLeft.Evaluate(ctx, obj)
+func (e *UnionExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	a1, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
-	a2, err := e.evalRight.Evaluate(ctx, obj)
+	a2, err := e.evalRight.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	return uniteCollections(a1, a2), nil
+	return uniteCollections(ctx, a1, a2), nil
 }

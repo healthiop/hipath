@@ -30,7 +30,7 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -40,11 +40,11 @@ func TestFullTimeLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.TimeAccessor)(nil), accessor) {
-			ta := accessor.(datatype.TimeAccessor)
+		assert.NotNil(t, node, "result expected")
+		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), node) {
+			ta := node.(pathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
 			assert.Equal(t, 30, ta.Minute())
 			assert.Equal(t, 15, ta.Second())
@@ -59,11 +59,11 @@ func TestFluentTimeLiteral(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, evaluator, "evaluator expected")
 	if evaluator != nil {
-		accessor, err := evaluator.Evaluate(nil, nil)
+		accessor, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.NotNil(t, accessor, "accessor expected")
-		if assert.Implements(t, (*datatype.TimeAccessor)(nil), accessor) {
-			ta := accessor.(datatype.TimeAccessor)
+		assert.NotNil(t, accessor, "result expected")
+		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), accessor) {
+			ta := accessor.(pathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
 			assert.Equal(t, 30, ta.Minute())
 			assert.Equal(t, 0, ta.Second())

@@ -29,21 +29,21 @@
 package expression
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type BooleanLiteral struct {
-	accessor datatype.BooleanAccessor
+	node pathsys.BooleanAccessor
 }
 
-func ParseBooleanLiteral(value string) (Evaluator, error) {
-	if accessor, err := datatype.ParseBoolean(value); err != nil {
+func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
+	if accessor, err := pathsys.ParseBoolean(value); err != nil {
 		return nil, err
 	} else {
 		return &BooleanLiteral{accessor}, nil
 	}
 }
 
-func (e *BooleanLiteral) Evaluate(*EvalContext, datatype.Accessor) (datatype.Accessor, error) {
-	return e.accessor, nil
+func (e *BooleanLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+	return e.node, nil
 }

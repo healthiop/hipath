@@ -30,41 +30,31 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestExtConstantTerm(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
+	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("ucum")
-	accessor, err := evaluator.Evaluate(ctx, nil)
+	accessor, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.UCUMSystemURI, accessor)
+	assert.Equal(t, pathsys.UCUMSystemURI, accessor)
 }
 
 func TestExtConstantTermDelimited(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
+	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("`ucum`")
-	accessor, err := evaluator.Evaluate(ctx, nil)
+	accessor, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.UCUMSystemURI, accessor)
-}
-
-func TestExtConstantRoot(t *testing.T) {
-	root := resource.NewDynamicResource("Patient")
-	ctx := NewEvalContext(root, context.NewContext())
-	evaluator := ParseExtConstantTerm("context")
-	accessor, err := evaluator.Evaluate(ctx, nil)
-	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, root, accessor)
+	assert.Equal(t, pathsys.UCUMSystemURI, accessor)
 }
 
 func TestExtConstantTermNotDefined(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
+	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("xxx")
-	accessor, err := evaluator.Evaluate(ctx, nil)
+	accessor, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, accessor, "no accessor expected due to error")
+	assert.Nil(t, accessor, "no result expected due to error")
 }

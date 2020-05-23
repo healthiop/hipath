@@ -29,22 +29,22 @@
 package expression
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type EqualityExpression struct {
 	not        bool
 	equivalent bool
-	evalLeft   Evaluator
-	evalRight  Evaluator
+	evalLeft   pathsys.Evaluator
+	evalRight  pathsys.Evaluator
 }
 
-func NewEqualityExpression(not bool, equivalent bool, evalLeft Evaluator, evalRight Evaluator) *EqualityExpression {
+func NewEqualityExpression(not bool, equivalent bool, evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *EqualityExpression {
 	return &EqualityExpression{not, equivalent, evalLeft, evalRight}
 }
 
-func (e *EqualityExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	accessor, err := e.evaluateInternally(ctx, obj)
+func (e *EqualityExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	accessor, err := e.evaluateInternally(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
@@ -53,68 +53,78 @@ func (e *EqualityExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (
 		return nil, nil
 	}
 	if e.not {
-		return accessor.(datatype.BooleanAccessor).Negate(), nil
+		return accessor.(pathsys.BooleanAccessor).Negate(), nil
 	}
 	return accessor, nil
 }
 
-func (e *EqualityExpression) evaluateInternally(ctx *EvalContext, curObj datatype.Accessor) (datatype.Accessor, error) {
-	a1, err := e.evalLeft.Evaluate(ctx, curObj)
+func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
-	a2, err := e.evalRight.Evaluate(ctx, curObj)
+	right, err := e.evalRight.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	a1, a2 = unwrapCollection(a1), unwrapCollection(a2)
-	if datatype.ValueEmpty(a1) || datatype.ValueEmpty(a2) {
+	left, right = unwrapCollection(left), unwrapCollection(right)
+	if left == nil || right == nil {
 		if e.equivalent {
-			return datatype.NewBoolean(datatype.ValueEquivalent(a1, a2)), nil
+			return pathsys.NewBoolean(pathsys.ModelEquivalent(
+				ctx.ModelAdapter(), left, right)), nil
 		} else {
 			return nil, nil
 		}
 	}
 
-	if isStringEqualityCheck(a1, a2) {
-		return datatype.NewBoolean(e.primitiveStringEqual(a1, a2)), nil
+	r, match := e.stringsEqual(left, right)
+	if match {
+		return pathsys.NewBoolean(r), nil
 	}
 
-	var r bool
 	if e.equivalent {
-		r = datatype.ValueEquivalent(a1, a2)
+		r = pathsys.ModelEquivalent(ctx.ModelAdapter(), left, right)
 	} else {
-		r = datatype.ValueEqual(a1, a2)
-		if !r && temporalTypeEqual(a1, a2) && !temporalPrecisionEqual(a1, a2) {
+		r = pathsys.ModelEqual(ctx.ModelAdapter(), left, right)
+		if !r && temporalPrecisionNotEqual(left, right) {
 			return nil, nil
 		}
 	}
-	return datatype.NewBoolean(r), nil
+	return pathsys.NewBoolean(r), nil
 }
 
-func (e *EqualityExpression) primitiveStringEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	p1 := a1.(datatype.PrimitiveAccessor)
-	p2 := a2.(datatype.PrimitiveAccessor)
-	if e.equivalent {
-		return datatype.NormalizedStringEqual(p1.String(), p2.String())
+func (e *EqualityExpression) stringsEqual(n1 interface{}, n2 interface{}) (equal bool, match bool) {
+	var ok bool
+	var s1, s2 pathsys.Stringifier
+	if s1, ok = n1.(pathsys.Stringifier); !ok {
+		return
 	}
-	return p1.String() == p2.String()
+	if s2, ok = n2.(pathsys.Stringifier); !ok {
+		return
+	}
+
+	if s1.DataType() != pathsys.StringDataType && s2.DataType() != pathsys.StringDataType {
+		return
+	}
+
+	match = true
+	if e.equivalent {
+		equal = pathsys.NormalizedStringEqual(s1.String(), s2.String())
+	} else {
+		equal = s1.String() == s2.String()
+	}
+	return
 }
 
-func isStringEqualityCheck(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	return (isStringBasedType(a1) && datatype.IsPrimitive(a2)) ||
-		(datatype.IsPrimitive(a1) && isStringBasedType(a2))
-}
-
-func isStringBasedType(accessor datatype.Accessor) bool {
-	return datatype.IsString(accessor) || datatype.IsURI(accessor)
-}
-
-func temporalTypeEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	return datatype.IsTemporal(a1) && datatype.TypeEqual(a1, a2)
-}
-
-func temporalPrecisionEqual(a1 datatype.Accessor, a2 datatype.Accessor) bool {
-	return a1.(datatype.TemporalAccessor).Precision() == a2.(datatype.TemporalAccessor).Precision()
+func temporalPrecisionNotEqual(n1 interface{}, n2 interface{}) bool {
+	var ok bool
+	var t1, t2 pathsys.TemporalAccessor
+	if t1, ok = n1.(pathsys.TemporalAccessor); !ok {
+		return false
+	}
+	if t2, ok = n2.(pathsys.TemporalAccessor); !ok {
+		return false
+	}
+	return t1.Precision() != t2.Precision()
 }

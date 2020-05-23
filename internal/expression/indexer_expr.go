@@ -30,35 +30,35 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type IndexerExpression struct {
-	exprEvaluator  Evaluator
-	indexEvaluator Evaluator
+	exprEvaluator  pathsys.Evaluator
+	indexEvaluator pathsys.Evaluator
 }
 
-func NewIndexerExpression(exprEvaluator Evaluator, indexEvaluator Evaluator) *IndexerExpression {
+func NewIndexerExpression(exprEvaluator pathsys.Evaluator, indexEvaluator pathsys.Evaluator) *IndexerExpression {
 	return &IndexerExpression{exprEvaluator, indexEvaluator}
 }
 
-func (e *IndexerExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	accessor, err := e.exprEvaluator.Evaluate(ctx, obj)
+func (e *IndexerExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	col, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
-	index, err := e.indexEvaluator.Evaluate(ctx, obj)
+	index, err := e.indexEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	if accessor == nil || index == nil {
+	if col == nil || index == nil {
 		return nil, nil
 	}
 
 	var indexValue int
-	if n, ok := index.(datatype.NumberAccessor); !ok {
-		return nil, fmt.Errorf("index is not a number: %s", index.TypeInfo().String())
+	if n, ok := index.(pathsys.NumberAccessor); !ok {
+		return nil, fmt.Errorf("index is not a number: %T", index)
 	} else {
 		indexValue = int(n.Int())
 	}
@@ -67,7 +67,7 @@ func (e *IndexerExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (d
 		return nil, nil
 	}
 
-	if c, ok := accessor.(datatype.CollectionAccessor); ok {
+	if c, ok := col.(pathsys.CollectionAccessor); ok {
 		if indexValue >= c.Count() {
 			return nil, nil
 		}
@@ -77,5 +77,5 @@ func (e *IndexerExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (d
 	if indexValue > 0 {
 		return nil, nil
 	}
-	return accessor, nil
+	return col, nil
 }

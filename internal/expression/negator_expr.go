@@ -30,31 +30,30 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
 type NegatorExpression struct {
-	evaluator Evaluator
+	evaluator pathsys.Evaluator
 }
 
-func NewNegatorExpression(evaluator Evaluator) *NegatorExpression {
+func NewNegatorExpression(evaluator pathsys.Evaluator) *NegatorExpression {
 	return &NegatorExpression{evaluator}
 }
 
-func (e *NegatorExpression) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	accessor, err := e.evaluator.Evaluate(ctx, obj)
+func (e *NegatorExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	data, err := e.evaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	if accessor == nil {
+	if data == nil {
 		return nil, nil
 	}
 
-	negator, ok := accessor.(datatype.Negator)
+	negator, ok := data.(pathsys.Negator)
 	if !ok {
-		return nil, fmt.Errorf("cannot negate value of type: %s'",
-			accessor.(datatype.Accessor).TypeInfo().String())
+		return nil, fmt.Errorf("cannot negate value of type: %T", data)
 	}
 	return negator.Negate(), nil
 }

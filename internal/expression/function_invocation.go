@@ -30,75 +30,78 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/pathsys"
 )
 
-type invocationFunc func(ctx *EvalContext, obj datatype.Accessor, args []datatype.Accessor) (datatype.Accessor, error)
-
-type functionDefinition struct {
-	name      string
-	function  invocationFunc
-	minParams int
-	maxParams int
-}
-
-var functionDefinitions = []*functionDefinition{
+var functions = []pathsys.FunctionExecutor{
 	// existence
-	{"empty", emptyPathFunc, 0, 0},
+	newEmptyFunction(),
+	newExistsFunction(),
 	// combining
-	{"union", unionPathFunc, 1, 1},
-	{"combine", combinePathFunc, 1, 1},
+	newUnionFunction(),
+	newCombineFunction(),
+	// aggregate
+	newAggregateFunction(),
 }
 
-var functionDefinitionsByName = createFunctionDefinitionsByName(functionDefinitions)
+var functionsByName = createFunctionsByName(functions)
 
 type FunctionInvocation struct {
-	definition      *functionDefinition
-	paramEvaluators []Evaluator
+	executor        pathsys.FunctionExecutor
+	paramEvaluators []pathsys.Evaluator
 }
 
-func LookupFunctionInvocation(name string, paramEvaluators []Evaluator) (*FunctionInvocation, error) {
-	definition, found := functionDefinitionsByName[name]
+func LookupFunctionInvocation(name string, paramEvaluators []pathsys.Evaluator) (*FunctionInvocation, error) {
+	executor, found := functionsByName[name]
 	if !found {
-		return nil, fmt.Errorf("function has not been defined: %s", name)
+		return nil, fmt.Errorf("executor has not been defined: %s", name)
 	}
 
-	if len(paramEvaluators) < definition.minParams {
-		return nil, fmt.Errorf("function %s requires at least %d parameters", name, definition.minParams)
+	if len(paramEvaluators) < executor.MinParams() {
+		return nil, fmt.Errorf("executor %s requires at least %d parameters", name, executor.MinParams())
 	}
-	if len(paramEvaluators) > definition.maxParams {
-		return nil, fmt.Errorf("function %s accepts at most %d parameters", name, definition.maxParams)
+	if len(paramEvaluators) > executor.MaxParams() {
+		return nil, fmt.Errorf("executor %s accepts at most %d parameters", name, executor.MaxParams())
 	}
 
-	return newFunctionInvocation(definition, paramEvaluators), nil
+	return newFunctionInvocation(executor, paramEvaluators), nil
 }
 
-func newFunctionInvocation(definition *functionDefinition, argEvaluators []Evaluator) *FunctionInvocation {
-	return &FunctionInvocation{definition, argEvaluators}
+func newFunctionInvocation(executor pathsys.FunctionExecutor, argEvaluators []pathsys.Evaluator) *FunctionInvocation {
+	return &FunctionInvocation{executor, argEvaluators}
 }
 
-func (f *FunctionInvocation) Evaluate(ctx *EvalContext, obj datatype.Accessor) (datatype.Accessor, error) {
-	args := make([]datatype.Accessor, len(f.paramEvaluators))
+func (f *FunctionInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	evaluatorParam := f.executor.EvaluatorParam()
+	args := make([]interface{}, len(f.paramEvaluators))
+
+	var loopEvaluator pathsys.Evaluator
 	for pos, argEvaluator := range f.paramEvaluators {
-		if argEvaluator == nil {
-			args[pos] = nil
+		if evaluatorParam == pos {
+			loopEvaluator = argEvaluator
 		} else {
-			if arg, err := argEvaluator.Evaluate(ctx, obj); err != nil {
-				return nil, fmt.Errorf("error in argument %d of function invocation %s: %v",
-					pos, f.definition.name, err)
-			} else {
-				args[pos] = arg
+			if argEvaluator != nil {
+				if arg, err := argEvaluator.Evaluate(ctx, node, loop); err != nil {
+					return nil, fmt.Errorf("error in argument %d of executor invocation %s: %v",
+						pos, f.executor.Name(), err)
+				} else {
+					args[pos] = arg
+				}
 			}
 		}
 	}
 
-	return f.definition.function(ctx, obj, args)
+	if evaluatorParam >= 0 {
+		loop = pathsys.NewLoop(loopEvaluator)
+	}
+
+	return f.executor.Execute(ctx, node, args, loop)
 }
 
-func createFunctionDefinitionsByName(definitions []*functionDefinition) map[string]*functionDefinition {
-	definitionsByName := make(map[string]*functionDefinition)
-	for _, definition := range definitions {
-		definitionsByName[definition.name] = definition
+func createFunctionsByName(functions []pathsys.FunctionExecutor) map[string]pathsys.FunctionExecutor {
+	functionsByName := make(map[string]pathsys.FunctionExecutor)
+	for _, f := range functions {
+		functionsByName[f.Name()] = f
 	}
-	return definitionsByName
+	return functionsByName
 }

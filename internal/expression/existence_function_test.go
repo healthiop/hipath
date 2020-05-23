@@ -30,32 +30,148 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestEmptyPathFuncNil(t *testing.T) {
-	result, err := emptyPathFunc(nil, nil, nil)
+	f := newEmptyFunction()
+	result, err := f.Execute(nil, nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.NewBoolean(true), result)
+	assert.Equal(t, pathsys.NewBoolean(true), result)
 }
 
 func TestEmptyPathFuncValue(t *testing.T) {
-	result, err := emptyPathFunc(nil, datatype.NewStringNil(), nil)
+	f := newEmptyFunction()
+	result, err := f.Execute(nil, pathsys.NewString("test"), nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.NewBoolean(false), result)
+	assert.Equal(t, pathsys.NewBoolean(false), result)
 }
 
 func TestEmptyPathFuncEmptyCollection(t *testing.T) {
-	result, err := emptyPathFunc(nil, datatype.NewCollectionUndefined(), nil)
+	ctx := test.NewTestContext(t)
+	f := newEmptyFunction()
+	result, err := f.Execute(nil, ctx.NewCollection(), nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.NewBoolean(true), result)
+	assert.Equal(t, pathsys.NewBoolean(true), result)
 }
 
 func TestEmptyPathFuncCollection(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewStringNil())
-	result, err := emptyPathFunc(nil, c, nil)
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString(""))
+	f := newEmptyFunction()
+	result, err := f.Execute(nil, c, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, datatype.NewBoolean(false), result)
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncNil(t *testing.T) {
+	f := newExistsFunction()
+	result, err := f.Execute(nil, nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncValueNoFilter(t *testing.T) {
+	f := newExistsFunction()
+	result, err := f.Execute(nil, pathsys.NewString("test"), nil, pathsys.NewLoop(nil))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(true), result)
+}
+
+func TestExistsPathFuncColNoFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test"))
+	f := newExistsFunction()
+	result, err := f.Execute(nil, c, nil, pathsys.NewLoop(nil))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(true), result)
+}
+
+func TestExistsPathFuncEmptyColNoFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	f := newExistsFunction()
+	result, err := f.Execute(nil, c, nil, pathsys.NewLoop(nil))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncValueNonMatchingFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncValueMatchingFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("test"))
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(true), result)
+}
+
+func TestExistsPathFuncColNonMatchingFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test"))
+	c.Add(pathsys.NewString("tesT"))
+	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, c, []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncColMatchingFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test"))
+	c.Add(pathsys.NewString("Test"))
+	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, c, []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(true), result)
+}
+
+func TestExistsPathFuncValueNilFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := NewEmptyLiteral()
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.NewBoolean(false), result)
+}
+
+func TestExistsPathFuncValueInvalidFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := NewRawStringLiteral("test")
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, result, "no result expected")
+}
+
+func TestExistsPathFuncValueErrorFilter(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := newTestErrorExpression()
+
+	f := newExistsFunction()
+	result, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, pathsys.NewLoop(loopEvaluator))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, result, "no result expected")
 }

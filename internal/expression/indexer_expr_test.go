@@ -30,17 +30,17 @@ package expression
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
-	"github.com/volsch/gohimodel/resource"
-	"github.com/volsch/gohipath/context"
+	"github.com/volsch/gohipath/internal/test"
+	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestIndexerExpressionCollection(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewString("test1"))
-	c.Add(datatype.NewString("test2"))
-	c.Add(datatype.NewString("test3"))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test1"))
+	c.Add(pathsys.NewString("test2"))
+	c.Add(pathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("1")
 	if err != nil {
@@ -48,16 +48,17 @@ func TestIndexerExpressionCollection(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-		assert.Equal(t, datatype.NewString("test2"), accessor)
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
+		assert.Equal(t, pathsys.NewString("test2"), accessor)
 	}
 }
 
 func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewString("test1"))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test1"))
 
 	i, err := ParseNumberLiteral("-1")
 	if err != nil {
@@ -65,17 +66,18 @@ func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
 
 func TestIndexerExpressionCollectionInvalidIndexType(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewString("test1"))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), ParseStringLiteral("0"))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "no result expected")
 }
@@ -87,26 +89,28 @@ func TestIndexerExpressionExpressionNil(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(nil), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
 
 func TestIndexerExpressionIndexNil(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewString("test1"))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), newTestExpression(nil))
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
 
 func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
-	c := datatype.NewCollectionUndefined()
-	c.Add(datatype.NewString("test1"))
-	c.Add(datatype.NewString("test2"))
-	c.Add(datatype.NewString("test3"))
+	ctx := test.NewTestContext(t)
+	c := ctx.NewCollection()
+	c.Add(pathsys.NewString("test1"))
+	c.Add(pathsys.NewString("test2"))
+	c.Add(pathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("3")
 	if err != nil {
@@ -114,7 +118,7 @@ func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(newTestExpression(c), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
@@ -126,10 +130,10 @@ func TestIndexerExpressionCollectionNoCol(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(ParseStringLiteral("test"), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*datatype.StringAccessor)(nil), accessor) {
-		assert.Equal(t, datatype.NewString("test"), accessor)
+	if assert.Implements(t, (*pathsys.StringAccessor)(nil), accessor) {
+		assert.Equal(t, pathsys.NewString("test"), accessor)
 	}
 }
 
@@ -140,7 +144,7 @@ func TestIndexerExpressionCollectionNoColIndexExceeded(t *testing.T) {
 	}
 
 	e := NewIndexerExpression(ParseStringLiteral("test"), i)
-	accessor, err := e.Evaluate(nil, nil)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, accessor, "empty result expected")
 }
@@ -151,17 +155,15 @@ func TestIndexerExpressionExpressionError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := NewIndexerExpression(ParseExtConstantTerm("test"), i)
-	accessor, err := e.Evaluate(ctx, nil)
+	e := NewIndexerExpression(newTestErrorExpression(), i)
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "empty collection expected")
 }
 
 func TestIndexerExpressionIndexError(t *testing.T) {
-	ctx := NewEvalContext(resource.NewDynamicResource("Patient"), context.NewContext())
-	e := NewIndexerExpression(ParseStringLiteral("test"), ParseExtConstantTerm("test"))
-	accessor, err := e.Evaluate(ctx, nil)
+	e := NewIndexerExpression(ParseStringLiteral("test"), newTestErrorExpression())
+	accessor, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, accessor, "empty collection expected")
 }
