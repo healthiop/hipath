@@ -275,3 +275,154 @@ func TestDateTimeEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(now).Equal(NewDateTime(now.Add(time.Hour))))
 	assert.Equal(t, false, NewDateTime(now).Equivalent(NewDateTime(now.Add(time.Hour))))
 }
+
+func TestNewDateTimeYMDHMSNWithInvalidPrecisionYear(t *testing.T) {
+	assert.Panics(t, func() { NewDateTimeYMDHMSNWithPrecision(2000, 1, 1, 0, 0, 0, 0, time.UTC, -1) })
+}
+
+func TestNewDateTimeYMDHMSNWithInvalidPrecisionNano(t *testing.T) {
+	assert.Panics(t, func() { NewDateTimeYMDHMSNWithPrecision(2000, 1, 1, 0, 0, 0, 0, time.UTC, -1) })
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionYear(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, YearDatePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 1, int(date.Month()))
+	assert.Equal(t, 1, date.Day())
+	assert.Equal(t, 0, date.Hour())
+	assert.Equal(t, 0, date.Minute())
+	assert.Equal(t, 0, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Same(t, time.Local, date.Location())
+	assert.Equal(t, YearDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionMonth(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.UTC, MonthDatePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 1, date.Day())
+	assert.Equal(t, 0, date.Hour())
+	assert.Equal(t, 0, date.Minute())
+	assert.Equal(t, 0, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Same(t, time.UTC, date.Location())
+	assert.Equal(t, MonthDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionDay(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, DayDatePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 21, date.Day())
+	assert.Equal(t, 0, date.Hour())
+	assert.Equal(t, 0, date.Minute())
+	assert.Equal(t, 0, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Equal(t, DayDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionHour(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, HourTimePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 21, date.Day())
+	assert.Equal(t, 14, date.Hour())
+	assert.Equal(t, 0, date.Minute())
+	assert.Equal(t, 0, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Equal(t, HourTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionMinute(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, MinuteTimePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 21, date.Day())
+	assert.Equal(t, 14, date.Hour())
+	assert.Equal(t, 38, date.Minute())
+	assert.Equal(t, 0, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Equal(t, MinuteTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionSecond(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, SecondTimePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 21, date.Day())
+	assert.Equal(t, 14, date.Hour())
+	assert.Equal(t, 38, date.Minute())
+	assert.Equal(t, 49, date.Second())
+	assert.Equal(t, 0, date.Nanosecond())
+	assert.Equal(t, SecondTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeYMDHMSNWithPrecisionNano(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, NanoTimePrecision)
+	date := v.Time()
+	assert.Equal(t, 2019, date.Year())
+	assert.Equal(t, 8, int(date.Month()))
+	assert.Equal(t, 21, date.Day())
+	assert.Equal(t, 14, date.Hour())
+	assert.Equal(t, 38, date.Minute())
+	assert.Equal(t, 49, date.Second())
+	assert.Equal(t, 827362627, date.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
+}
+
+func TestDateTimeAdd(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, NanoTimePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(12), NewString("day")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*DateTimeAccessor)(nil), res) {
+		date := res.(DateTimeAccessor).Time()
+		assert.Equal(t, 2019, date.Year())
+		assert.Equal(t, 9, int(date.Month()))
+		assert.Equal(t, 2, date.Day())
+		assert.Equal(t, 14, date.Hour())
+		assert.Equal(t, 38, date.Minute())
+		assert.Equal(t, 49, date.Second())
+		assert.Equal(t, 827362627, date.Nanosecond())
+		assert.Equal(t, NanoTimePrecision, res.Precision())
+	}
+}
+
+func TestDateTimeAddPrecision(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, HourTimePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(12), NewString("day")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*DateTimeAccessor)(nil), res) {
+		date := res.(DateTimeAccessor).Time()
+		assert.Equal(t, 2019, date.Year())
+		assert.Equal(t, 9, int(date.Month()))
+		assert.Equal(t, 2, date.Day())
+		assert.Equal(t, 14, date.Hour())
+		assert.Equal(t, 0, date.Minute())
+		assert.Equal(t, 0, date.Second())
+		assert.Equal(t, 0, date.Nanosecond())
+		assert.Equal(t, HourTimePrecision, res.Precision())
+	}
+}
+
+func TestDateTimeAddInvalidUnit(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(14), NewString("x")))
+
+	assert.Error(t, err)
+}
+
+func TestDateTimeAddExceedsYear(t *testing.T) {
+	v := NewDateTimeYMDHMSNWithPrecision(2019, 8, 21, 14, 38, 49, 827362627, time.Local, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(-2020), NewString("year")))
+
+	assert.Error(t, err)
+}

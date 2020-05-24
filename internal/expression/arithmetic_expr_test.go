@@ -33,6 +33,7 @@ import (
 	"github.com/volsch/gohipath/internal/test"
 	"github.com/volsch/gohipath/pathsys"
 	"testing"
+	"time"
 )
 
 func TestArithmeticExpression(t *testing.T) {
@@ -92,6 +93,48 @@ func TestArithmeticExpressionRightInvalidType(t *testing.T) {
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
+}
+
+func TestArithmeticExpressionTemporalAddition(t *testing.T) {
+	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
+	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.AdditionOp,
+		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("day"))))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+		assert.Equal(t, date.Add(12*24*time.Hour).UnixNano(),
+			res.(pathsys.DateTimeAccessor).Time().UnixNano())
+	}
+}
+
+func TestArithmeticExpressionTemporalSubtraction(t *testing.T) {
+	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
+	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
+		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("day"))))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+		assert.Equal(t, date.Add(-12*24*time.Hour).UnixNano(),
+			res.(pathsys.DateTimeAccessor).Time().UnixNano())
+	}
+}
+
+func TestArithmeticExpressionTemporalWithString(t *testing.T) {
+	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
+	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
+		NewRawStringLiteral("10"))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestArithmeticExpressionTemporalInvalidUnit(t *testing.T) {
+	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
+	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
+		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("x"))))
+	res, err := e.Evaluate(nil, nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
 }
 
 func TestArithmeticExpressionBothString(t *testing.T) {

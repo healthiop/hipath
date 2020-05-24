@@ -54,6 +54,33 @@ func NewDateTime(value time.Time) DateTimeAccessor {
 	return newDateTime(value, NanoTimePrecision)
 }
 
+func NewDateTimeYMDHMSNWithPrecision(year, month, day, hour, minute, second, nanosecond int, loc *time.Location, precision DateTimePrecisions) DateAccessor {
+	if precision < YearDatePrecision || precision > NanoTimePrecision {
+		panic(fmt.Sprintf("invalid date/time precision %d", precision))
+	}
+
+	if precision < MonthDatePrecision {
+		month = 1
+	}
+	if precision < DayDatePrecision {
+		day = 1
+	}
+	if precision < HourTimePrecision {
+		hour = 0
+	}
+	if precision < MinuteTimePrecision {
+		minute = 0
+	}
+	if precision < SecondTimePrecision {
+		second = 0
+	}
+	if precision < NanoTimePrecision {
+		nanosecond = 0
+	}
+
+	return newDateTime(time.Date(year, time.Month(month), day, hour, minute, second, nanosecond, loc), precision)
+}
+
 func ParseDateTime(value string) (DateTimeAccessor, error) {
 	parts := dateTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
@@ -195,6 +222,20 @@ func (t *dateTimeType) Equivalent(node interface{}) bool {
 
 func dateTimeValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Time().Equal(dt2.Time())
+}
+
+func (t *dateTimeType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {
+	value, precision, err := quantityDateTimePrecision(quantity)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := addQuantityTemporalDuration(t, value, precision)
+	if err != nil {
+		return nil, err
+	}
+	return NewDateTimeYMDHMSNWithPrecision(res.Year(), int(res.Month()), res.Day(),
+		res.Hour(), res.Minute(), res.Second(), res.Nanosecond(), res.Location(), t.precision), nil
 }
 
 func (t *dateTimeType) String() string {

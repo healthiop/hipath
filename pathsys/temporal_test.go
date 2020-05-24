@@ -34,73 +34,73 @@ import (
 	"time"
 )
 
-func TestAddQuantityDateTimeDurationYear(t *testing.T) {
+func TestAddQuantityTemporalDurationYear(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(4.89), YearDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2023, 7, 14, 18, 44, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationYearNeg(t *testing.T) {
+func TestAddQuantityTemporalDurationYearNeg(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalInt(-2), YearDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2017, 7, 14, 18, 44, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationMonth(t *testing.T) {
-	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+func TestAddQuantityTemporalDurationMonth(t *testing.T) {
+	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.Local)
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(7.89), MonthDatePrecision)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, time.Date(2020, 2, 14, 18, 44, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
+	assert.Equal(t, time.Date(2020, 2, 14, 18, 44, 21, 982123654, time.Local).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationDay(t *testing.T) {
+func TestAddQuantityTemporalDurationDay(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(19.89), DayDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 8, 2, 18, 44, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationHour(t *testing.T) {
+func TestAddQuantityTemporalDurationHour(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(26.89), HourTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 15, 20, 44, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationMinute(t *testing.T) {
+func TestAddQuantityTemporalDurationMinute(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(56.89), MinuteTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 19, 40, 21, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationSecond(t *testing.T) {
+func TestAddQuantityTemporalDurationSecond(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(59.0), SecondTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 18, 45, 20, 982123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationSecondFraction(t *testing.T) {
+func TestAddQuantityTemporalDurationSecondFraction(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(58.12), SecondTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 18, 45, 20, 102123654, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationNanosecond(t *testing.T) {
+func TestAddQuantityTemporalDurationNanosecond(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalFloat64(120000000.0), NanoTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 18, 44, 22, 102123654, time.UTC).UnixNano(), res.UnixNano())
@@ -109,85 +109,85 @@ func TestAddQuantityDateTimeDurationNanosecond(t *testing.T) {
 func TestAddQuantityDateTimePrecisionInvalid(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
 	assert.Panics(t, func() {
-		_, _ = addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+		_, _ = addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 			NewDecimalFloat64(120000000.0), -1)
 	})
 }
 
 func TestAddQuantityDateTimePrecisionYearTooSmall(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	_, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	_, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalInt(-2020), YearDatePrecision)
 	assert.Error(t, err, "error expected")
 }
 
 func TestAddQuantityDateTimePrecisionYearTooBig(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 982123654, time.UTC)
-	_, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
+	_, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, NanoTimePrecision),
 		NewDecimalInt(7981), YearDatePrecision)
 	assert.Error(t, err, "error expected")
 }
 
-func TestAddQuantityDateTimeDurationNanosecondPrecisionSecond(t *testing.T) {
+func TestAddQuantityTemporalDurationNanosecondPrecisionSecond(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 21, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, SecondTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, SecondTimePrecision),
 		NewDecimalFloat64(2_800_000_000), NanoTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 18, 44, 23, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationSecondPrecisionMinute(t *testing.T) {
+func TestAddQuantityTemporalDurationSecondPrecisionMinute(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 44, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, MinuteTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, MinuteTimePrecision),
 		NewDecimalFloat64(140), SecondTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 18, 46, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationMinutePrecisionHour(t *testing.T) {
+func TestAddQuantityTemporalDurationMinutePrecisionHour(t *testing.T) {
 	v := time.Date(2019, 7, 14, 18, 0, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, HourTimePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, HourTimePrecision),
 		NewDecimalFloat64(140), MinuteTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 14, 20, 0, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationHourPrecisionDay(t *testing.T) {
+func TestAddQuantityTemporalDurationHourPrecisionDay(t *testing.T) {
 	v := time.Date(2019, 7, 14, 0, 0, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, DayDatePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, DayDatePrecision),
 		NewDecimalFloat64(50), HourTimePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 7, 16, 0, 0, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationDayPrecisionMonth(t *testing.T) {
+func TestAddQuantityTemporalDurationDayPrecisionMonth(t *testing.T) {
 	v := time.Date(2019, 7, 1, 0, 0, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, MonthDatePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, MonthDatePrecision),
 		NewDecimalFloat64(60), DayDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 9, 1, 0, 0, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationDayPrecisionOneMonth(t *testing.T) {
+func TestAddQuantityTemporalDurationDayPrecisionOneMonth(t *testing.T) {
 	v := time.Date(2019, 7, 1, 0, 0, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, MonthDatePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, MonthDatePrecision),
 		NewDecimalFloat64(59), DayDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2019, 8, 1, 0, 0, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationMonthPrecisionYear(t *testing.T) {
+func TestAddQuantityTemporalDurationMonthPrecisionYear(t *testing.T) {
 	v := time.Date(2019, 1, 1, 0, 0, 0, 0, time.UTC)
-	res, err := addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, YearDatePrecision),
+	res, err := addQuantityTemporalDuration(newDateTemporalAccessorMock(v, YearDatePrecision),
 		NewDecimalFloat64(26), MonthDatePrecision)
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).UnixNano(), res.UnixNano())
 }
 
-func TestAddQuantityDateTimeDurationInvalidPrecision(t *testing.T) {
+func TestAddQuantityTemporalDurationInvalidPrecision(t *testing.T) {
 	v := time.Date(2019, 1, 1, 0, 0, 0, 0, time.UTC)
 	assert.Panics(t, func() {
-		_, _ = addQuantityDateTimeDuration(newDateTemporalAccessorMock(v, -1), NewDecimalFloat64(26), MonthDatePrecision)
+		_, _ = addQuantityTemporalDuration(newDateTemporalAccessorMock(v, -1), NewDecimalFloat64(26), MonthDatePrecision)
 	})
 }
 
@@ -343,5 +343,9 @@ func (d dateTemporalAccessorMock) String() string {
 }
 
 func (d dateTemporalAccessorMock) LowestPrecision() DateTimePrecisions {
+	panic("implement me")
+}
+
+func (d *dateTemporalAccessorMock) Add(QuantityAccessor) (TemporalAccessor, error) {
 	panic("implement me")
 }

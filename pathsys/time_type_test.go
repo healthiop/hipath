@@ -221,3 +221,112 @@ func TestTimeEqualNanosecondDiffers(t *testing.T) {
 	assert.Equal(t, false, t1.Equal(t2))
 	assert.Equal(t, false, t1.Equivalent(t2))
 }
+
+func TestNewTimeHMSNWithPrecisionDay(t *testing.T) {
+	assert.Panics(t, func() { NewTimeHMSNWithPrecision(0, 0, 0, 0, DayDatePrecision) })
+}
+
+func TestNewTimeHMSNWithPrecisionInvalid(t *testing.T) {
+	assert.Panics(t, func() { NewTimeHMSNWithPrecision(0, 0, 0, 0, 100) })
+}
+
+func TestNewTimeHMSNWithPrecisionHour(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, HourTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, HourTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionMinute(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, MinuteTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 28, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, MinuteTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionSecond(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, SecondTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 28, v.Minute())
+	assert.Equal(t, 31, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, SecondTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionNano(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 28, v.Minute())
+	assert.Equal(t, 31, v.Second())
+	assert.Equal(t, 823123876, v.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
+}
+
+func TestTimeAdd(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(34), NewString("minute")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*TimeAccessor)(nil), res) {
+		r := res.(TimeAccessor)
+		assert.Equal(t, 18, r.Hour())
+		assert.Equal(t, 2, r.Minute())
+		assert.Equal(t, 31, r.Second())
+		assert.Equal(t, 823123876, r.Nanosecond())
+		assert.Equal(t, NanoTimePrecision, r.Precision())
+	}
+}
+
+func TestTimeAddPrecision(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, HourTimePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(80), NewString("minute")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*TimeAccessor)(nil), res) {
+		r := res.(TimeAccessor)
+		assert.Equal(t, 18, r.Hour())
+		assert.Equal(t, 0, r.Minute())
+		assert.Equal(t, 0, r.Second())
+		assert.Equal(t, 0, r.Nanosecond())
+		assert.Equal(t, HourTimePrecision, r.Precision())
+	}
+}
+
+func TestTimeAddInvalidUnit(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(34), NewString("x")))
+
+	assert.Error(t, err)
+}
+
+func TestTimeAddUnsupportedPrecision(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(34), NewString("day")))
+
+	assert.Error(t, err)
+}
+
+func TestTimeAddExceedsYear(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(-15_000), NewString("hour")))
+
+	assert.Error(t, err)
+}
+
+func TestTimeAddExceedsDay(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(9), NewString("hour")))
+
+	assert.Error(t, err)
+}
+
+func TestTimeAddExceedsMonth(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 28, 31, 823123876, NanoTimePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(744), NewString("hour")))
+
+	assert.Error(t, err)
+}

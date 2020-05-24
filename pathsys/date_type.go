@@ -62,6 +62,21 @@ func NewDateYMD(year int, month int, day int) DateAccessor {
 	return newDate(year, month, day, DayDatePrecision)
 }
 
+func NewDateYMDWithPrecision(year, month, day int, precision DateTimePrecisions) DateAccessor {
+	if precision < YearDatePrecision || precision > DayDatePrecision {
+		panic(fmt.Sprintf("invalid date precision %d", precision))
+	}
+
+	if precision < MonthDatePrecision {
+		month = 1
+	}
+	if precision < DayDatePrecision {
+		day = 1
+	}
+
+	return newDate(year, month, day, precision)
+}
+
 func ParseDate(value string) (DateAccessor, error) {
 	parts := dateRegexp.FindStringSubmatch(value)
 	if parts == nil {
@@ -146,6 +161,23 @@ func (t *dateType) Equivalent(node interface{}) bool {
 
 func dateValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Year() == dt2.Year() && dt1.Month() == dt2.Month() && dt1.Day() == dt2.Day()
+}
+
+func (t *dateType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {
+	value, precision, err := quantityDateTimePrecision(quantity)
+	if err != nil {
+		return nil, err
+	}
+
+	if precision > DayDatePrecision {
+		return nil, fmt.Errorf("quantity precision not allowd for date type: %s", quantity.String())
+	}
+
+	res, err := addQuantityTemporalDuration(t, value, precision)
+	if err != nil {
+		return nil, err
+	}
+	return NewDateYMDWithPrecision(res.Year(), int(res.Month()), res.Day(), t.precision), nil
 }
 
 func (t *dateType) String() string {

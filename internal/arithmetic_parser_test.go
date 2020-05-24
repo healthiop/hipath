@@ -34,6 +34,7 @@ import (
 	"github.com/volsch/gohipath/internal/test"
 	"github.com/volsch/gohipath/pathsys"
 	"testing"
+	"time"
 )
 
 func TestParseAdditionExpression(t *testing.T) {
@@ -159,6 +160,23 @@ func TestParseStringAdditionExpressionEmpty(t *testing.T) {
 		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Nil(t, res, "empty result expected")
+	}
+}
+
+func TestParseDateTimeAdditionExpressionEmpty(t *testing.T) {
+	res, errorItemCollection := testParse("@2015-02-04T14:34:28Z + 12.5 hours")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
+		ctx := test.NewTestContext(t)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+			e := time.Date(2015, 2, 5, 2, 34, 28, 0, time.UTC)
+			assert.Equal(t, e.UnixNano(), res.(pathsys.DateTimeAccessor).Time().UnixNano())
+		}
 	}
 }
 

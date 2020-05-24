@@ -71,8 +71,19 @@ func (e *ArithmeticExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 }
 
 func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right interface{}) (pathsys.AnyAccessor, error) {
+	if op == pathsys.AdditionOp || op == pathsys.SubtractionOp {
+		t, err := applyTemporalArithmetic(left, right,
+			op == pathsys.SubtractionOp)
+		if err != nil {
+			return nil, err
+		}
+		if t != nil {
+			return t, nil
+		}
+	}
+
 	if op == pathsys.AdditionOp {
-		if s, ok := applyStringArithmetic(left, right); ok {
+		if s := applyStringArithmetic(left, right); s != nil {
 			return s, nil
 		}
 	}
@@ -80,15 +91,32 @@ func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right 
 	return nil, fmt.Errorf("operands %T and %T do not support arithmetic operation %c", left, op, right)
 }
 
-func applyStringArithmetic(left interface{}, right interface{}) (pathsys.StringAccessor, bool) {
+func applyStringArithmetic(left, right interface{}) pathsys.StringAccessor {
 	var ok bool
 	var leftString, rightString pathsys.Stringifier
 	if leftString, ok = left.(pathsys.Stringifier); !ok {
-		return nil, false
+		return nil
 	}
 	if rightString, ok = right.(pathsys.Stringifier); !ok {
-		return nil, false
+		return nil
 	}
 
-	return pathsys.NewString(leftString.String() + rightString.String()), true
+	return pathsys.NewString(leftString.String() + rightString.String())
+}
+
+func applyTemporalArithmetic(left, right interface{}, negate bool) (pathsys.TemporalAccessor, error) {
+	var ok bool
+	var temporal pathsys.TemporalAccessor
+	var quantity pathsys.QuantityAccessor
+	if temporal, ok = left.(pathsys.TemporalAccessor); !ok {
+		return nil, nil
+	}
+	if quantity, ok = right.(pathsys.QuantityAccessor); !ok {
+		return nil, fmt.Errorf("only a quantity may be added to a temporal value: %T", right)
+	}
+
+	if negate {
+		quantity = quantity.Negate().(pathsys.QuantityAccessor)
+	}
+	return temporal.Add(quantity)
 }

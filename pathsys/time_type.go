@@ -65,6 +65,24 @@ func NewTimeHMSN(hour int, minute int, second int, nanosecond int) TimeAccessor 
 	return newTime(hour, minute, second, nanosecond, NanoTimePrecision)
 }
 
+func NewTimeHMSNWithPrecision(hour, minute, second int, nanosecond int, precision DateTimePrecisions) TimeAccessor {
+	if precision < HourTimePrecision || precision > NanoTimePrecision {
+		panic(fmt.Sprintf("invalid time precision %d", precision))
+	}
+
+	if precision < MinuteTimePrecision {
+		minute = 0
+	}
+	if precision < SecondTimePrecision {
+		second = 0
+	}
+	if precision < NanoTimePrecision {
+		nanosecond = 0
+	}
+
+	return newTime(hour, minute, second, nanosecond, precision)
+}
+
 func ParseTime(value string) (TimeAccessor, error) {
 	parts := timeRegexp.FindStringSubmatch(value)
 	if parts == nil {
@@ -174,6 +192,28 @@ func (t *timeType) Equivalent(node interface{}) bool {
 func timeValueEqual(t1 TimeAccessor, t2 TimeAccessor) bool {
 	return t1.Hour() == t2.Hour() && t1.Minute() == t2.Minute() && t1.Second() == t2.Second() &&
 		t1.Nanosecond() == t2.Nanosecond()
+}
+
+func (t *timeType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {
+	value, precision, err := quantityDateTimePrecision(quantity)
+	if err != nil {
+		return nil, err
+	}
+
+	if precision < HourTimePrecision {
+		return nil, fmt.Errorf("quantity precision not allowd for time type: %s", quantity.String())
+	}
+
+	d := time.Date(1, 1, 1, t.hour, t.minute, t.second, t.nanosecond, time.UTC)
+	res, err := addQuantityDateTimeDuration(d, t.precision, value, precision)
+	if err != nil {
+		return nil, err
+	}
+	if res.Day() != 1 || res.Month() != 1 || res.Year() != 1 {
+		return nil, fmt.Errorf("time arithmetic results in an invalid hour")
+	}
+
+	return NewTimeHMSNWithPrecision(res.Hour(), res.Minute(), res.Second(), res.Nanosecond(), t.precision), nil
 }
 
 func (t *timeType) String() string {

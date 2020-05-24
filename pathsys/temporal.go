@@ -63,6 +63,7 @@ type TemporalAccessor interface {
 	Stringifier
 	Precision() DateTimePrecisions
 	LowestPrecision() DateTimePrecisions
+	Add(quantity QuantityAccessor) (TemporalAccessor, error)
 }
 
 type DateTemporalAccessor interface {
@@ -77,13 +78,18 @@ func (t *temporalType) Precision() DateTimePrecisions {
 	return t.precision
 }
 
-func addQuantityDateTimeDuration(date DateTemporalAccessor,
+func addQuantityTemporalDuration(temporal DateTemporalAccessor, quantityValue NumberAccessor,
+	quantityPrecision DateTimePrecisions) (time.Time, error) {
+	return addQuantityDateTimeDuration(temporal.Time(), temporal.Precision(), quantityValue, quantityPrecision)
+}
+
+func addQuantityDateTimeDuration(t time.Time, precision DateTimePrecisions,
 	quantityValue NumberAccessor, quantityPrecision DateTimePrecisions) (time.Time, error) {
-	if date.Precision() < quantityPrecision {
+	if precision < quantityPrecision {
 		nanos := quantityValueNanos(quantityValue, quantityPrecision)
 
 		var res DecimalValueAccessor
-		switch date.Precision() {
+		switch precision {
 		case YearDatePrecision:
 			res, _ = nanos.Calc(yearNanosecondFactor, DivisionOp)
 		case MonthDatePrecision:
@@ -97,16 +103,15 @@ func addQuantityDateTimeDuration(date DateTemporalAccessor,
 		case SecondTimePrecision:
 			res, _ = nanos.Calc(secondNanosecondFactor, DivisionOp)
 		default:
-			panic(fmt.Sprintf("invalid date/time precision: %d", date.Precision()))
+			panic(fmt.Sprintf("invalid date/time precision: %d", precision))
 		}
 
 		quantityValue = res.Value().Truncate(0)
-		quantityPrecision = date.Precision()
+		quantityPrecision = precision
 	} else if quantityPrecision < SecondTimePrecision {
 		quantityValue = quantityValue.Truncate(0)
 	}
 
-	t := date.Time()
 	switch quantityPrecision {
 	case YearDatePrecision:
 		t = t.AddDate(int(quantityValue.Int()), 0, 0)

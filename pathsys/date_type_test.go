@@ -196,3 +196,84 @@ func TestDateEqualDayDiffers(t *testing.T) {
 	assert.Equal(t, false, d1.Equal(d2))
 	assert.Equal(t, false, d1.Equivalent(d2))
 }
+
+func TestNewDateYMDWithPrecisionHour(t *testing.T) {
+	assert.Panics(t, func() { NewDateYMDWithPrecision(2000, 1, 1, HourTimePrecision) })
+}
+
+func TestNewDateYMDWithPrecisionInvalid(t *testing.T) {
+	assert.Panics(t, func() { NewDateYMDWithPrecision(2000, 1, 1, -1) })
+}
+
+func TestNewDateYMDWithPrecisionYear(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 8, 21, YearDatePrecision)
+	assert.Equal(t, 2019, v.Year())
+	assert.Equal(t, 1, v.Month())
+	assert.Equal(t, 1, v.Day())
+	assert.Equal(t, YearDatePrecision, v.Precision())
+}
+
+func TestNewDateYMDWithPrecisionMonth(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 8, 21, MonthDatePrecision)
+	assert.Equal(t, 2019, v.Year())
+	assert.Equal(t, 8, v.Month())
+	assert.Equal(t, 1, v.Day())
+	assert.Equal(t, MonthDatePrecision, v.Precision())
+}
+
+func TestNewDateYMDWithPrecisionDay(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 8, 21, DayDatePrecision)
+	assert.Equal(t, 2019, v.Year())
+	assert.Equal(t, 8, v.Month())
+	assert.Equal(t, 21, v.Day())
+	assert.Equal(t, DayDatePrecision, v.Precision())
+}
+
+func TestDateAdd(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 7, 21, DayDatePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(10), NewString("month")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*DateAccessor)(nil), res) {
+		r := res.(DateAccessor)
+		assert.Equal(t, 2020, r.Year())
+		assert.Equal(t, 5, r.Month())
+		assert.Equal(t, 21, r.Day())
+		assert.Equal(t, DayDatePrecision, r.Precision())
+	}
+}
+
+func TestDateAddPrecision(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 7, 21, YearDatePrecision)
+	res, err := v.Add(NewQuantity(NewDecimalInt(14), NewString("month")))
+
+	assert.NoError(t, err)
+	if assert.Implements(t, (*DateAccessor)(nil), res) {
+		r := res.(DateAccessor)
+		assert.Equal(t, 2020, r.Year())
+		assert.Equal(t, 1, r.Month())
+		assert.Equal(t, 1, r.Day())
+		assert.Equal(t, YearDatePrecision, r.Precision())
+	}
+}
+
+func TestDateAddInvalidUnit(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 7, 21, DayDatePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(14), NewString("x")))
+
+	assert.Error(t, err)
+}
+
+func TestDateAddUnsupportedPrecision(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 7, 21, DayDatePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(14), NewString("hour")))
+
+	assert.Error(t, err)
+}
+
+func TestDateAddExceedsYear(t *testing.T) {
+	v := NewDateYMDWithPrecision(2019, 7, 21, DayDatePrecision)
+	_, err := v.Add(NewQuantity(NewDecimalInt(-2020), NewString("year")))
+
+	assert.Error(t, err)
+}
