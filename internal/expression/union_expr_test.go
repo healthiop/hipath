@@ -66,12 +66,10 @@ func TestUnionExpressionCollection(t *testing.T) {
 	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
 		col := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 4, col.Count()) {
-			assert.Equal(t, pathsys.NewInteger(10), col.Get(0))
-			assert.Equal(t, pathsys.NewInteger(11), col.Get(1))
-			assert.Equal(t, pathsys.NewInteger(14), col.Get(2))
-			assert.Condition(t, func() bool {
-				return pathsys.NewDecimalInt(12).Equal(col.Get(3))
-			})
+			assert.Equal(t, int32(10), pathsys.IntegerValue(col.Get(0)))
+			assert.Equal(t, int32(11), pathsys.IntegerValue(col.Get(1)))
+			assert.Equal(t, int32(14), pathsys.IntegerValue(col.Get(2)))
+			assert.Equal(t, 12.0, pathsys.DecimalValueFloat64(col.Get(3)))
 		}
 		assert.Equal(t, "System.Any", col.ItemTypeInfo().String())
 	}

@@ -144,9 +144,6 @@ func decimalValueEqual(t NumberAccessor, node interface{}) bool {
 		d = da
 	} else if da, ok := node.(DecimalValueAccessor); ok {
 		d = da.Value()
-		if d == nil {
-			return false
-		}
 	} else {
 		return false
 	}
@@ -164,15 +161,29 @@ func decimalValueEquivalent(t NumberAccessor, node interface{}) bool {
 		d = da
 	} else if da, ok := node.(DecimalValueAccessor); ok {
 		d = da.Value()
-		if d == nil {
-			return false
-		}
 	} else {
 		return false
 	}
 
 	d1, d2 := leastPrecisionDecimal(t.Decimal(), d.Decimal())
 	return d1.Equal(d2)
+}
+
+func (t *decimalType) Compare(comparator Comparator) (int, OperatorStatus) {
+	return decimalValueCompare(t, comparator)
+}
+
+func decimalValueCompare(t NumberAccessor, comparator Comparator) (int, OperatorStatus) {
+	var d DecimalAccessor
+	if da, ok := comparator.(DecimalAccessor); ok {
+		d = da
+	} else if da, ok := comparator.(DecimalValueAccessor); ok {
+		d = da.Value()
+	} else {
+		return -1, Inconvertible
+	}
+
+	return t.Decimal().Cmp(d.Decimal()), Evaluated
 }
 
 func (t *decimalType) String() string {
@@ -230,5 +241,13 @@ func decimalCalc(leftOperand NumberAccessor, rightOperand DecimalAccessor, op Ar
 		return NewDecimal(leftOperandValue.Mod(rightOperandValue))
 	default:
 		panic(fmt.Sprintf("Unhandled operator: %d", op))
+	}
+}
+
+func DecimalValueFloat64(node interface{}) interface{} {
+	if v, ok := node.(DecimalAccessor); !ok {
+		return nil
+	} else {
+		return v.Float64()
 	}
 }

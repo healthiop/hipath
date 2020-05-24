@@ -126,5 +126,5 @@ func temporalPrecisionNotEqual(n1 interface{}, n2 interface{}) bool {
 	if t2, ok = n2.(pathsys.TemporalAccessor); !ok {
 		return false
 	}
-	return t1.Precision() != t2.Precision()
+	return !pathsys.TemporalPrecisionEqual(t1, t2)
 }

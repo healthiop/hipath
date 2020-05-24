@@ -113,3 +113,29 @@ func visitInvocationExpression(ctx antlr.ParserRuleContext, args []interface{}) 
 
 	return expression.NewInvocationExpression(exprEvaluator, invocationEvaluator), nil
 }
+
+func (v *Visitor) VisitInequalityExpression(ctx *parser.InequalityExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitInequalityExpression)
+}
+
+func visitInequalityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evalLeft := args[0].(pathsys.Evaluator)
+	op := args[1].(string)
+	evalRight := args[2].(pathsys.Evaluator)
+
+	var cmpOp expression.ComparisonOp
+	switch op {
+	case "<=":
+		cmpOp = expression.LessOrEqualThanOp
+	case "<":
+		cmpOp = expression.LessThanOp
+	case ">":
+		cmpOp = expression.GreaterThanOp
+	case ">=":
+		cmpOp = expression.GreaterOrEqualThanOp
+	default:
+		return nil, fmt.Errorf("invalid comparison operator: %s", op)
+	}
+
+	return expression.NewComparisonExpression(evalLeft, cmpOp, evalRight), nil
+}

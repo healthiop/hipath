@@ -270,3 +270,223 @@ func TestParseInvocationExpressionUnion(t *testing.T) {
 		}
 	}
 }
+
+func TestParseComparisonExpressionLessOrEqualLess(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<=10.5")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionLessOrEqualEqual(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<=10")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionLessOrEqualNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<=9.9")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionLessLess(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<10.5")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionLessEqualNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<10")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionLessNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("10<9.9")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterGreater(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test9'>'test1'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterEqualNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test10'>'test10'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test1'>'test9'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterPrEqualGreater(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test9'>='test1'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterOrEqualEqual(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test10'>='test10'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionGreaterOrEqualNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test1'>='test9'")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseComparisonExpressionPrecision(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("@2018-10-01>=@2018-09")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		assert.Nil(t, res, "empty result expected")
+	}
+}
+
+func TestParseComparisonExpressionInconvertible(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("@2018-10-01>=10")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ComparisonExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.Error(t, err, "evaluation error expected")
+		assert.Nil(t, res, "no result expected")
+	}
+}

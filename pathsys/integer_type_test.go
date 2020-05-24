@@ -77,6 +77,12 @@ func TestIntegerValue(t *testing.T) {
 	assert.Equal(t, "-4711", o.String())
 }
 
+func TestIntegerValueDecimal(t *testing.T) {
+	o := NewInteger(-4711)
+	r := o.Value()
+	assert.Same(t, r, o.Value())
+}
+
 func TestIntegerInt64(t *testing.T) {
 	o := NewInteger(-4711)
 	assert.Equal(t, int64(-4711), o.Int64())
@@ -194,12 +200,6 @@ func TestIntegerEquivalentQuantity(t *testing.T) {
 
 func TestIntegerEqualNotEqualQuantity(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(65), NewString("cm"))
-	assert.Equal(t, false, NewInteger(64).Equal(q))
-	assert.Equal(t, false, NewInteger(64).Equivalent(q))
-}
-
-func TestIntegerEqualNotEqualQuantityNil(t *testing.T) {
-	q := NewQuantity(nil, NewString("cm"))
 	assert.Equal(t, false, NewInteger(64).Equal(q))
 	assert.Equal(t, false, NewInteger(64).Equivalent(q))
 }
@@ -343,4 +343,49 @@ func TestIntegerCalcNotSupportedOp(t *testing.T) {
 func TestIntegerTruncate(t *testing.T) {
 	v := NewInteger(23223)
 	assert.Same(t, v, v.Truncate(2))
+}
+
+func TestIntegerValueNil(t *testing.T) {
+	assert.Nil(t, IntegerValue(nil))
+}
+
+func TestIntegerValueInt(t *testing.T) {
+	assert.Equal(t, int32(20), IntegerValue(NewInteger(20)))
+}
+
+func TestIntegerCompareEqual(t *testing.T) {
+	res, status := NewInteger(10).Compare(NewInteger(10))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestIntegerCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewDecimalInt(10).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestIntegerCompareLessThan(t *testing.T) {
+	res, status := NewInteger(10).Compare(NewInteger(11))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestIntegerCompareGreaterThan(t *testing.T) {
+	res, status := NewInteger(10).Compare(NewInteger(9))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestIntegerCompareDecimal(t *testing.T) {
+	res, status := NewInteger(10).Compare(NewDecimalFloat64(10.61))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestIntegerCompareQuantity(t *testing.T) {
+	res, status := NewInteger(10).Compare(
+		NewQuantity(NewDecimalFloat64(10.71), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
 }

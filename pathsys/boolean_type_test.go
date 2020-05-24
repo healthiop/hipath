@@ -122,7 +122,26 @@ func TestBooleanEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewBoolean(false).Equivalent(NewBoolean(false)))
 }
 
-func TestBooleanEqualNotEqual(t *testing.T) {
-	assert.Equal(t, false, NewBoolean(false).Equal(NewBoolean(true)))
-	assert.Equal(t, false, NewBoolean(false).Equivalent(NewBoolean(true)))
+func TestBooleanCompareEqual(t *testing.T) {
+	res, status := NewBoolean(true).Compare(NewBoolean(true))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestBooleanCompareTypeDiffers(t *testing.T) {
+	res, status := NewBoolean(false).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestBooleanCompareLessThan(t *testing.T) {
+	res, status := NewBoolean(false).Compare(NewBoolean(true))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestBooleanCompareGreaterThan(t *testing.T) {
+	res, status := NewBoolean(true).Compare(NewBoolean(false))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
 }

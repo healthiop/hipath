@@ -209,12 +209,6 @@ func TestDecimalEqualNotEqualQuantity(t *testing.T) {
 	assert.Equal(t, false, NewDecimalFloat64(64.12).Equivalent(q))
 }
 
-func TestDecimalEqualNotEqualQuantityNil(t *testing.T) {
-	q := NewQuantity(nil, NewString("cm"))
-	assert.Equal(t, false, NewDecimalFloat64(64.12).Equal(q))
-	assert.Equal(t, false, NewDecimalFloat64(64.12).Equivalent(q))
-}
-
 func TestDecimalEquivalentLeft(t *testing.T) {
 	assert.Equal(t, true, NewDecimalFloat64(8274.6).Equivalent(NewDecimalFloat64(8274.67)))
 }
@@ -413,4 +407,49 @@ func TestDecimalTruncate(t *testing.T) {
 	v := NewDecimalFloat64(23223.187636)
 	r, _ := v.Truncate(2).Decimal().Float64()
 	assert.Equal(t, 23223.18, r)
+}
+
+func TestDecimalValueFloat64Nil(t *testing.T) {
+	assert.Nil(t, DecimalValueFloat64(nil))
+}
+
+func TestDecimalValueInt(t *testing.T) {
+	assert.Equal(t, 209.123, DecimalValueFloat64(NewDecimalFloat64(209.123)))
+}
+
+func TestDecimalCompareEqual(t *testing.T) {
+	res, status := NewDecimalFloat64(10.21).Compare(NewDecimalFloat64(10.21))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestDecimalCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewDecimalInt(10).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDecimalCompareLessThan(t *testing.T) {
+	res, status := NewDecimalFloat64(10.64).Compare(NewDecimalFloat64(10.71))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDecimalCompareGreaterThan(t *testing.T) {
+	res, status := NewDecimalFloat64(10.81).Compare(NewDecimalFloat64(10.71))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestDecimalCompareInteger(t *testing.T) {
+	res, status := NewDecimalFloat64(10.64).Compare(NewInteger(11))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDecimalCompareQuantity(t *testing.T) {
+	res, status := NewDecimalFloat64(10.64).Compare(
+		NewQuantity(NewDecimalFloat64(10.71), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
 }

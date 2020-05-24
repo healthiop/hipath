@@ -60,10 +60,16 @@ type temporalType struct {
 
 type TemporalAccessor interface {
 	AnyAccessor
+	Comparator
 	Stringifier
 	Precision() DateTimePrecisions
 	LowestPrecision() DateTimePrecisions
 	Add(quantity QuantityAccessor) (TemporalAccessor, error)
+}
+
+func TemporalPrecisionEqual(t1 TemporalAccessor, t2 TemporalAccessor) bool {
+	return t1.Precision() == t2.Precision() ||
+		(t1.Precision() >= SecondTimePrecision && t2.Precision() >= SecondTimePrecision)
 }
 
 type DateTemporalAccessor interface {
@@ -76,6 +82,16 @@ type DateTemporalAccessor interface {
 
 func (t *temporalType) Precision() DateTimePrecisions {
 	return t.precision
+}
+
+func compareDateTimeValue(left, right int) int {
+	if left > right {
+		return 1
+	}
+	if left < right {
+		return -1
+	}
+	return 0
 }
 
 func addQuantityTemporalDuration(temporal DateTemporalAccessor, quantityValue NumberAccessor,
@@ -164,9 +180,6 @@ func quantityValueNanos(value NumberAccessor, precision DateTimePrecisions) Numb
 
 func quantityDateTimePrecision(q QuantityAccessor) (NumberAccessor, DateTimePrecisions, error) {
 	value, unit := q.Value(), q.Unit()
-	if value == nil {
-		return nil, NanoTimePrecision, fmt.Errorf("quantity has no value")
-	}
 	if unit == nil {
 		return nil, NanoTimePrecision, fmt.Errorf("quantity has no date/time unit")
 	}

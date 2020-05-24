@@ -279,6 +279,24 @@ func TestEqualityExpressionEqualTimePrecisionDiffers(t *testing.T) {
 	assert.Nil(t, res, "empty collection expected")
 }
 
+func TestEqualityExpressionEqualTimeNanoSecondPrecision(t *testing.T) {
+	n1, err := ParseTimeLiteral("@T12:20:22.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	n2, err := ParseTimeLiteral("@T12:20:22")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := test.NewTestContext(t)
+	e := NewEqualityExpression(false, false, n1, n2)
+	res, err := e.Evaluate(ctx, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+	}
+}
+
 func TestEqualityExpressionEquivalent(t *testing.T) {
 	n1, err := ParseNumberLiteral("1010.12")
 	if err != nil {

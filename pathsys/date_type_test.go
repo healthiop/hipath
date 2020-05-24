@@ -277,3 +277,58 @@ func TestDateAddExceedsYear(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func TestDateCompareEqual(t *testing.T) {
+	now := time.Now()
+	res, status := NewDate(now).Compare(NewDate(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestDateCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewDate(time.Now()).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateCompareLessThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewDate(now.Add(-48 * time.Hour)).Compare(NewDate(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateCompareGreaterThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewDate(now).Compare(NewDate(now.Add(-48 * time.Hour)))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestDateComparePrecisionDiffers(t *testing.T) {
+	res, status := NewDateYMDWithPrecision(2020, 7, 1, DayDatePrecision).
+		Compare(NewDateYMDWithPrecision(2020, 7, 1, MonthDatePrecision))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateCompareYearDiffers(t *testing.T) {
+	res, status := NewDateYMDWithPrecision(2020, 7, 21, DayDatePrecision).
+		Compare(NewDateYMDWithPrecision(2021, 7, 21, DayDatePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateCompareMonthDiffers(t *testing.T) {
+	res, status := NewDateYMDWithPrecision(2020, 8, 21, DayDatePrecision).
+		Compare(NewDateYMDWithPrecision(2020, 7, 21, DayDatePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestDateCompareDayDiffers(t *testing.T) {
+	res, status := NewDateYMDWithPrecision(2020, 7, 21, DayDatePrecision).
+		Compare(NewDateYMDWithPrecision(2020, 7, 22, DayDatePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}

@@ -53,11 +53,6 @@ type AnyAccessor interface {
 	Equivalent(node interface{}) bool
 }
 
-type Stringifier interface {
-	AnyAccessor
-	String() string
-}
-
 func TypeEqual(n1 AnyAccessor, n2 AnyAccessor) bool {
 	return n1 != nil && n2 != nil && n1.DataType() == n2.DataType()
 }
@@ -70,7 +65,25 @@ func Equivalent(n1 AnyAccessor, n2 AnyAccessor) bool {
 	return n1 == n2 || (n1 != nil && n2 != nil && n1.Equivalent(n2))
 }
 
+type OperatorStatus int
+
+const (
+	Inconvertible OperatorStatus = iota
+	Empty
+	Evaluated
+)
+
+type Comparator interface {
+	AnyAccessor
+	Compare(comparator Comparator) (int, OperatorStatus)
+}
+
 type Negator interface {
 	AnyAccessor
 	Negate() AnyAccessor
+}
+
+type Stringifier interface {
+	AnyAccessor
+	String() string
 }

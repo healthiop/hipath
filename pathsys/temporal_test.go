@@ -195,12 +195,6 @@ func TestQuantityValueNanosInvalidPrecision(t *testing.T) {
 	assert.Panics(t, func() { _ = quantityValueNanos(NewDecimalInt(10), -1) })
 }
 
-func TestQuantityDateTimePrecisionValueNil(t *testing.T) {
-	q := NewQuantity(nil, NewString("year"))
-	_, _, err := quantityDateTimePrecision(q)
-	assert.Error(t, err, "error expected")
-}
-
 func TestQuantityDateTimePrecisionUnitNil(t *testing.T) {
 	q := NewQuantity(NewDecimalInt(10), nil)
 	_, _, err := quantityDateTimePrecision(q)
@@ -293,6 +287,36 @@ func TestQuantityDateTimePrecisionInvalidUnit(t *testing.T) {
 	assert.Error(t, err, "error expected")
 }
 
+func TestTemporalPrecisionEqual(t *testing.T) {
+	assert.True(t, TemporalPrecisionEqual(
+		newDateTemporalAccessorMock(time.Now(), MinuteTimePrecision),
+		newDateTemporalAccessorMock(time.Now(), MinuteTimePrecision)))
+}
+
+func TestTemporalPrecisionEqualNot(t *testing.T) {
+	assert.False(t, TemporalPrecisionEqual(
+		newDateTemporalAccessorMock(time.Now(), MinuteTimePrecision),
+		newDateTemporalAccessorMock(time.Now(), HourTimePrecision)))
+}
+
+func TestTemporalPrecisionEqualSecondNano(t *testing.T) {
+	assert.True(t, TemporalPrecisionEqual(
+		newDateTemporalAccessorMock(time.Now(), SecondTimePrecision),
+		newDateTemporalAccessorMock(time.Now(), NanoTimePrecision)))
+}
+
+func TestTemporalPrecisionEqualSecondOther(t *testing.T) {
+	assert.False(t, TemporalPrecisionEqual(
+		newDateTemporalAccessorMock(time.Now(), SecondTimePrecision),
+		newDateTemporalAccessorMock(time.Now(), MinuteTimePrecision)))
+}
+
+func TestTemporalPrecisionEqualNanoOther(t *testing.T) {
+	assert.False(t, TemporalPrecisionEqual(
+		newDateTemporalAccessorMock(time.Now(), MinuteTimePrecision),
+		newDateTemporalAccessorMock(time.Now(), NanoTimePrecision)))
+}
+
 type dateTemporalAccessorMock struct {
 	time      time.Time
 	precision DateTimePrecisions
@@ -335,6 +359,10 @@ func (d dateTemporalAccessorMock) Equal(interface{}) bool {
 }
 
 func (d dateTemporalAccessorMock) Equivalent(interface{}) bool {
+	panic("implement me")
+}
+
+func (d *dateTemporalAccessorMock) Compare(Comparator) (int, OperatorStatus) {
 	panic("implement me")
 }
 

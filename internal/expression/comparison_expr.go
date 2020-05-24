@@ -31,61 +31,71 @@ package expression
 import (
 	"fmt"
 	"github.com/volsch/gohipath/pathsys"
-	"regexp"
 )
 
-var quantityUnitRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
+type ComparisonOp int
 
-type QuantityLiteral struct {
-	node pathsys.QuantityAccessor
+const (
+	LessThanOp ComparisonOp = iota + 1
+	LessOrEqualThanOp
+	GreaterOrEqualThanOp
+	GreaterThanOp
+)
+
+type ComparisonExpression struct {
+	evalLeft  pathsys.Evaluator
+	op        ComparisonOp
+	evalRight pathsys.Evaluator
 }
 
-func ParseQuantityLiteral(number string, unit string) (pathsys.Evaluator, error) {
-	value, err := pathsys.ParseDecimal(number)
+func NewComparisonExpression(evalLeft pathsys.Evaluator, op ComparisonOp, evalRight pathsys.Evaluator) *ComparisonExpression {
+	return &ComparisonExpression{evalLeft, op, evalRight}
+}
+
+func (e *ComparisonExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
-	convertedUnit, err := parseQuantityUnit(unit)
+	right, err := e.evalRight.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
 	}
 
-	return &QuantityLiteral{pathsys.NewQuantity(value, convertedUnit)}, nil
-}
-
-func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
-	if len(unit) == 0 || unit == "''" {
+	left, right = unwrapCollection(left), unwrapCollection(right)
+	if left == nil || right == nil {
 		return nil, nil
 	}
 
-	var convertedUnit pathsys.StringAccessor
-	switch unit {
-	case "year", "years":
-		convertedUnit = pathsys.YearQuantityUnit
-	case "month", "months":
-		convertedUnit = pathsys.MonthQuantityUnit
-	case "week", "weeks":
-		convertedUnit = pathsys.WeekQuantityUnit
-	case "day", "days":
-		convertedUnit = pathsys.DayQuantityUnit
-	case "hour", "hours":
-		convertedUnit = pathsys.HourQuantityUnit
-	case "minute", "minutes":
-		convertedUnit = pathsys.MinuteQuantityUnit
-	case "second", "seconds", "s":
-		convertedUnit = pathsys.SecondQuantityUnit
-	case "millisecond", "milliseconds", "ms":
-		convertedUnit = pathsys.MillisecondQuantityUnit
-	default:
-		u := parseStringLiteral(unit, stringDelimiterChar)
-		if !quantityUnitRegexp.MatchString(u) {
-			return nil, fmt.Errorf("invalid quantity unit: %s", u)
-		}
-		convertedUnit = pathsys.NewString(u)
+	var ok bool
+	var leftCmp, rightCmp pathsys.Comparator
+	if leftCmp, ok = left.(pathsys.Comparator); !ok {
+		return nil, fmt.Errorf("operand cannot be used for comparison: %T", left)
 	}
-	return convertedUnit, nil
-}
+	if rightCmp, ok = right.(pathsys.Comparator); !ok {
+		return nil, fmt.Errorf("operand cannot be used for comparison: %T", right)
+	}
 
-func (e *QuantityLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
-	return e.node, nil
+	res, status := leftCmp.Compare(rightCmp)
+	if status == pathsys.Empty {
+		return nil, nil
+	}
+	if status != pathsys.Evaluated {
+		return nil, fmt.Errorf("operands cannot be compared: %T <> %T", leftCmp, rightCmp)
+	}
+
+	var b bool
+	switch e.op {
+	case LessOrEqualThanOp:
+		b = res <= 0
+	case LessThanOp:
+		b = res < 0
+	case GreaterThanOp:
+		b = res > 0
+	case GreaterOrEqualThanOp:
+		b = res >= 0
+	default:
+		panic(fmt.Sprintf("unhandled comparison operator: %d", e.op))
+	}
+	return pathsys.NewBoolean(b), nil
 }

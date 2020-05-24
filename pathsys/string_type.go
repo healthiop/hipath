@@ -28,6 +28,8 @@
 
 package pathsys
 
+import "strings"
+
 var StringTypeInfo = newAnyTypeInfo("String")
 
 var EmptyString = newString("")
@@ -38,6 +40,7 @@ type stringType struct {
 
 type StringAccessor interface {
 	AnyAccessor
+	Comparator
 	Stringifier
 }
 
@@ -77,4 +80,12 @@ func (t *stringType) Equivalent(node interface{}) bool {
 	}
 
 	return NormalizedStringEqual(t.String(), node.(Stringifier).String())
+}
+
+func (t *stringType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if !TypeEqual(t, comparator) {
+		return -1, Inconvertible
+	} else {
+		return strings.Compare(t.value, comparator.(StringAccessor).String()), Evaluated
+	}
 }

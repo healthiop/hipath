@@ -59,6 +59,7 @@ type ArithmeticApplier interface {
 
 type NumberAccessor interface {
 	AnyAccessor
+	Comparator
 	Stringifier
 	DecimalValueAccessor
 	Negator

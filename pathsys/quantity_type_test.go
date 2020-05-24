@@ -38,7 +38,7 @@ func TestUCUMSystemURI(t *testing.T) {
 }
 
 func TestQuantityDataType(t *testing.T) {
-	o := NewQuantity(nil, nil)
+	o := NewQuantity(NewDecimalInt(0), nil)
 	dataType := o.DataType()
 	assert.Equal(t, QuantityDataType, dataType)
 }
@@ -52,6 +52,10 @@ func TestQuantityTypeInfo(t *testing.T) {
 			assert.Equal(t, "System.Any", i.FQBaseName().String())
 		}
 	}
+}
+
+func TestQuantityValueNil(t *testing.T) {
+	assert.Panics(t, func() { NewQuantity(nil, NewString("s")) })
 }
 
 func TestQuantity(t *testing.T) {
@@ -132,11 +136,6 @@ func TestQuantityEquivalentDecimal(t *testing.T) {
 	assert.Equal(t, true, q1.Equivalent(NewDecimalFloat64(47.1)))
 }
 
-func TestQuantityStringEmpty(t *testing.T) {
-	q := NewQuantity(nil, nil)
-	assert.Equal(t, "", q.String())
-}
-
 func TestQuantityStringValueOnly(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(47.1), nil)
 	assert.Equal(t, "47.1", q.String())
@@ -147,23 +146,10 @@ func TestQuantityString(t *testing.T) {
 	assert.Equal(t, "47.1 g", q.String())
 }
 
-func TestQuantityStringCodeOnly(t *testing.T) {
-	q := NewQuantity(nil, NewString("g"))
-	assert.Equal(t, "g", q.String())
-}
-
 func TestQuantityWithValueNil(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(47.1), NewString("g"))
 	r := q.WithValue(nil)
-	e := NewQuantity(nil, NewString("g"))
-	assert.True(t, e.Equal(r))
-}
-
-func TestQuantityWithValueNilValue(t *testing.T) {
-	q := NewQuantity(NewDecimalFloat64(47.1), NewString("g"))
-	r := q.WithValue(nil)
-	e := NewQuantity(nil, NewString("g"))
-	assert.True(t, e.Equal(r))
+	assert.Nil(t, r)
 }
 
 func TestQuantityWithValueNotNil(t *testing.T) {
@@ -326,18 +312,72 @@ func TestQuantityCalcCodesDiffers(t *testing.T) {
 	assert.Nil(t, r, "no res expected")
 }
 
-func TestQuantityCalcLeftNil(t *testing.T) {
-	q1 := NewQuantity(nil, NewString("g"))
-	q2 := NewQuantity(NewDecimalFloat64(2.5), NewString("g"))
-	r, err := q1.Calc(q2, AdditionOp)
+func TestQuantityCalcRightNil(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(2.5), NewString("g"))
+	r, err := q1.Calc(nil, AdditionOp)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, r, "empty res expected")
 }
 
-func TestQuantityCalcRightNil(t *testing.T) {
-	q1 := NewQuantity(NewDecimalFloat64(2.5), NewString("g"))
-	q2 := NewQuantity(nil, NewString("g"))
-	r, err := q1.Calc(q2, AdditionOp)
-	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, r, "empty res expected")
+func TestQuantityCompareEqual(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewQuantity(NewDecimalFloat64(10.21), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestQuantityCompareEqualUnitNil(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), nil).
+		Compare(NewQuantity(NewDecimalFloat64(10.21), nil))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestQuantityCompareEqualNotOneUnitNil(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewQuantity(NewDecimalFloat64(10.21), nil))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareEqualNotUnit(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewQuantity(NewDecimalFloat64(10.21), NewString("m")))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareLessThan(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewQuantity(NewDecimalFloat64(10.25), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareGreaterThan(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
+		Compare(NewQuantity(NewDecimalFloat64(10.11), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestQuantityCompareInteger(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.64), NewString("cm")).
+		Compare(NewInteger(11))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareQuantity(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(10.64), NewString("cm")).Compare(
+		NewQuantity(NewDecimalFloat64(10.71), NewString("cm")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
 }

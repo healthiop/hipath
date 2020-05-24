@@ -28,7 +28,9 @@
 
 package pathsys
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var BooleanTypeInfo = newAnyTypeInfo("Boolean")
 
@@ -38,6 +40,7 @@ type booleanType struct {
 
 type BooleanAccessor interface {
 	AnyAccessor
+	Comparator
 	Stringifier
 	Negator
 	Bool() bool
@@ -91,6 +94,20 @@ func (t *booleanType) Equal(node interface{}) bool {
 
 func (t *booleanType) Equivalent(node interface{}) bool {
 	return t.Equal(node)
+}
+
+func (t *booleanType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if !TypeEqual(t, comparator) {
+		return -1, Inconvertible
+	} else {
+		if t.value == comparator.(BooleanAccessor).Bool() {
+			return 0, Evaluated
+		}
+		if !t.value {
+			return -1, Evaluated
+		}
+		return 1, Evaluated
+	}
 }
 
 func (t *booleanType) Negate() AnyAccessor {

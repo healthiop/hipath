@@ -229,11 +229,20 @@ func TestDateTimeEqualEqual(t *testing.T) {
 }
 
 func TestDateTimeEqualPrecisionDiffers(t *testing.T) {
-	dt1, _ := ParseDateTime("2015-02-07T13:28:17.123")
-	dt2, _ := ParseDateTime("2015-02-07T13:28:17")
+	dt1, _ := ParseDateTime("2015-02-07T13:28:00")
+	dt2, _ := ParseDateTime("2015-02-07T13:28")
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
 		assert.Equal(t, false, dt1.Equal(dt2))
-		assert.Equal(t, false, dt1.Equivalent(dt2))
+		assert.Equal(t, true, dt1.Equivalent(dt2))
+	}
+}
+
+func TestDateTimeEqualSecondNanoPrecisionDiffers(t *testing.T) {
+	dt1, _ := ParseDateTime("2015-02-07T13:28:17.000")
+	dt2, _ := ParseDateTime("2015-02-07T13:28:17")
+	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
+		assert.Equal(t, true, dt1.Equal(dt2))
+		assert.Equal(t, true, dt1.Equivalent(dt2))
 	}
 }
 
@@ -425,4 +434,45 @@ func TestDateTimeAddExceedsYear(t *testing.T) {
 	_, err := v.Add(NewQuantity(NewDecimalInt(-2020), NewString("year")))
 
 	assert.Error(t, err)
+}
+
+func TestDateTimeCompareEqual(t *testing.T) {
+	now := time.Now()
+	res, status := NewDateTime(now).Compare(NewDateTime(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestDateTimeCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewDateTime(time.Now()).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateTimeCompareLessThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewDateTime(now.Add(-time.Hour)).Compare(NewDateTime(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateTimeCompareGreaterThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewDateTime(now).Compare(NewDateTime(now.Add(-time.Hour)))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestDateTimeComparePrecisionDiffers(t *testing.T) {
+	res, status := NewDateTimeYMDHMSNWithPrecision(2020, 7, 21, 16, 0, 0, 0, time.Local, MinuteTimePrecision).
+		Compare(NewDateTimeYMDHMSNWithPrecision(2020, 7, 21, 16, 0, 0, 0, time.Local, HourTimePrecision))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestDateTimeCompareNanoSecondPrecision(t *testing.T) {
+	res, status := NewDateTimeYMDHMSNWithPrecision(2020, 7, 21, 16, 18, 21, 0, time.Local, NanoTimePrecision).
+		Compare(NewDateTimeYMDHMSNWithPrecision(2020, 7, 21, 16, 18, 21, 0, time.Local, SecondTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
 }

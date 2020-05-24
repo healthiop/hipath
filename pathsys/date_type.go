@@ -147,7 +147,7 @@ func (t *dateType) Equal(node interface{}) bool {
 	if o, ok := node.(DateTemporalAccessor); !ok {
 		return false
 	} else {
-		return t.Precision() == o.Precision() && dateValueEqual(t, o)
+		return TemporalPrecisionEqual(t, o) && dateValueEqual(t, o)
 	}
 }
 
@@ -161,6 +161,32 @@ func (t *dateType) Equivalent(node interface{}) bool {
 
 func dateValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Year() == dt2.Year() && dt1.Month() == dt2.Month() && dt1.Day() == dt2.Day()
+}
+
+func (t *dateType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if !TypeEqual(t, comparator) {
+		return -1, Inconvertible
+	}
+
+	o := comparator.(DateAccessor)
+	if !TemporalPrecisionEqual(t, o) {
+		return -1, Empty
+	}
+
+	v := compareDateTimeValue(t.year, o.Year())
+	if v != 0 {
+		return v, Evaluated
+	}
+	v = compareDateTimeValue(t.month, o.Month())
+	if v != 0 {
+		return v, Evaluated
+	}
+	v = compareDateTimeValue(t.day, o.Day())
+	if v != 0 {
+		return v, Evaluated
+	}
+
+	return 0, Evaluated
 }
 
 func (t *dateType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {

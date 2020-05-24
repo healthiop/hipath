@@ -52,12 +52,10 @@ func TestUnionPathFunc(t *testing.T) {
 	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
 		c := res.(pathsys.CollectionAccessor)
 		if assert.Equal(t, 4, c.Count()) {
-			assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
-			assert.Equal(t, pathsys.NewInteger(11), c.Get(1))
-			assert.Equal(t, pathsys.NewInteger(14), c.Get(2))
-			assert.Condition(t, func() bool {
-				return pathsys.NewDecimalInt(12).Equal(c.Get(3))
-			})
+			assert.Equal(t, int32(10), pathsys.IntegerValue(c.Get(0)))
+			assert.Equal(t, int32(11), pathsys.IntegerValue(c.Get(1)))
+			assert.Equal(t, int32(14), pathsys.IntegerValue(c.Get(2)))
+			assert.Equal(t, 12.0, pathsys.DecimalValueFloat64(c.Get(3)))
 		}
 		assert.Equal(t, "System.Any", c.ItemTypeInfo().String())
 	}

@@ -59,6 +59,7 @@ type quantityType struct {
 
 type QuantityAccessor interface {
 	AnyAccessor
+	Comparator
 	Stringifier
 	DecimalValueAccessor
 	Negator
@@ -68,6 +69,9 @@ type QuantityAccessor interface {
 }
 
 func NewQuantity(value DecimalAccessor, unit StringAccessor) QuantityAccessor {
+	if value == nil {
+		panic("value must not be nil")
+	}
 	return &quantityType{
 		value: value,
 		unit:  unit,
@@ -89,7 +93,7 @@ func (t *quantityType) Unit() StringAccessor {
 func (t *quantityType) WithValue(node NumberAccessor) DecimalValueAccessor {
 	var value DecimalAccessor
 	if node == nil {
-		value = nil
+		return nil
 	} else if node.DataType() == DecimalDataType {
 		value = node.(DecimalAccessor)
 	} else {
@@ -137,6 +141,16 @@ func quantityValueEqual(t QuantityAccessor, node interface{}, equivalent bool) b
 	return false
 }
 
+func (t *quantityType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if q, ok := comparator.(QuantityAccessor); ok {
+		if !Equal(t.Unit(), q.Unit()) {
+			return -1, Empty
+		}
+	}
+
+	return decimalValueCompare(t.value, comparator)
+}
+
 func (t *quantityType) String() string {
 	var b strings.Builder
 	b.Grow(32)
@@ -171,10 +185,6 @@ func (t *quantityType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (Dec
 	}
 
 	value, _ := t.Value().Calc(operand.Value(), op)
-	if value == nil {
-		return nil, nil
-	}
-
 	return NewQuantity(value.Value(), unit), nil
 }
 

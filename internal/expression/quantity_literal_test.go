@@ -139,8 +139,10 @@ func TestQuantityLiteralUnits(t *testing.T) {
 	testParseQuantityUnit(t, "minutes", pathsys.MinuteQuantityUnit.String())
 	testParseQuantityUnit(t, "second", pathsys.SecondQuantityUnit.String())
 	testParseQuantityUnit(t, "seconds", pathsys.SecondQuantityUnit.String())
+	testParseQuantityUnit(t, "s", pathsys.SecondQuantityUnit.String())
 	testParseQuantityUnit(t, "millisecond", pathsys.MillisecondQuantityUnit.String())
 	testParseQuantityUnit(t, "milliseconds", pathsys.MillisecondQuantityUnit.String())
+	testParseQuantityUnit(t, "ms", pathsys.MillisecondQuantityUnit.String())
 }
 
 func testParseQuantityUnit(t *testing.T, unit string, Unit string) {

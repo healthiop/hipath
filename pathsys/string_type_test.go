@@ -83,3 +83,27 @@ func TestStringEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewString("test1").Equal(NewString("test2")))
 	assert.Equal(t, false, NewString("test1").Equivalent(NewString("test2")))
 }
+
+func TestStringCompareEqual(t *testing.T) {
+	res, status := NewString("test1").Compare(NewString("test1"))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestStringCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewString("test1").Compare(NewBoolean(false))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestStringCompareLessThan(t *testing.T) {
+	res, status := NewString("test1").Compare(NewString("test5"))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestStringCompareGreaterThan(t *testing.T) {
+	res, status := NewString("test5").Compare(NewString("test1"))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}

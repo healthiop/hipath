@@ -37,7 +37,8 @@ import (
 var IntegerTypeInfo = newAnyTypeInfo("Integer")
 
 type integerType struct {
-	value int32
+	value        int32
+	decimalValue DecimalAccessor
 }
 
 type IntegerAccessor interface {
@@ -79,7 +80,7 @@ func (t *integerType) Float64() float64 {
 }
 
 func (t *integerType) Decimal() decimal.Decimal {
-	return decimal.NewFromInt32(t.value)
+	return t.Value().Decimal()
 }
 
 func (t *integerType) TypeInfo() TypeInfoAccessor {
@@ -87,7 +88,10 @@ func (t *integerType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *integerType) Value() DecimalAccessor {
-	return NewDecimalInt(t.value)
+	if t.decimalValue == nil {
+		t.decimalValue = NewDecimalInt(t.value)
+	}
+	return t.decimalValue
 }
 
 func (t *integerType) WithValue(node NumberAccessor) DecimalValueAccessor {
@@ -124,6 +128,21 @@ func (t *integerType) Equivalent(node interface{}) bool {
 	}
 
 	return decimalValueEquivalent(t, node)
+}
+
+func (t *integerType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if TypeEqual(t, comparator) {
+		l, r := t.value, comparator.(IntegerAccessor).Int()
+		if l == r {
+			return 0, Evaluated
+		}
+		if l < r {
+			return -1, Evaluated
+		}
+		return 1, Evaluated
+	}
+
+	return decimalValueCompare(t, comparator)
 }
 
 func (t *integerType) String() string {
@@ -173,4 +192,12 @@ func (t *integerType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (Deci
 	}
 
 	return operand.WithValue(decimalCalc(t, operand.Value(), op)), nil
+}
+
+func IntegerValue(node interface{}) interface{} {
+	if v, ok := node.(IntegerAccessor); !ok {
+		return nil
+	} else {
+		return v.Int()
+	}
 }

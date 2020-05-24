@@ -177,11 +177,20 @@ func TestTimeEqualNotEqual(t *testing.T) {
 }
 
 func TestTimeEqualPrecisionDiffers(t *testing.T) {
-	t1, _ := ParseTime("17:22:21.123")
-	t2, _ := ParseTime("17:22:21")
+	t1, _ := ParseTime("17:22:00")
+	t2, _ := ParseTime("17:22")
 	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
 		assert.Equal(t, false, t1.Equal(t2))
-		assert.Equal(t, false, t1.Equivalent(t2))
+		assert.Equal(t, true, t1.Equivalent(t2))
+	}
+}
+
+func TestTimeEqualSecondNanoPrecisionDiffers(t *testing.T) {
+	t1, _ := ParseTime("17:22:21.000")
+	t2, _ := ParseTime("17:22:21")
+	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
+		assert.Equal(t, true, t1.Equal(t2))
+		assert.Equal(t, true, t1.Equivalent(t2))
 	}
 }
 
@@ -329,4 +338,73 @@ func TestTimeAddExceedsMonth(t *testing.T) {
 	_, err := v.Add(NewQuantity(NewDecimalInt(744), NewString("hour")))
 
 	assert.Error(t, err)
+}
+
+func TestTimeCompareEqual(t *testing.T) {
+	now := time.Now()
+	res, status := NewTime(now).Compare(NewTime(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestTimeCompareEqualTypeDiffers(t *testing.T) {
+	res, status := NewTime(time.Now()).Compare(NewString("test1"))
+	assert.Equal(t, Inconvertible, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestTimeCompareLessThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewTime(now.Add(-2 * time.Hour)).Compare(NewTime(now))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestTimeCompareGreaterThan(t *testing.T) {
+	now := time.Now()
+	res, status := NewTime(now).Compare(NewTime(now.Add(-2 * time.Hour)))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestTimeComparePrecisionDiffers(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 28, 0, 0, SecondTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(14, 28, 0, 0, MinuteTimePrecision))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestTimeCompareNanoSecondPrecision(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 28, 0, 0, NanoTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(14, 28, 0, 0, SecondTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
+func TestTimeCompareHourDiffers(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 28, 17, 987, NanoTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(15, 28, 17, 987, NanoTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestTimeCompareMinuteDiffers(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 29, 17, 987, NanoTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(14, 28, 17, 987, NanoTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestTimeCompareSecondDiffers(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 28, 17, 987, NanoTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(14, 28, 18, 987, NanoTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestTimeCompareNanoDiffers(t *testing.T) {
+	res, status := NewTimeHMSNWithPrecision(14, 28, 17, 988, NanoTimePrecision).
+		Compare(NewTimeHMSNWithPrecision(14, 28, 17, 987, NanoTimePrecision))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
 }

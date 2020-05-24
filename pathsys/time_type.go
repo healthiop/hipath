@@ -175,7 +175,7 @@ func (t *timeType) Equal(node interface{}) bool {
 	}
 
 	o := node.(TimeAccessor)
-	return t.Precision() == o.Precision() &&
+	return TemporalPrecisionEqual(t, o) &&
 		t.Hour() == o.Hour() &&
 		t.Minute() == o.Minute() &&
 		t.Second() == o.Second() &&
@@ -192,6 +192,36 @@ func (t *timeType) Equivalent(node interface{}) bool {
 func timeValueEqual(t1 TimeAccessor, t2 TimeAccessor) bool {
 	return t1.Hour() == t2.Hour() && t1.Minute() == t2.Minute() && t1.Second() == t2.Second() &&
 		t1.Nanosecond() == t2.Nanosecond()
+}
+
+func (t *timeType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if !TypeEqual(t, comparator) {
+		return -1, Inconvertible
+	}
+
+	o := comparator.(TimeAccessor)
+	if !TemporalPrecisionEqual(t, o) {
+		return -1, Empty
+	}
+
+	v := compareDateTimeValue(t.hour, o.Hour())
+	if v != 0 {
+		return v, Evaluated
+	}
+	v = compareDateTimeValue(t.minute, o.Minute())
+	if v != 0 {
+		return v, Evaluated
+	}
+	v = compareDateTimeValue(t.second, o.Second())
+	if v != 0 {
+		return v, Evaluated
+	}
+	v = compareDateTimeValue(t.nanosecond, o.Nanosecond())
+	if v != 0 {
+		return v, Evaluated
+	}
+
+	return 0, Evaluated
 }
 
 func (t *timeType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {

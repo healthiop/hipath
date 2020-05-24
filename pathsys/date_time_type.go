@@ -54,7 +54,7 @@ func NewDateTime(value time.Time) DateTimeAccessor {
 	return newDateTime(value, NanoTimePrecision)
 }
 
-func NewDateTimeYMDHMSNWithPrecision(year, month, day, hour, minute, second, nanosecond int, loc *time.Location, precision DateTimePrecisions) DateAccessor {
+func NewDateTimeYMDHMSNWithPrecision(year, month, day, hour, minute, second, nanosecond int, loc *time.Location, precision DateTimePrecisions) DateTimeAccessor {
 	if precision < YearDatePrecision || precision > NanoTimePrecision {
 		panic(fmt.Sprintf("invalid date/time precision %d", precision))
 	}
@@ -208,7 +208,7 @@ func (t *dateTimeType) Equal(node interface{}) bool {
 	if o, ok := node.(DateTimeAccessor); !ok {
 		return false
 	} else {
-		return t.Precision() == o.Precision() && dateTimeValueEqual(t, o)
+		return TemporalPrecisionEqual(t, o) && dateTimeValueEqual(t, o)
 	}
 }
 
@@ -222,6 +222,27 @@ func (t *dateTimeType) Equivalent(node interface{}) bool {
 
 func dateTimeValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Time().Equal(dt2.Time())
+}
+
+func (t *dateTimeType) Compare(comparator Comparator) (int, OperatorStatus) {
+	if !TypeEqual(t, comparator) {
+		return -1, Inconvertible
+	}
+
+	o := comparator.(DateTimeAccessor)
+	if !TemporalPrecisionEqual(t, o) {
+		return -1, Empty
+	}
+
+	left, right := t.value.UnixNano(), o.Time().UnixNano()
+	if left > right {
+		return 1, Evaluated
+	}
+	if left < right {
+		return -1, Evaluated
+	}
+
+	return 0, Evaluated
 }
 
 func (t *dateTimeType) Add(quantity QuantityAccessor) (TemporalAccessor, error) {
