@@ -77,6 +77,11 @@ func TestIntegerValue(t *testing.T) {
 	assert.Equal(t, "-4711", o.String())
 }
 
+func TestIntegerInt64(t *testing.T) {
+	o := NewInteger(-4711)
+	assert.Equal(t, int64(-4711), o.Int64())
+}
+
 func TestIntegerFloat64Value(t *testing.T) {
 	o := NewInteger(-4711)
 	value := o.Float64()
@@ -333,4 +338,9 @@ func TestIntegerCalcNotSupportedOp(t *testing.T) {
 	r, err := NewInteger(2).Calc(q, ModOp)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, r)
+}
+
+func TestIntegerTruncate(t *testing.T) {
+	v := NewInteger(23223)
+	assert.Same(t, v, v.Truncate(2))
 }

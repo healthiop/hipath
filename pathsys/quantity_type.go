@@ -37,6 +37,17 @@ import (
 
 var UCUMSystemURI = NewString("http://unitsofmeasure.org")
 
+var (
+	YearQuantityUnit        = NewString("year")
+	MonthQuantityUnit       = NewString("month")
+	WeekQuantityUnit        = NewString("week")
+	DayQuantityUnit         = NewString("day")
+	HourQuantityUnit        = NewString("hour")
+	MinuteQuantityUnit      = NewString("minute")
+	SecondQuantityUnit      = NewString("second")
+	MillisecondQuantityUnit = NewString("millisecond")
+)
+
 var QuantityTypeInfo = newAnyTypeInfo("Quantity")
 
 var quantityCodeExpRegexp = regexp.MustCompile("^(.*[^\\d])([1-3])$")

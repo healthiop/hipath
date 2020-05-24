@@ -68,7 +68,7 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
 			if assert.NotNil(t, quantityAccessor.Unit()) {
-				assert.Equal(t, MillisecondQuantityUnit.String(), quantityAccessor.Unit().String())
+				assert.Equal(t, pathsys.MillisecondQuantityUnit.String(), quantityAccessor.Unit().String())
 			}
 		}
 	}
@@ -125,22 +125,22 @@ func TestQuantityLiteralUnitInvalid(t *testing.T) {
 }
 
 func TestQuantityLiteralUnits(t *testing.T) {
-	testParseQuantityUnit(t, "year", YearQuantityUnit.String())
-	testParseQuantityUnit(t, "years", YearQuantityUnit.String())
-	testParseQuantityUnit(t, "month", MonthQuantityUnit.String())
-	testParseQuantityUnit(t, "months", MonthQuantityUnit.String())
-	testParseQuantityUnit(t, "week", WeekQuantityUnit.String())
-	testParseQuantityUnit(t, "weeks", WeekQuantityUnit.String())
-	testParseQuantityUnit(t, "day", DayQuantityUnit.String())
-	testParseQuantityUnit(t, "days", DayQuantityUnit.String())
-	testParseQuantityUnit(t, "hour", HourQuantityUnit.String())
-	testParseQuantityUnit(t, "hours", HourQuantityUnit.String())
-	testParseQuantityUnit(t, "minute", MinuteQuantityUnit.String())
-	testParseQuantityUnit(t, "minutes", MinuteQuantityUnit.String())
-	testParseQuantityUnit(t, "second", SecondQuantityUnit.String())
-	testParseQuantityUnit(t, "seconds", SecondQuantityUnit.String())
-	testParseQuantityUnit(t, "millisecond", MillisecondQuantityUnit.String())
-	testParseQuantityUnit(t, "milliseconds", MillisecondQuantityUnit.String())
+	testParseQuantityUnit(t, "year", pathsys.YearQuantityUnit.String())
+	testParseQuantityUnit(t, "years", pathsys.YearQuantityUnit.String())
+	testParseQuantityUnit(t, "month", pathsys.MonthQuantityUnit.String())
+	testParseQuantityUnit(t, "months", pathsys.MonthQuantityUnit.String())
+	testParseQuantityUnit(t, "week", pathsys.WeekQuantityUnit.String())
+	testParseQuantityUnit(t, "weeks", pathsys.WeekQuantityUnit.String())
+	testParseQuantityUnit(t, "day", pathsys.DayQuantityUnit.String())
+	testParseQuantityUnit(t, "days", pathsys.DayQuantityUnit.String())
+	testParseQuantityUnit(t, "hour", pathsys.HourQuantityUnit.String())
+	testParseQuantityUnit(t, "hours", pathsys.HourQuantityUnit.String())
+	testParseQuantityUnit(t, "minute", pathsys.MinuteQuantityUnit.String())
+	testParseQuantityUnit(t, "minutes", pathsys.MinuteQuantityUnit.String())
+	testParseQuantityUnit(t, "second", pathsys.SecondQuantityUnit.String())
+	testParseQuantityUnit(t, "seconds", pathsys.SecondQuantityUnit.String())
+	testParseQuantityUnit(t, "millisecond", pathsys.MillisecondQuantityUnit.String())
+	testParseQuantityUnit(t, "milliseconds", pathsys.MillisecondQuantityUnit.String())
 }
 
 func testParseQuantityUnit(t *testing.T, unit string, Unit string) {

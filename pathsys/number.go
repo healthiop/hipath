@@ -63,7 +63,9 @@ type NumberAccessor interface {
 	DecimalValueAccessor
 	Negator
 	ArithmeticApplier
+	Truncate(precision int32) NumberAccessor
 	Int() int32
+	Int64() int64
 	Float64() float64
 	Decimal() decimal.Decimal
 }

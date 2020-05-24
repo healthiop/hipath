@@ -70,6 +70,10 @@ func (t *integerType) Int() int32 {
 	return t.value
 }
 
+func (t *integerType) Int64() int64 {
+	return int64(t.value)
+}
+
 func (t *integerType) Float64() float64 {
 	return float64(t.value)
 }
@@ -124,6 +128,10 @@ func (t *integerType) Equivalent(node interface{}) bool {
 
 func (t *integerType) String() string {
 	return strconv.FormatInt(int64(t.value), 10)
+}
+
+func (t *integerType) Truncate(int32) NumberAccessor {
+	return t
 }
 
 func (t *integerType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {

@@ -28,7 +28,10 @@
 
 package pathsys
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type DateTimePrecisions int
 
@@ -42,12 +45,14 @@ const (
 	NanoTimePrecision
 )
 
-func IsTemporal(node AnyAccessor) bool {
-	dt := node.DataType()
-	return dt == DateTimeDataType ||
-		dt == DateDataType ||
-		dt == TimeDataType
-}
+var milliNanosecondFactor = NewDecimalInt(1_000_000)
+var weekDayFactor = NewDecimalInt(7)
+var secondNanosecondFactor = NewDecimalInt(1_000_000_000)
+var minuteNanosecondFactor = NewDecimalInt64(60 * 1_000_000_000)
+var hourNanosecondFactor = NewDecimalInt64(60 * 60 * 1_000_000_000)
+var dayNanosecondFactor = NewDecimalInt64(24 * 60 * 60 * 1_000_000_000)
+var monthNanosecondFactor = NewDecimalInt64(30 * 24 * 60 * 60 * 1_000_000_000)
+var yearNanosecondFactor = NewDecimalInt64(365 * 24 * 60 * 60 * 1_000_000_000)
 
 type temporalType struct {
 	precision DateTimePrecisions
@@ -70,4 +75,118 @@ type DateTemporalAccessor interface {
 
 func (t *temporalType) Precision() DateTimePrecisions {
 	return t.precision
+}
+
+func addQuantityDateTimeDuration(date DateTemporalAccessor,
+	quantityValue NumberAccessor, quantityPrecision DateTimePrecisions) (time.Time, error) {
+	if date.Precision() < quantityPrecision {
+		nanos := quantityValueNanos(quantityValue, quantityPrecision)
+
+		var res DecimalValueAccessor
+		switch date.Precision() {
+		case YearDatePrecision:
+			res, _ = nanos.Calc(yearNanosecondFactor, DivisionOp)
+		case MonthDatePrecision:
+			res, _ = nanos.Calc(monthNanosecondFactor, DivisionOp)
+		case DayDatePrecision:
+			res, _ = nanos.Calc(dayNanosecondFactor, DivisionOp)
+		case HourTimePrecision:
+			res, _ = nanos.Calc(hourNanosecondFactor, DivisionOp)
+		case MinuteTimePrecision:
+			res, _ = nanos.Calc(minuteNanosecondFactor, DivisionOp)
+		case SecondTimePrecision:
+			res, _ = nanos.Calc(secondNanosecondFactor, DivisionOp)
+		default:
+			panic(fmt.Sprintf("invalid date/time precision: %d", date.Precision()))
+		}
+
+		quantityValue = res.Value().Truncate(0)
+		quantityPrecision = date.Precision()
+	} else if quantityPrecision < SecondTimePrecision {
+		quantityValue = quantityValue.Truncate(0)
+	}
+
+	t := date.Time()
+	switch quantityPrecision {
+	case YearDatePrecision:
+		t = t.AddDate(int(quantityValue.Int()), 0, 0)
+	case MonthDatePrecision:
+		t = t.AddDate(0, int(quantityValue.Int()), 0)
+	case DayDatePrecision:
+		t = t.AddDate(0, 0, int(quantityValue.Int()))
+	case HourTimePrecision:
+		t = t.Add(time.Duration(quantityValue.Int64()) * time.Hour)
+	case MinuteTimePrecision:
+		t = t.Add(time.Duration(quantityValue.Int64()) * time.Minute)
+	case SecondTimePrecision:
+		t = t.Add(time.Duration(quantityValue.Float64() * float64(time.Second)))
+	case NanoTimePrecision:
+		t = t.Add(time.Duration(quantityValue.Int64()))
+	default:
+		panic(fmt.Sprintf("invalid date/time precision: %d", quantityPrecision))
+	}
+
+	year := t.Year()
+	if year < 0 || year > 9999 {
+		return time.Time{}, fmt.Errorf("date/time arithmetic results in invalid year: %d", year)
+	}
+
+	return t, nil
+}
+
+func quantityValueNanos(value NumberAccessor, precision DateTimePrecisions) NumberAccessor {
+	var d DecimalValueAccessor
+
+	switch precision {
+	case MonthDatePrecision:
+		d, _ = value.Calc(monthNanosecondFactor, MultiplicationOp)
+	case DayDatePrecision:
+		d, _ = value.Calc(dayNanosecondFactor, MultiplicationOp)
+	case HourTimePrecision:
+		d, _ = value.Calc(hourNanosecondFactor, MultiplicationOp)
+	case MinuteTimePrecision:
+		d, _ = value.Calc(minuteNanosecondFactor, MultiplicationOp)
+	case SecondTimePrecision:
+		d, _ = value.Calc(secondNanosecondFactor, MultiplicationOp)
+	case NanoTimePrecision:
+		d = value
+	default:
+		panic(fmt.Sprintf("invalid date/time precision: %d", precision))
+	}
+
+	return d.Value()
+}
+
+func quantityDateTimePrecision(q QuantityAccessor) (NumberAccessor, DateTimePrecisions, error) {
+	value, unit := q.Value(), q.Unit()
+	if value == nil {
+		return nil, NanoTimePrecision, fmt.Errorf("quantity has no value")
+	}
+	if unit == nil {
+		return nil, NanoTimePrecision, fmt.Errorf("quantity has no date/time unit")
+	}
+
+	switch unit.String() {
+	case YearQuantityUnit.String():
+		return value, YearDatePrecision, nil
+	case MonthQuantityUnit.String():
+		return value, MonthDatePrecision, nil
+	case WeekQuantityUnit.String():
+		v, _ := value.Calc(weekDayFactor, MultiplicationOp)
+		return v.Value(), DayDatePrecision, nil
+	case DayQuantityUnit.String():
+		return value, DayDatePrecision, nil
+	case HourQuantityUnit.String():
+		return value, HourTimePrecision, nil
+	case MinuteQuantityUnit.String():
+		return value, MinuteTimePrecision, nil
+	case SecondQuantityUnit.String():
+		return value, SecondTimePrecision, nil
+	case MillisecondQuantityUnit.String():
+		v, _ := value.Calc(milliNanosecondFactor, MultiplicationOp)
+		return v.Value(), NanoTimePrecision, nil
+	default:
+		return nil, NanoTimePrecision, fmt.Errorf(
+			"quantity has no valid date/time unit: %s", unit.String())
+	}
 }

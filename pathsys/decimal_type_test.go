@@ -408,3 +408,9 @@ func (d *decimalValueAccessorMock) TypeInfo() TypeInfoAccessor {
 func (d *decimalValueAccessorMock) String() string {
 	panic("implement me")
 }
+
+func TestDecimalTruncate(t *testing.T) {
+	v := NewDecimalFloat64(23223.187636)
+	r, _ := v.Truncate(2).Decimal().Float64()
+	assert.Equal(t, 23223.18, r)
+}

@@ -183,6 +183,10 @@ func (t *decimalType) String() string {
 	return t.value.StringFixed(-exp)
 }
 
+func (t *decimalType) Truncate(precision int32) NumberAccessor {
+	return NewDecimal(t.Decimal().Truncate(precision))
+}
+
 func (t *decimalType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {
 	if operand == nil {
 		return nil, nil

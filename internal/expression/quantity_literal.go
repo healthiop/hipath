@@ -34,17 +34,6 @@ import (
 	"regexp"
 )
 
-var (
-	YearQuantityUnit        = pathsys.NewString("year")
-	MonthQuantityUnit       = pathsys.NewString("month")
-	WeekQuantityUnit        = pathsys.NewString("week")
-	DayQuantityUnit         = pathsys.NewString("day")
-	HourQuantityUnit        = pathsys.NewString("hour")
-	MinuteQuantityUnit      = pathsys.NewString("minute")
-	SecondQuantityUnit      = pathsys.NewString("second")
-	MillisecondQuantityUnit = pathsys.NewString("millisecond")
-)
-
 var quantityUnitRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 
 type QuantityLiteral struct {
@@ -72,21 +61,21 @@ func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
 	var convertedUnit pathsys.StringAccessor
 	switch unit {
 	case "year", "years":
-		convertedUnit = YearQuantityUnit
+		convertedUnit = pathsys.YearQuantityUnit
 	case "month", "months":
-		convertedUnit = MonthQuantityUnit
+		convertedUnit = pathsys.MonthQuantityUnit
 	case "week", "weeks":
-		convertedUnit = WeekQuantityUnit
+		convertedUnit = pathsys.WeekQuantityUnit
 	case "day", "days":
-		convertedUnit = DayQuantityUnit
+		convertedUnit = pathsys.DayQuantityUnit
 	case "hour", "hours":
-		convertedUnit = HourQuantityUnit
+		convertedUnit = pathsys.HourQuantityUnit
 	case "minute", "minutes":
-		convertedUnit = MinuteQuantityUnit
+		convertedUnit = pathsys.MinuteQuantityUnit
 	case "second", "seconds":
-		convertedUnit = SecondQuantityUnit
+		convertedUnit = pathsys.SecondQuantityUnit
 	case "millisecond", "milliseconds":
-		convertedUnit = MillisecondQuantityUnit
+		convertedUnit = pathsys.MillisecondQuantityUnit
 	default:
 		u := parseStringLiteral(unit, stringDelimiterChar)
 		if !quantityUnitRegexp.MatchString(u) {
