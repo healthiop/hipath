@@ -34,6 +34,20 @@ import (
 	"testing"
 )
 
+func TestNewBooleanLiteral(t *testing.T) {
+	evaluator := NewBooleanLiteral(true)
+
+	assert.NotNil(t, evaluator, "evaluator expected")
+	if evaluator != nil {
+		node, err := evaluator.Evaluate(nil, nil, nil)
+		assert.NoError(t, err, "no error expected")
+		assert.NotNil(t, node, "res expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
 func TestBooleanLiteralTrue(t *testing.T) {
 	evaluator, err := ParseBooleanLiteral("true")
 

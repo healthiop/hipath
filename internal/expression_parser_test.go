@@ -554,3 +554,131 @@ func TestParseMembershipExpressionInNot(t *testing.T) {
 		}
 	}
 }
+
+func TestParseBooleanExpressionAnd(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true and true")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionAndNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true and false")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionOr(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true or false")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionOrNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("false or false")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionXOr(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true xor false")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionXOrNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true xor true")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionImplies(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("{} implies true")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseBooleanExpressionImpliesNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("true implies false")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.BooleanExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}

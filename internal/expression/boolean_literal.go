@@ -36,6 +36,10 @@ type BooleanLiteral struct {
 	node pathsys.BooleanAccessor
 }
 
+func NewBooleanLiteral(value bool) pathsys.Evaluator {
+	return &BooleanLiteral{pathsys.BooleanOf(value)}
+}
+
 func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
 	if node, err := pathsys.ParseBoolean(value); err != nil {
 		return nil, err

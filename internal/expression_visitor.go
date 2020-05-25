@@ -158,3 +158,37 @@ func visitMembershipExpression(ctx antlr.ParserRuleContext, args []interface{}) 
 		return nil, fmt.Errorf("invalid membership operator: %s", op)
 	}
 }
+
+func (v *Visitor) VisitAndExpression(ctx *parser.AndExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitBooleanExpression)
+}
+
+func (v *Visitor) VisitOrExpression(ctx *parser.OrExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitBooleanExpression)
+}
+
+func (v *Visitor) VisitImpliesExpression(ctx *parser.ImpliesExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitBooleanExpression)
+}
+
+func visitBooleanExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evalLeft := args[0].(pathsys.Evaluator)
+	op := args[1].(string)
+	evalRight := args[2].(pathsys.Evaluator)
+
+	var booleanOp expression.BooleanOp
+	switch op {
+	case "and":
+		booleanOp = expression.AndOp
+	case "or":
+		booleanOp = expression.OrOp
+	case "xor":
+		booleanOp = expression.XOrOp
+	case "implies":
+		booleanOp = expression.ImpliesOp
+	default:
+		return nil, fmt.Errorf("invalid boolean operator: %s", op)
+	}
+
+	return expression.NewBooleanExpression(evalLeft, booleanOp, evalRight), nil
+}
