@@ -71,7 +71,7 @@ func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, nod
 	left, right = unwrapCollection(left), unwrapCollection(right)
 	if left == nil || right == nil {
 		if e.equivalent {
-			return pathsys.NewBoolean(pathsys.ModelEquivalent(
+			return pathsys.BooleanOf(pathsys.ModelEquivalent(
 				ctx.ModelAdapter(), left, right)), nil
 		} else {
 			return nil, nil
@@ -80,7 +80,7 @@ func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, nod
 
 	r, match := e.stringsEqual(left, right)
 	if match {
-		return pathsys.NewBoolean(r), nil
+		return pathsys.BooleanOf(r), nil
 	}
 
 	if e.equivalent {
@@ -91,7 +91,7 @@ func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, nod
 			return nil, nil
 		}
 	}
-	return pathsys.NewBoolean(r), nil
+	return pathsys.BooleanOf(r), nil
 }
 
 func (e *EqualityExpression) stringsEqual(n1 interface{}, n2 interface{}) (equal bool, match bool) {

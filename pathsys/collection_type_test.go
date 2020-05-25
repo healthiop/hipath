@@ -377,3 +377,43 @@ func TestCollectionEquivalentModel(t *testing.T) {
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))
 }
+
+func TestIsCollection(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCollection()
+	assert.True(t, IsCollection(col))
+}
+
+func TestIsCollectionNot(t *testing.T) {
+	assert.False(t, IsCollection(True))
+}
+
+func TestCollectionContains(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
+	assert.True(t, col.Contains(NewInteger(12)))
+}
+
+func TestCollectionEmptyContains(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCollection()
+	assert.False(t, col.Contains(NewInteger(12)))
+}
+
+func TestCollectionContainsNot(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
+	assert.False(t, col.Contains(NewInteger(14)))
+}
+
+func TestCollectionContainsModel(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(newTestModelNode(10.0, false, testTypeInfo))
+	col.Add(newTestModelNode(12.1, false, testTypeInfo))
+	assert.True(t, col.Contains(newTestModelNode(12.1, false, testTypeInfo)))
+}

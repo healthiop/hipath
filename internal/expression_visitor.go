@@ -139,3 +139,22 @@ func visitInequalityExpression(ctx antlr.ParserRuleContext, args []interface{}) 
 
 	return expression.NewComparisonExpression(evalLeft, cmpOp, evalRight), nil
 }
+
+func (v *Visitor) VisitMembershipExpression(ctx *parser.MembershipExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitMembershipExpression)
+}
+
+func visitMembershipExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evalLeft := args[0].(pathsys.Evaluator)
+	op := args[1].(string)
+	evalRight := args[2].(pathsys.Evaluator)
+
+	switch op {
+	case "in":
+		return expression.NewContainsExpression(evalLeft, evalRight, true), nil
+	case "contains":
+		return expression.NewContainsExpression(evalLeft, evalRight, false), nil
+	default:
+		return nil, fmt.Errorf("invalid membership operator: %s", op)
+	}
+}

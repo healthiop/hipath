@@ -55,3 +55,14 @@ func TestVisitInequalityExpression(t *testing.T) {
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no evaluator expected")
 }
+
+func TestVisitMembershipExpression(t *testing.T) {
+	args := make([]interface{}, 3)
+	args[0] = expression.NewEmptyLiteral()
+	args[1] = "x"
+	args[2] = expression.NewEmptyLiteral()
+	res, err := visitMembershipExpression(nil, args)
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no evaluator expected")
+}

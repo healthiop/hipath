@@ -51,7 +51,7 @@ func TestInvocationExpressionEvaluate(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
 	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewBoolean(false), res)
+		assert.Equal(t, pathsys.False, res)
 	}
 }
 

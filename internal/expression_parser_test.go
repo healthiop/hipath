@@ -490,3 +490,67 @@ func TestParseComparisonExpressionInconvertible(t *testing.T) {
 		assert.Nil(t, res, "no result expected")
 	}
 }
+
+func TestParseMembershipExpressionContains(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("(10|12) contains 12")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ContainsExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseMembershipExpressionContainsNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("(10|12) contains 14")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ContainsExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseMembershipExpressionIn(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("12 in (10|12)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ContainsExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseMembershipExpressionInNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("14 in (10|12)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.ContainsExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}

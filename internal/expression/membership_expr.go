@@ -29,40 +29,46 @@
 package expression
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
+	"fmt"
 	"github.com/volsch/gohipath/pathsys"
-	"testing"
 )
 
-func TestInvocationTermEvaluate(t *testing.T) {
-	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.Add(pathsys.NewString(""))
-
-	f, err := LookupFunctionInvocation("empty", []pathsys.Evaluator{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	evaluator := NewInvocationTerm(f)
-
-	res, err := evaluator.Evaluate(ctx, c, nil)
-	assert.NoError(t, err, "no error expected")
-	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, pathsys.False, res)
-	}
+type ContainsExpression struct {
+	evalLeft  pathsys.Evaluator
+	evalRight pathsys.Evaluator
+	inverse   bool
 }
 
-func TestInvocationTermEvaluateFuncErr(t *testing.T) {
-	ctx := test.NewTestContextWithNode(t, pathsys.NewString(""))
-	c := ctx.NewCollection()
-	c.Add(pathsys.NewInteger(123))
+func NewContainsExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator, inverse bool) *ContainsExpression {
+	return &ContainsExpression{evalLeft, evalRight, inverse}
+}
 
-	evaluator := NewInvocationTerm(newTestErrorExpression())
+func (e *ContainsExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	left, err := e.evalLeft.Evaluate(ctx, node, loop)
+	if err != nil {
+		return nil, err
+	}
+	right, err := e.evalRight.Evaluate(ctx, node, loop)
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := evaluator.Evaluate(ctx, nil, nil)
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no res expected")
+	if e.inverse {
+		tmp := left
+		left = right
+		right = tmp
+	}
+
+	col, val := wrapCollection(ctx, left), unwrapCollection(right)
+	if col == nil || col.Empty() {
+		return pathsys.False, nil
+	}
+	if val == nil {
+		return nil, nil
+	}
+	if pathsys.IsCollection(val) {
+		return nil, fmt.Errorf("collection membership cannot be checked with value: %T", val)
+	}
+
+	return pathsys.BooleanOf(col.Contains(val)), nil
 }

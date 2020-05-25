@@ -97,5 +97,5 @@ func (e *ComparisonExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 	default:
 		panic(fmt.Sprintf("unhandled comparison operator: %d", e.op))
 	}
-	return pathsys.NewBoolean(b), nil
+	return pathsys.BooleanOf(b), nil
 }

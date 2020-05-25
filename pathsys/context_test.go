@@ -160,7 +160,7 @@ func TestSystemAnyTypeEqualSystem(t *testing.T) {
 }
 
 func TestSystemAnyTypeEqualSystemNot(t *testing.T) {
-	assert.False(t, SystemAnyTypeEqual(NewString(""), NewBoolean(false)))
+	assert.False(t, SystemAnyTypeEqual(NewString(""), False))
 }
 
 func TestSystemAnyTypeEqualModel(t *testing.T) {

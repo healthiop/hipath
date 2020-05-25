@@ -56,7 +56,7 @@ func TestBooleanTypeInfo(t *testing.T) {
 }
 
 func TestBooleanValue(t *testing.T) {
-	o := NewBoolean(true)
+	o := True
 	value := o.Bool()
 	assert.Equal(t, true, value)
 }
@@ -89,7 +89,7 @@ func TestParseBooleanInvalid(t *testing.T) {
 }
 
 func TestBooleanNegateTrue(t *testing.T) {
-	o := NewBoolean(true)
+	o := True
 	n := o.Negate()
 	assert.NotSame(t, o, n)
 	assert.Equal(t, true, o.Bool())
@@ -99,7 +99,7 @@ func TestBooleanNegateTrue(t *testing.T) {
 }
 
 func TestBooleanNegateFalse(t *testing.T) {
-	o := NewBoolean(false)
+	o := False
 	n := o.Negate()
 	assert.NotSame(t, o, n)
 	assert.Equal(t, false, o.Bool())
@@ -109,39 +109,47 @@ func TestBooleanNegateFalse(t *testing.T) {
 }
 
 func TestBooleanEqualNil(t *testing.T) {
-	assert.Equal(t, false, NewBoolean(false).Equal(nil))
+	assert.Equal(t, false, False.Equal(nil))
 }
 
 func TestBooleanEqualTypeDiffers(t *testing.T) {
-	assert.Equal(t, false, NewBoolean(false).Equal(newAccessorMock()))
-	assert.Equal(t, false, NewBoolean(false).Equivalent(newAccessorMock()))
+	assert.Equal(t, false, False.Equal(newAccessorMock()))
+	assert.Equal(t, false, False.Equivalent(newAccessorMock()))
 }
 
 func TestBooleanEqualEqual(t *testing.T) {
-	assert.Equal(t, true, NewBoolean(false).Equal(NewBoolean(false)))
-	assert.Equal(t, true, NewBoolean(false).Equivalent(NewBoolean(false)))
+	assert.Equal(t, true, False.Equal(False))
+	assert.Equal(t, true, False.Equivalent(False))
 }
 
 func TestBooleanCompareEqual(t *testing.T) {
-	res, status := NewBoolean(true).Compare(NewBoolean(true))
+	res, status := True.Compare(BooleanOf(true))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, 0, res)
 }
 
 func TestBooleanCompareTypeDiffers(t *testing.T) {
-	res, status := NewBoolean(false).Compare(NewString("test1"))
+	res, status := False.Compare(NewString("test1"))
 	assert.Equal(t, Inconvertible, status)
 	assert.Equal(t, -1, res)
 }
 
 func TestBooleanCompareLessThan(t *testing.T) {
-	res, status := NewBoolean(false).Compare(NewBoolean(true))
+	res, status := False.Compare(BooleanOf(true))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, -1, res)
 }
 
 func TestBooleanCompareGreaterThan(t *testing.T) {
-	res, status := NewBoolean(true).Compare(NewBoolean(false))
+	res, status := True.Compare(False)
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, 1, res)
+}
+
+func TestBooleanOfTrue(t *testing.T) {
+	assert.Same(t, True, BooleanOf(true))
+}
+
+func TestBooleanOfFalse(t *testing.T) {
+	assert.Same(t, False, BooleanOf(false))
 }

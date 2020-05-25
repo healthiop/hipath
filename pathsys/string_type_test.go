@@ -66,8 +66,8 @@ func TestStringEqualTypeDiffers(t *testing.T) {
 }
 
 func TestStringEqualStringTypeDiffers(t *testing.T) {
-	assert.Equal(t, false, NewString("").Equal(NewBoolean(false)))
-	assert.Equal(t, false, NewString("").Equivalent(NewBoolean(false)))
+	assert.Equal(t, false, NewString("").Equal(False))
+	assert.Equal(t, false, NewString("").Equivalent(False))
 }
 
 func TestStringEqualEqual(t *testing.T) {
@@ -91,7 +91,7 @@ func TestStringCompareEqual(t *testing.T) {
 }
 
 func TestStringCompareEqualTypeDiffers(t *testing.T) {
-	res, status := NewString("test1").Compare(NewBoolean(false))
+	res, status := NewString("test1").Compare(False)
 	assert.Equal(t, Inconvertible, status)
 	assert.Equal(t, -1, res)
 }

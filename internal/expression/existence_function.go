@@ -45,13 +45,13 @@ func newEmptyFunction() *emptyFunction {
 
 func (f *emptyFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	if node == nil {
-		return pathsys.NewBoolean(true), nil
+		return pathsys.True, nil
 	}
 
 	if col, ok := node.(pathsys.CollectionAccessor); ok {
-		return pathsys.NewBoolean(col.Empty()), nil
+		return pathsys.BooleanOf(col.Empty()), nil
 	} else {
-		return pathsys.NewBoolean(false), nil
+		return pathsys.False, nil
 	}
 }
 
@@ -67,14 +67,14 @@ func newExistsFunction() *existsFunction {
 
 func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	if node == nil {
-		return pathsys.NewBoolean(false), nil
+		return pathsys.False, nil
 	}
 
 	loopEvaluator := loop.Evaluator()
 	col, ok := node.(pathsys.CollectionAccessor)
 	if !ok {
 		if loopEvaluator == nil {
-			return pathsys.NewBoolean(true), nil
+			return pathsys.True, nil
 		}
 
 		nc := ctx.NewCollection()
@@ -99,11 +99,11 @@ func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 				if b, ok := res.(pathsys.BooleanAccessor); !ok {
 					return nil, fmt.Errorf("filter expression must return boolean, but returned %T", res)
 				} else if b.Bool() {
-					return pathsys.NewBoolean(true), nil
+					return pathsys.True, nil
 				}
 			}
 		}
 	}
 
-	return pathsys.NewBoolean(found), nil
+	return pathsys.BooleanOf(found), nil
 }

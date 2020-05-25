@@ -104,7 +104,7 @@ func TestParseInvocationTermEmptyCollection(t *testing.T) {
 		b, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
-			assert.Equal(t, pathsys.NewBoolean(false), b)
+			assert.Equal(t, pathsys.False, b)
 		}
 	}
 }
@@ -122,7 +122,7 @@ func TestParseInvocationTermEmptyCollectionEmpty(t *testing.T) {
 		b, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
-			assert.Equal(t, pathsys.NewBoolean(true), b)
+			assert.Equal(t, pathsys.True, b)
 		}
 	}
 }

@@ -42,6 +42,14 @@ type CollectionAccessor interface {
 	Empty() bool
 	Count() int
 	Get(i int) interface{}
+	Contains(node interface{}) bool
+}
+
+func IsCollection(node interface{}) bool {
+	if _, ok := node.(CollectionAccessor); ok {
+		return true
+	}
+	return false
 }
 
 type CollectionModifier interface {
@@ -89,6 +97,19 @@ func (c *collectionType) Get(i int) interface{} {
 		panic("collection is empty")
 	}
 	return c.items[i]
+}
+
+func (c *collectionType) Contains(node interface{}) bool {
+	if c.items == nil {
+		return false
+	}
+
+	for _, o := range c.items {
+		if ModelEqual(c.adapter, node, o) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *collectionType) Add(node interface{}) {

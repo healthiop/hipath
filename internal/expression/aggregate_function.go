@@ -44,7 +44,7 @@ func newAggregateFunction() *aggregateFunction {
 
 func (f *aggregateFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	if node == nil {
-		return pathsys.NewBoolean(false), nil
+		return pathsys.False, nil
 	}
 
 	if len(args) > 1 {

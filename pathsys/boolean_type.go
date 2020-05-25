@@ -46,6 +46,18 @@ type BooleanAccessor interface {
 	Bool() bool
 }
 
+var (
+	True  = NewBoolean(true)
+	False = NewBoolean(false)
+)
+
+func BooleanOf(value bool) BooleanAccessor {
+	if value {
+		return True
+	}
+	return False
+}
+
 func NewBoolean(value bool) BooleanAccessor {
 	return newBoolean(value)
 }
@@ -59,9 +71,9 @@ func newBoolean(value bool) BooleanAccessor {
 func ParseBoolean(value string) (BooleanAccessor, error) {
 	switch value {
 	case "true":
-		return NewBoolean(true), nil
+		return True, nil
 	case "false":
-		return NewBoolean(false), nil
+		return False, nil
 	}
 	return nil, fmt.Errorf("not a boolean: %s", value)
 }
@@ -111,5 +123,5 @@ func (t *booleanType) Compare(comparator Comparator) (int, OperatorStatus) {
 }
 
 func (t *booleanType) Negate() AnyAccessor {
-	return NewBoolean(!t.value)
+	return BooleanOf(!t.value)
 }

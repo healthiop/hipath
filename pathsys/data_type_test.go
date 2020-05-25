@@ -91,5 +91,5 @@ func TestDataTypeEqual(t *testing.T) {
 }
 
 func TestDataTypeEqualNot(t *testing.T) {
-	assert.Equal(t, false, TypeEqual(NewString(""), NewBoolean(false)))
+	assert.Equal(t, false, TypeEqual(NewString(""), False))
 }
