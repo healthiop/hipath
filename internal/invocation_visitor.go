@@ -60,7 +60,7 @@ func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Eva
 		}
 	}
 
-	return expression.LookupFunctionInvocation(name, paramEvaluators)
+	return expression.LookupFunctionInvocation(expression.ExtractIdentifier(name), paramEvaluators)
 }
 
 func (v *Visitor) VisitParamList(ctx *parser.ParamListContext) interface{} {
@@ -77,4 +77,13 @@ func (v *Visitor) VisitIndexInvocation(*parser.IndexInvocationContext) interface
 
 func (v *Visitor) VisitTotalInvocation(*parser.TotalInvocationContext) interface{} {
 	return expression.NewTotalInvocation()
+}
+
+func (v *Visitor) VisitMemberInvocation(ctx *parser.MemberInvocationContext) interface{} {
+	return v.visitTree(ctx, 1, visitMemberInvocation)
+}
+
+func visitMemberInvocation(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	name := args[0].(string)
+	return expression.NewMemberInvocation(expression.ExtractIdentifier(name)), nil
 }

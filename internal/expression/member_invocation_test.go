@@ -26,41 +26,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohipath/internal/test"
+	"testing"
 )
 
-func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
-	return v.VisitChild(ctx, 1)
+func TestMemberInvocationNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	e := NewMemberInvocation("test")
+	res, err := e.Evaluate(ctx, nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
 }
 
-func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
+func TestMemberInvocationFound(t *testing.T) {
+	model := make(map[string]interface{})
+	model["x1"] = "test"
+
+	ctx := test.NewTestContext(t)
+	e := NewMemberInvocation("x1")
+	res, err := e.Evaluate(ctx, model, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, "test", res)
 }
 
-func (v *Visitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
+func TestMemberInvocationNotFound(t *testing.T) {
+	model := make(map[string]interface{})
+	model["x1"] = "test"
 
-func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
-	return v.visitTree(ctx, 2, visitExternalConstant)
-}
-
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	name := args[1].(string)
-	return expression.ParseExtConstantTerm(expression.ExtractIdentifier(name)), nil
-}
-
-func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interface{} {
-	return v.visitTree(ctx, 1, visitInvocationTerm)
-}
-
-func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	invocationEvaluator := args[0].(pathsys.Evaluator)
-	return expression.NewInvocationTerm(invocationEvaluator), nil
+	ctx := test.NewTestContext(t)
+	e := NewMemberInvocation("x2")
+	res, err := e.Evaluate(ctx, model, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
 }

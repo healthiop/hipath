@@ -26,41 +26,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
+	"fmt"
 	"github.com/volsch/gohipath/pathsys"
 )
 
-func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
-	return v.VisitChild(ctx, 1)
+type MemberInvocation struct {
+	name string
 }
 
-func (v *Visitor) VisitLiteralTerm(ctx *parser.LiteralTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
+func NewMemberInvocation(name string) *MemberInvocation {
+	return &MemberInvocation{name}
 }
 
-func (v *Visitor) VisitExternalConstantTerm(ctx *parser.ExternalConstantTermContext) interface{} {
-	return v.VisitFirstChild(ctx)
-}
+func (i *MemberInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+	if node == nil {
+		return nil, fmt.Errorf("cannot extract path from empty: %s", i.name)
+	}
 
-func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) interface{} {
-	return v.visitTree(ctx, 2, visitExternalConstant)
-}
-
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	name := args[1].(string)
-	return expression.ParseExtConstantTerm(expression.ExtractIdentifier(name)), nil
-}
-
-func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interface{} {
-	return v.visitTree(ctx, 1, visitInvocationTerm)
-}
-
-func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	invocationEvaluator := args[0].(pathsys.Evaluator)
-	return expression.NewInvocationTerm(invocationEvaluator), nil
+	return ctx.ModelAdapter().Navigate(node, i.name)
 }

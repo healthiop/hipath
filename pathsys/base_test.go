@@ -173,6 +173,10 @@ func (a *testModel) Equivalent(node1 interface{}, node2 interface{}) bool {
 	return int64(n1.testValue()) == int64(n2.testValue())
 }
 
+func (a *testModel) Navigate(interface{}, string) (interface{}, error) {
+	panic("implement me")
+}
+
 type testContext struct {
 	modelAdapter ModelAdapter
 }

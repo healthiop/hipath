@@ -67,3 +67,22 @@ func TestParseAggregateIndex(t *testing.T) {
 		}
 	}
 }
+
+func TestParseMemberInvocation(t *testing.T) {
+	model := make(map[string]interface{})
+	model["x1"] = pathsys.NewString("test")
+
+	res, errorItemCollection := testParse("x1")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
+		ctx := test.NewTestContext(t)
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, model, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, "test", res.(pathsys.StringAccessor).String())
+		}
+	}
+}

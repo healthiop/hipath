@@ -29,6 +29,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
@@ -120,6 +121,19 @@ func (a *testModel) Equivalent(node1 interface{}, node2 interface{}) bool {
 		a.t.Errorf("equality of system node must not be requested")
 	}
 	return int64(n1.testValue()) == int64(n2.testValue())
+}
+
+func (a *testModel) Navigate(node interface{}, name string) (interface{}, error) {
+	model, ok := node.(map[string]interface{})
+	if !ok {
+		a.t.Fatal(fmt.Sprintf("cannot be cast to map: %T", node))
+	}
+
+	result, found := model[name]
+	if !found {
+		return nil, fmt.Errorf("path cannot be evaluated on model: %s", name)
+	}
+	return result, nil
 }
 
 type testContext struct {

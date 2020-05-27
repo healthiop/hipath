@@ -33,18 +33,12 @@ import (
 	"github.com/volsch/gohipath/pathsys"
 )
 
-const delimitedIdentifierChar = '`'
-
 type ExtConstantTerm struct {
 	name string
 }
 
 func ParseExtConstantTerm(value string) *ExtConstantTerm {
-	resultingValue := value
-	if len(resultingValue) > 1 && value[0] == delimitedIdentifierChar {
-		resultingValue = resultingValue[1 : len(resultingValue)-1]
-	}
-	return &ExtConstantTerm{resultingValue}
+	return &ExtConstantTerm{value}
 }
 
 func (e *ExtConstantTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {

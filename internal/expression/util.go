@@ -30,6 +30,16 @@ package expression
 
 import "github.com/volsch/gohipath/pathsys"
 
+const delimitedIdentifierChar = '`'
+
+func ExtractIdentifier(value string) string {
+	resultingValue := value
+	if len(resultingValue) > 1 && value[0] == delimitedIdentifierChar {
+		resultingValue = resultingValue[1 : len(resultingValue)-1]
+	}
+	return resultingValue
+}
+
 func uniteCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{}) pathsys.CollectionModifier {
 	if n1 == nil && n2 == nil {
 		return nil

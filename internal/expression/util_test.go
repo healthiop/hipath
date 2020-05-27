@@ -35,6 +35,14 @@ import (
 	"testing"
 )
 
+func TestExtractIdentifier(t *testing.T) {
+	assert.Equal(t, "test", ExtractIdentifier("test"))
+}
+
+func TestExtractIdentifierDelimited(t *testing.T) {
+	assert.Equal(t, "test", ExtractIdentifier("`test'"))
+}
+
 func TestUnwrapCollectionNil(t *testing.T) {
 	assert.Nil(t, unwrapCollection(nil))
 }

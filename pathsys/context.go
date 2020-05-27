@@ -33,6 +33,7 @@ type ModelAdapter interface {
 	TypeInfo(node interface{}) TypeInfoAccessor
 	Equal(node1 interface{}, node2 interface{}) bool
 	Equivalent(node1 interface{}, node2 interface{}) bool
+	Navigate(node interface{}, name string) (interface{}, error)
 }
 
 func ModelTypeInfo(adapter ModelAdapter, node interface{}) TypeInfoAccessor {

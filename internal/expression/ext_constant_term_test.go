@@ -43,14 +43,6 @@ func TestExtConstantTerm(t *testing.T) {
 	assert.Equal(t, pathsys.UCUMSystemURI, res)
 }
 
-func TestExtConstantTermDelimited(t *testing.T) {
-	ctx := test.NewTestContext(t)
-	evaluator := ParseExtConstantTerm("`ucum`")
-	res, err := evaluator.Evaluate(ctx, nil, nil)
-	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.UCUMSystemURI, res)
-}
-
 func TestExtConstantTermNotDefined(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	evaluator := ParseExtConstantTerm("xxx")
