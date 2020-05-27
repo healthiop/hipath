@@ -33,6 +33,11 @@ import (
 	"testing"
 )
 
+func TestQuantitySource(t *testing.T) {
+	o := NewQuantityWithSource(NewDecimalInt(10), nil, "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestUCUMSystemURI(t *testing.T) {
 	assert.Equal(t, "http://unitsofmeasure.org", UCUMSystemURI.String())
 }

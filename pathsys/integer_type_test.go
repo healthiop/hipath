@@ -34,6 +34,11 @@ import (
 	"testing"
 )
 
+func TestIntegerSource(t *testing.T) {
+	o := NewIntegerWithSource(10, "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestIntegerDataType(t *testing.T) {
 	o := NewInteger(4711)
 	dataType := o.DataType()

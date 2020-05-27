@@ -31,6 +31,7 @@ package pathsys
 var collectionTypeInfo = newAnyTypeInfo("Collection")
 
 type collectionType struct {
+	baseAnyType
 	adapter      ModelAdapter
 	itemTypeInfo TypeInfoAccessor
 	items        []interface{}
@@ -61,10 +62,17 @@ type CollectionModifier interface {
 }
 
 func NewCollection(adapter ModelAdapter) CollectionModifier {
+	return NewCollectionWithSource(adapter, nil)
+}
+
+func NewCollectionWithSource(adapter ModelAdapter, source interface{}) CollectionModifier {
 	if adapter == nil {
 		panic("no adapter has been specified")
 	}
 	return &collectionType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		adapter: adapter,
 	}
 }

@@ -33,6 +33,11 @@ import (
 	"testing"
 )
 
+func TestBooleanSource(t *testing.T) {
+	o := NewBooleanWithSource(false, "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestBooleanImplementsNegator(t *testing.T) {
 	o := NewBoolean(false)
 	assert.Implements(t, (*Negator)(nil), o)

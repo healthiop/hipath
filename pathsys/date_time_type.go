@@ -51,10 +51,18 @@ type DateTimeAccessor interface {
 }
 
 func NewDateTime(value time.Time) DateTimeAccessor {
-	return newDateTime(value, NanoTimePrecision)
+	return NewDateTimeWithSource(value, nil)
+}
+
+func NewDateTimeWithSource(value time.Time, source interface{}) DateTimeAccessor {
+	return newDateTime(value, NanoTimePrecision, source)
 }
 
 func NewDateTimeYMDHMSNWithPrecision(year, month, day, hour, minute, second, nanosecond int, loc *time.Location, precision DateTimePrecisions) DateTimeAccessor {
+	return NewDateTimeYMDHMSNWithPrecisionAndSource(year, month, day, hour, minute, second, nanosecond, loc, precision, nil)
+}
+
+func NewDateTimeYMDHMSNWithPrecisionAndSource(year, month, day, hour, minute, second, nanosecond int, loc *time.Location, precision DateTimePrecisions, source interface{}) DateTimeAccessor {
 	if precision < YearDatePrecision || precision > NanoTimePrecision {
 		panic(fmt.Sprintf("invalid date/time precision %d", precision))
 	}
@@ -78,7 +86,7 @@ func NewDateTimeYMDHMSNWithPrecision(year, month, day, hour, minute, second, nan
 		nanosecond = 0
 	}
 
-	return newDateTime(time.Date(year, time.Month(month), day, hour, minute, second, nanosecond, loc), precision)
+	return newDateTime(time.Date(year, time.Month(month), day, hour, minute, second, nanosecond, loc), precision, source)
 }
 
 func ParseDateTime(value string) (DateTimeAccessor, error) {
@@ -86,10 +94,10 @@ func ParseDateTime(value string) (DateTimeAccessor, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent date/time string: %s", value)
 	}
-	return newDateTimeFromParts(parts), nil
+	return newDateTimeFromParts(parts, nil), nil
 }
 
-func newDateTimeFromParts(parts []string) DateTimeAccessor {
+func newDateTimeFromParts(parts []string, source interface{}) DateTimeAccessor {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -132,12 +140,15 @@ func newDateTimeFromParts(parts []string) DateTimeAccessor {
 	location := mustEvalLocation(parts[8])
 	value := time.Date(year, time.Month(month), day, hour, minute, second, nano, location)
 
-	return newDateTime(value, precision)
+	return newDateTime(value, precision, source)
 }
 
-func newDateTime(value time.Time, precision DateTimePrecisions) DateTimeAccessor {
+func newDateTime(value time.Time, precision DateTimePrecisions, source interface{}) DateTimeAccessor {
 	return &dateTimeType{
 		temporalType: temporalType{
+			baseAnyType: baseAnyType{
+				source: source,
+			},
 			precision: precision,
 		},
 		value: value,
@@ -255,8 +266,8 @@ func (t *dateTimeType) Add(quantity QuantityAccessor) (TemporalAccessor, error) 
 	if err != nil {
 		return nil, err
 	}
-	return NewDateTimeYMDHMSNWithPrecision(res.Year(), int(res.Month()), res.Day(),
-		res.Hour(), res.Minute(), res.Second(), res.Nanosecond(), res.Location(), t.precision), nil
+	return NewDateTimeYMDHMSNWithPrecisionAndSource(res.Year(), int(res.Month()), res.Day(),
+		res.Hour(), res.Minute(), res.Second(), res.Nanosecond(), res.Location(), t.precision, nil), nil
 }
 
 func (t *dateTimeType) String() string {

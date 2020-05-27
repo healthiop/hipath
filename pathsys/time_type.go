@@ -58,14 +58,26 @@ type TimeAccessor interface {
 }
 
 func NewTime(value time.Time) TimeAccessor {
-	return NewTimeHMSN(value.Hour(), value.Minute(), value.Second(), value.Nanosecond())
+	return NewTimeWithSource(value, nil)
+}
+
+func NewTimeWithSource(value time.Time, source interface{}) TimeAccessor {
+	return NewTimeHMSNWithSource(value.Hour(), value.Minute(), value.Second(), value.Nanosecond(), source)
 }
 
 func NewTimeHMSN(hour int, minute int, second int, nanosecond int) TimeAccessor {
-	return newTime(hour, minute, second, nanosecond, NanoTimePrecision)
+	return NewTimeHMSNWithSource(hour, minute, second, nanosecond, nil)
 }
 
-func NewTimeHMSNWithPrecision(hour, minute, second int, nanosecond int, precision DateTimePrecisions) TimeAccessor {
+func NewTimeHMSNWithSource(hour int, minute int, second int, nanosecond int, source interface{}) TimeAccessor {
+	return newTime(hour, minute, second, nanosecond, NanoTimePrecision, source)
+}
+
+func NewTimeHMSNWithPrecision(hour, minute, second, nanosecond int, precision DateTimePrecisions) TimeAccessor {
+	return NewTimeHMSNWithPrecisionAndSource(hour, minute, second, nanosecond, precision, nil)
+}
+
+func NewTimeHMSNWithPrecisionAndSource(hour, minute, second int, nanosecond int, precision DateTimePrecisions, source interface{}) TimeAccessor {
 	if precision < HourTimePrecision || precision > NanoTimePrecision {
 		panic(fmt.Sprintf("invalid time precision %d", precision))
 	}
@@ -80,7 +92,7 @@ func NewTimeHMSNWithPrecision(hour, minute, second int, nanosecond int, precisio
 		nanosecond = 0
 	}
 
-	return newTime(hour, minute, second, nanosecond, precision)
+	return newTime(hour, minute, second, nanosecond, precision, source)
 }
 
 func ParseTime(value string) (TimeAccessor, error) {
@@ -113,12 +125,15 @@ func newTimeFromParts(parts []string) TimeAccessor {
 		precision = NanoTimePrecision
 	}
 
-	return newTime(hour, minute, second, nanosecond, precision)
+	return newTime(hour, minute, second, nanosecond, precision, nil)
 }
 
-func newTime(hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) TimeAccessor {
+func newTime(hour int, minute int, second int, nanosecond int, precision DateTimePrecisions, source interface{}) TimeAccessor {
 	return &timeType{
 		temporalType: temporalType{
+			baseAnyType: baseAnyType{
+				source: source,
+			},
 			precision: precision,
 		},
 		hour:       hour,

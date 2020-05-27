@@ -37,6 +37,7 @@ import (
 var IntegerTypeInfo = newAnyTypeInfo("Integer")
 
 type integerType struct {
+	baseAnyType
 	value        int32
 	decimalValue DecimalAccessor
 }
@@ -46,7 +47,11 @@ type IntegerAccessor interface {
 }
 
 func NewInteger(value int32) IntegerAccessor {
-	return newInteger(value)
+	return NewIntegerWithSource(value, nil)
+}
+
+func NewIntegerWithSource(value int32, source interface{}) IntegerAccessor {
+	return newInteger(value, source)
 }
 
 func ParseInteger(value string) (IntegerAccessor, error) {
@@ -57,8 +62,11 @@ func ParseInteger(value string) (IntegerAccessor, error) {
 	}
 }
 
-func newInteger(value int32) IntegerAccessor {
+func newInteger(value int32, source interface{}) IntegerAccessor {
 	return &integerType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		value: value,
 	}
 }
@@ -107,7 +115,7 @@ func (t *integerType) ArithmeticOpSupported(ArithmeticOps) bool {
 }
 
 func (t *integerType) Negate() AnyAccessor {
-	return newInteger(-t.value)
+	return newInteger(-t.value, nil)
 }
 
 func (t *integerType) Equal(node interface{}) bool {

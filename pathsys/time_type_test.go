@@ -34,6 +34,11 @@ import (
 	"time"
 )
 
+func TestTimeSource(t *testing.T) {
+	o := NewTimeWithSource(time.Now(), "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestTimeDataType(t *testing.T) {
 	o := NewTime(time.Now())
 	dataType := o.DataType()

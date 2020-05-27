@@ -37,6 +37,7 @@ import (
 var DecimalTypeInfo = newAnyTypeInfo("Decimal")
 
 type decimalType struct {
+	baseAnyType
 	value decimal.Decimal
 }
 
@@ -51,31 +52,50 @@ type DecimalAccessor interface {
 }
 
 func NewDecimal(value decimal.Decimal) DecimalAccessor {
-	return newDecimal(value)
+	return NewDecimalWithSource(value, nil)
+}
+
+func NewDecimalWithSource(value decimal.Decimal, source interface{}) DecimalAccessor {
+	return newDecimal(value, source)
 }
 
 func NewDecimalInt(value int32) DecimalAccessor {
-	return newDecimal(decimal.NewFromInt32(value))
+	return NewDecimalIntWithSource(value, nil)
+}
+
+func NewDecimalIntWithSource(value int32, source interface{}) DecimalAccessor {
+	return newDecimal(decimal.NewFromInt32(value), source)
 }
 
 func NewDecimalInt64(value int64) DecimalAccessor {
-	return newDecimal(decimal.NewFromInt(value))
+	return NewDecimalInt64WithSource(value, nil)
+}
+
+func NewDecimalInt64WithSource(value int64, source interface{}) DecimalAccessor {
+	return newDecimal(decimal.NewFromInt(value), source)
 }
 
 func NewDecimalFloat64(value float64) DecimalAccessor {
-	return newDecimal(decimal.NewFromFloat(value))
+	return NewDecimalFloat64WithSource(value, nil)
+}
+
+func NewDecimalFloat64WithSource(value float64, source interface{}) DecimalAccessor {
+	return newDecimal(decimal.NewFromFloat(value), source)
 }
 
 func ParseDecimal(value string) (DecimalAccessor, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
-		return newDecimal(d), nil
+		return newDecimal(d, nil), nil
 	}
 }
 
-func newDecimal(value decimal.Decimal) DecimalAccessor {
+func newDecimal(value decimal.Decimal, source interface{}) DecimalAccessor {
 	return &decimalType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		value: value,
 	}
 }
@@ -131,7 +151,7 @@ func (t *decimalType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *decimalType) Negate() AnyAccessor {
-	return newDecimal(t.value.Neg())
+	return newDecimal(t.value.Neg(), nil)
 }
 
 func (t *decimalType) Equal(node interface{}) bool {

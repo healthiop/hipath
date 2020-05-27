@@ -49,8 +49,17 @@ const (
 type AnyAccessor interface {
 	DataType() DataTypes
 	TypeInfo() TypeInfoAccessor
+	Source() interface{}
 	Equal(node interface{}) bool
 	Equivalent(node interface{}) bool
+}
+
+type baseAnyType struct {
+	source interface{}
+}
+
+func (a *baseAnyType) Source() interface{} {
+	return a.source
 }
 
 func TypeEqual(n1 AnyAccessor, n2 AnyAccessor) bool {

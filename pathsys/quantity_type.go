@@ -53,6 +53,7 @@ var QuantityTypeInfo = newAnyTypeInfo("Quantity")
 var quantityCodeExpRegexp = regexp.MustCompile("^(.*[^\\d])([1-3])$")
 
 type quantityType struct {
+	baseAnyType
 	value DecimalAccessor
 	unit  StringAccessor
 }
@@ -69,10 +70,17 @@ type QuantityAccessor interface {
 }
 
 func NewQuantity(value DecimalAccessor, unit StringAccessor) QuantityAccessor {
+	return NewQuantityWithSource(value, unit, nil)
+}
+
+func NewQuantityWithSource(value DecimalAccessor, unit StringAccessor, source interface{}) QuantityAccessor {
 	if value == nil {
 		panic("value must not be nil")
 	}
 	return &quantityType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		value: value,
 		unit:  unit,
 	}

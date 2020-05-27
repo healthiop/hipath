@@ -33,6 +33,12 @@ import (
 	"testing"
 )
 
+func TestCollectionSource(t *testing.T) {
+	ctx := newTestContext(t)
+	o := NewCollectionWithSource(ctx.ModelAdapter(), "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestCollectionDataType(t *testing.T) {
 	ctx := newTestContext(t)
 	c := ctx.NewCollection()

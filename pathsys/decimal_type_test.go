@@ -34,6 +34,11 @@ import (
 	"testing"
 )
 
+func TestDecimalSource(t *testing.T) {
+	o := NewDecimalIntWithSource(10, "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestDecimalImplementsNegator(t *testing.T) {
 	o := NewDecimalFloat64(4711.10)
 	assert.Implements(t, (*Negator)(nil), o)
@@ -369,6 +374,10 @@ type decimalValueAccessorMock struct {
 
 func newDecimalValueAccessorMock() DecimalValueAccessor {
 	return &decimalValueAccessorMock{}
+}
+
+func (d *decimalValueAccessorMock) Source() interface{} {
+	panic("implement me")
 }
 
 func (d *decimalValueAccessorMock) Value() DecimalAccessor {

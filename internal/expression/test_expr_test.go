@@ -80,6 +80,10 @@ func (t *testingType) testing() *testing.T {
 	return t.t
 }
 
+func (t *testingType) Source() interface{} {
+	panic("implement me")
+}
+
 func (t *testingType) DataType() pathsys.DataTypes {
 	panic("implement me")
 }

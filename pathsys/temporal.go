@@ -55,6 +55,7 @@ var monthNanosecondFactor = NewDecimalInt64(30 * 24 * 60 * 60 * 1_000_000_000)
 var yearNanosecondFactor = NewDecimalInt64(365 * 24 * 60 * 60 * 1_000_000_000)
 
 type temporalType struct {
+	baseAnyType
 	precision DateTimePrecisions
 }
 

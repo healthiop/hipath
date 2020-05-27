@@ -32,9 +32,10 @@ import "strings"
 
 var StringTypeInfo = newAnyTypeInfo("String")
 
-var EmptyString = newString("")
+var EmptyString = newString("", nil)
 
 type stringType struct {
+	baseAnyType
 	value string
 }
 
@@ -45,11 +46,18 @@ type StringAccessor interface {
 }
 
 func NewString(value string) StringAccessor {
-	return newString(value)
+	return NewStringWithSource(value, nil)
 }
 
-func newString(value string) StringAccessor {
+func NewStringWithSource(value string, source interface{}) StringAccessor {
+	return newString(value, source)
+}
+
+func newString(value string, source interface{}) StringAccessor {
 	return &stringType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		value: value,
 	}
 }

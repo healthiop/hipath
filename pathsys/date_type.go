@@ -55,14 +55,26 @@ type DateAccessor interface {
 }
 
 func NewDate(value time.Time) DateAccessor {
-	return NewDateYMD(value.Year(), int(value.Month()), value.Day())
+	return NewDateWithSource(value, nil)
+}
+
+func NewDateWithSource(value time.Time, source interface{}) DateAccessor {
+	return NewDateYMDWithSource(value.Year(), int(value.Month()), value.Day(), source)
 }
 
 func NewDateYMD(year int, month int, day int) DateAccessor {
-	return newDate(year, month, day, DayDatePrecision)
+	return NewDateYMDWithSource(year, month, day, nil)
+}
+
+func NewDateYMDWithSource(year int, month int, day int, source interface{}) DateAccessor {
+	return newDate(year, month, day, DayDatePrecision, source)
 }
 
 func NewDateYMDWithPrecision(year, month, day int, precision DateTimePrecisions) DateAccessor {
+	return NewDateYMDWithPrecisionAndSource(year, month, day, precision, nil)
+}
+
+func NewDateYMDWithPrecisionAndSource(year, month, day int, precision DateTimePrecisions, source interface{}) DateAccessor {
 	if precision < YearDatePrecision || precision > DayDatePrecision {
 		panic(fmt.Sprintf("invalid date precision %d", precision))
 	}
@@ -74,7 +86,7 @@ func NewDateYMDWithPrecision(year, month, day int, precision DateTimePrecisions)
 		day = 1
 	}
 
-	return newDate(year, month, day, precision)
+	return newDate(year, month, day, precision, source)
 }
 
 func ParseDate(value string) (DateAccessor, error) {
@@ -82,10 +94,10 @@ func ParseDate(value string) (DateAccessor, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date string: %s", value)
 	}
-	return newDateFromParts(parts), nil
+	return newDateFromParts(parts, nil), nil
 }
 
-func newDateFromParts(parts []string) DateAccessor {
+func newDateFromParts(parts []string, source interface{}) DateAccessor {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -101,12 +113,15 @@ func newDateFromParts(parts []string) DateAccessor {
 		precision = DayDatePrecision
 	}
 
-	return newDate(year, month, day, precision)
+	return newDate(year, month, day, precision, source)
 }
 
-func newDate(year int, month int, day int, precision DateTimePrecisions) *dateType {
+func newDate(year int, month int, day int, precision DateTimePrecisions, source interface{}) *dateType {
 	return &dateType{
 		temporalType: temporalType{
+			baseAnyType: baseAnyType{
+				source: source,
+			},
 			precision: precision,
 		},
 		year:  year,

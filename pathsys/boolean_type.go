@@ -35,6 +35,7 @@ import (
 var BooleanTypeInfo = newAnyTypeInfo("Boolean")
 
 type booleanType struct {
+	baseAnyType
 	value bool
 }
 
@@ -47,8 +48,8 @@ type BooleanAccessor interface {
 }
 
 var (
-	True  = NewBoolean(true)
-	False = NewBoolean(false)
+	True  = NewBooleanWithSource(true, nil)
+	False = NewBooleanWithSource(false, nil)
 )
 
 func BooleanOf(value bool) BooleanAccessor {
@@ -59,11 +60,18 @@ func BooleanOf(value bool) BooleanAccessor {
 }
 
 func NewBoolean(value bool) BooleanAccessor {
-	return newBoolean(value)
+	return NewBooleanWithSource(value, nil)
 }
 
-func newBoolean(value bool) BooleanAccessor {
+func NewBooleanWithSource(value bool, source interface{}) BooleanAccessor {
+	return newBoolean(value, source)
+}
+
+func newBoolean(value bool, source interface{}) BooleanAccessor {
 	return &booleanType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
 		value: value,
 	}
 }

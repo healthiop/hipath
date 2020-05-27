@@ -33,6 +33,11 @@ import (
 	"testing"
 )
 
+func TestStringSource(t *testing.T) {
+	o := NewStringWithSource("xyz", "abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
 func TestStringDataType(t *testing.T) {
 	o := NewString("Test")
 	dataType := o.DataType()

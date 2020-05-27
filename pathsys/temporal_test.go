@@ -326,6 +326,10 @@ func newDateTemporalAccessorMock(time time.Time, precision DateTimePrecisions) D
 	return &dateTemporalAccessorMock{time, precision}
 }
 
+func (d *dateTemporalAccessorMock) Source() interface{} {
+	panic("implement me")
+}
+
 func (d *dateTemporalAccessorMock) Time() time.Time {
 	return d.time
 }

@@ -50,6 +50,10 @@ func newAccessorMockWithValue(value int) AnyAccessor {
 	return &nodeMock{value}
 }
 
+func (a *nodeMock) Source() interface{} {
+	panic("implement me")
+}
+
 func (a *nodeMock) DataType() DataTypes {
 	return UndefinedDataType
 }
