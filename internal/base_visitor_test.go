@@ -45,3 +45,10 @@ func TestVisitQualifiedIdentifier(t *testing.T) {
 
 	assert.Equal(t, "first.second", r)
 }
+
+func TestVisitQualifiedIdentifierError(t *testing.T) {
+	v := NewVisitor(NewErrorItemCollection())
+	r := v.visitQualifiedIdentifier(newRuleContextWithErrorChild(81, 32, newTokenMock(87, 32, "test")))
+
+	assert.Nil(t, r, "no result expected")
+}
