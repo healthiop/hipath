@@ -190,3 +190,45 @@ func TestSystemAnyEqualSystemNot(t *testing.T) {
 func TestSystemAnyEqualModel(t *testing.T) {
 	assert.False(t, SystemAnyEqual(NewString("test1"), newTestModelNode(10, false, testTypeInfo)))
 }
+
+func TestHasModelTypeNil(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.False(t, HasModelType(ctx.ModelAdapter(), nil,
+		NewFQTypeName("String", "System")))
+}
+
+func TestHasModelTypeSystem(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.True(t, HasModelType(ctx.ModelAdapter(), NewString("test"),
+		NewFQTypeName("String", "System")))
+}
+
+func TestHasModelTypeSystemNot(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.False(t, HasModelType(ctx.ModelAdapter(), NewString("test"),
+		NewFQTypeName("Test", "System")))
+}
+
+func TestHasModelTypeNonSystem(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.True(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo),
+		NewFQTypeName("base", "TEST")))
+}
+
+func TestHasModelTypeNonSystemNot(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.False(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo),
+		NewFQTypeName("other", "TEST")))
+}
+
+func TestHasModelTypeSystemWithModelType(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.True(t, HasModelType(ctx.ModelAdapter(), NewString("test"),
+		NewFQTypeName("string", "TEST")))
+}
+
+func TestHasModelTypeSystemWithModelTypeAndWithoutNamespace(t *testing.T) {
+	ctx := newTestContext(t)
+	assert.True(t, HasModelType(ctx.ModelAdapter(), NewString("test"),
+		NewTypeName("string")))
+}

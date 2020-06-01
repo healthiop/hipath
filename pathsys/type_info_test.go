@@ -36,8 +36,17 @@ import (
 func TestNewTypeName(t *testing.T) {
 	n := NewTypeName("test")
 	assert.Equal(t, "", n.Namespace())
+	assert.False(t, n.HasNamespace())
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "test", n.String())
+}
+
+func TestNewTypeNameWithNamespace(t *testing.T) {
+	n := NewFQTypeName("test", "xyz")
+	assert.Equal(t, "xyz", n.Namespace())
+	assert.True(t, n.HasNamespace())
+	assert.Equal(t, "test", n.Name())
+	assert.Equal(t, "xyz.test", n.String())
 }
 
 func TestTypeInfoStringNil(t *testing.T) {
@@ -48,6 +57,7 @@ func TestTypeInfoStringNil(t *testing.T) {
 func TestNewFQTypeNameWithoutNamespace(t *testing.T) {
 	n := NewFQTypeName("test", "")
 	assert.Equal(t, "", n.Namespace())
+	assert.False(t, n.HasNamespace())
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "test", n.String())
 }
@@ -143,4 +153,80 @@ func TestCommonBaseTypeNone(t *testing.T) {
 	patient := NewTypeInfoWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
 	other := NewTypeInfo(NewFQTypeName("Other", ""))
 	assert.Nil(t, CommonBaseType(patient, other), "no common base type expected")
+}
+
+func TestTypeInfoExtends(t *testing.T) {
+	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+	assert.True(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
+}
+
+func TestTypeInfoExtendsNil(t *testing.T) {
+	resource := NewTypeInfo(nil)
+	assert.False(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
+}
+
+func TestTypeInfoExtendsBase(t *testing.T) {
+	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	assert.True(t, domainResource.Extends(NewFQTypeName("Resource", "FHIR")))
+}
+
+func TestTypeInfoExtendsNot(t *testing.T) {
+	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	assert.False(t, domainResource.Extends(NewFQTypeName("Patient", "FHIR")))
+}
+
+func TestTypeInfoExtendsBaseWithoutNamespace(t *testing.T) {
+	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	assert.True(t, domainResource.Extends(NewTypeName("Resource")))
+}
+
+func TestTypeInfoExtendsNotWithoutNamespace(t *testing.T) {
+	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	assert.False(t, domainResource.Extends(NewTypeName("Patient")))
+}
+
+func TestParseFQTypeName(t *testing.T) {
+	tn, err := ParseFQTypeName("TEST.data")
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, tn, "full qualified type name expected") {
+		assert.Equal(t, "TEST", tn.Namespace())
+		assert.Equal(t, "data", tn.Name())
+	}
+}
+
+func TestParseFQTypeNameEmpty(t *testing.T) {
+	tn, err := ParseFQTypeName("")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, tn, "no result expected")
+}
+
+func TestParseFQTypeNameWithoutNamespace(t *testing.T) {
+	tn, err := ParseFQTypeName("data")
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, tn, "full qualified type name expected") {
+		assert.False(t, tn.HasNamespace())
+		assert.Equal(t, "data", tn.Name())
+	}
+}
+
+func TestParseFQTypeNameThreeComponents(t *testing.T) {
+	tn, err := ParseFQTypeName("TEST.data.other")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, tn, "no result expected")
+}
+
+func TestParseFQTypeNameNoNamespace(t *testing.T) {
+	tn, err := ParseFQTypeName(".data")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, tn, "no result expected")
+}
+
+func TestParseFQTypeNameNoName(t *testing.T) {
+	tn, err := ParseFQTypeName("TEST.")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, tn, "no result expected")
 }

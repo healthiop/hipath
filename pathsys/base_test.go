@@ -84,6 +84,7 @@ func (a *nodeMock) Value() int {
 
 var testBaseTypeInfo = NewTypeInfo(NewFQTypeName("base", "TEST"))
 var testTypeInfo = NewTypeInfoWithBase(NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
+var testStringTypeInfo = NewTypeInfoWithBase(NewFQTypeName("string", "TEST"), testBaseTypeInfo)
 
 type testModelNode struct {
 	value    float64
@@ -135,6 +136,9 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 
 func (a *testModel) TypeInfo(node interface{}) TypeInfoAccessor {
 	if n, ok := node.(testModelNodeAccessor); !ok {
+		if _, ok := node.(StringAccessor); ok {
+			return testStringTypeInfo
+		}
 		a.t.Errorf("not a test model node: %T", node)
 		return UndefinedTypeInfo
 	} else {

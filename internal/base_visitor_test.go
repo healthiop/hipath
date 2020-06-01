@@ -29,62 +29,19 @@
 package internal
 
 import (
+	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
 	"testing"
 )
 
-func TestVisitEqualityExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = expression.NewEmptyLiteral()
-	res, err := visitEqualityExpression(nil, args)
+func TestVisitQualifiedIdentifier(t *testing.T) {
+	children := make([]antlr.Tree, 3)
+	children[0] = newTerminalNodeMock("first")
+	children[1] = newTerminalNodeMock(".")
+	children[2] = newTerminalNodeMock("`second`")
 
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
-}
+	v := NewVisitor(NewErrorItemCollection())
+	r := v.visitQualifiedIdentifier(newRuleNodeMock(children))
 
-func TestVisitInequalityExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = expression.NewEmptyLiteral()
-	res, err := visitInequalityExpression(nil, args)
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
-}
-
-func TestVisitMembershipExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = expression.NewEmptyLiteral()
-	res, err := visitMembershipExpression(nil, args)
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
-}
-
-func TestVisitBooleanExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = expression.NewEmptyLiteral()
-	res, err := visitBooleanExpression(nil, args)
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
-}
-
-func TestVisitTypeExpression(t *testing.T) {
-	args := make([]interface{}, 3)
-	args[0] = expression.NewEmptyLiteral()
-	args[1] = "x"
-	args[2] = "String"
-	res, err := visitTypeExpression(nil, args)
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "no evaluator expected")
+	assert.Equal(t, "first.second", r)
 }

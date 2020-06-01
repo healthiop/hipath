@@ -81,7 +81,9 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 
 func (a *testModel) TypeInfo(node interface{}) pathsys.TypeInfoAccessor {
 	if n, ok := node.(testModelNodeAccessor); !ok {
-		a.t.Errorf("not a test model node: %T", node)
+		if _, ok := node.(pathsys.StringAccessor); !ok {
+			a.t.Errorf("not a test model node: %T", node)
+		}
 		return pathsys.UndefinedTypeInfo
 	} else {
 		if n.testSys() {

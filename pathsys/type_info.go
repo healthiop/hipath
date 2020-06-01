@@ -28,6 +28,11 @@
 
 package pathsys
 
+import (
+	"fmt"
+	"strings"
+)
+
 const NamespaceName = "System"
 
 var UndefinedTypeInfo = NewTypeInfoWithBase(nil, nil)
@@ -40,6 +45,7 @@ type fqTypeName struct {
 }
 
 type FQTypeNameAccessor interface {
+	HasNamespace() bool
 	Namespace() string
 	Name() string
 	String() string
@@ -57,6 +63,29 @@ type TypeInfoAccessor interface {
 	FQBaseName() FQTypeNameAccessor
 	String() string
 	Equal(node TypeInfoAccessor) bool
+	Extends(name FQTypeNameAccessor) bool
+}
+
+func ParseFQTypeName(fqName string) (FQTypeNameAccessor, error) {
+	if len(fqName) == 0 {
+		return nil, fmt.Errorf("type name must not be empty")
+	}
+
+	fi := strings.IndexRune(fqName, '.')
+	if fi < 0 {
+		return NewTypeName(fqName), nil
+	}
+	if fi == 0 || fi+1 == len(fqName) {
+		return nil, fmt.Errorf("invalid type name: %s", fqName)
+	}
+
+	name := fqName[fi+1:]
+	li := strings.IndexRune(name, '.')
+	if li >= 0 {
+		return nil, fmt.Errorf("invalid type name: %s", fqName)
+	}
+
+	return NewFQTypeName(name, fqName[:fi]), nil
 }
 
 func NewFQTypeName(name string, namespace string) FQTypeNameAccessor {
@@ -95,6 +124,9 @@ func NewTypeInfoWithBase(fqName FQTypeNameAccessor, base TypeInfoAccessor) TypeI
 		base:   base,
 		fqName: fqName,
 	}
+}
+func (t *fqTypeName) HasNamespace() bool {
+	return len(t.namespace) > 0
 }
 
 func (t *fqTypeName) Namespace() string {
@@ -137,6 +169,28 @@ func (t *typeInfo) String() string {
 
 func (t *typeInfo) Equal(node TypeInfoAccessor) bool {
 	return FQTypeNameEqual(t.FQName(), node.FQName())
+}
+
+func (t *typeInfo) Extends(name FQTypeNameAccessor) bool {
+	if t.fqName == nil {
+		return false
+	}
+
+	if name.HasNamespace() {
+		if name.Equal(t.fqName) {
+			return true
+		}
+	} else {
+		if name.Name() == t.fqName.Name() {
+			return true
+		}
+	}
+
+	if t.base != nil {
+		return t.base.Extends(name)
+	}
+
+	return false
 }
 
 func CommonBaseType(ti1 TypeInfoAccessor, ti2 TypeInfoAccessor) TypeInfoAccessor {

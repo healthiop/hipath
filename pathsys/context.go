@@ -47,6 +47,29 @@ func ModelTypeInfo(adapter ModelAdapter, node interface{}) TypeInfoAccessor {
 	return adapter.TypeInfo(node)
 }
 
+func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccessor) bool {
+	if node == nil {
+		return false
+	}
+
+	namespace := name.Namespace()
+	if len(namespace) == 0 || namespace == NamespaceName {
+		if n, ok := node.(AnyAccessor); ok {
+			if n.TypeInfo().Extends(name) {
+				return true
+			}
+		}
+	}
+
+	if namespace != NamespaceName {
+		if adapter.TypeInfo(node).Extends(name) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func ModelEqual(adapter ModelAdapter, node1 interface{}, node2 interface{}) bool {
 	if node1 == nil && node2 == nil {
 		return true

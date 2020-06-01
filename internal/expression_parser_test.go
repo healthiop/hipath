@@ -682,3 +682,65 @@ func TestParseBooleanExpressionImpliesNot(t *testing.T) {
 		}
 	}
 }
+
+func TestParseAsExpression(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test2' as System.String")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.AsTypeExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, "test2", res.(pathsys.StringAccessor).String())
+		}
+	}
+}
+
+func TestParseAsExpressionNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123 as System.String")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.AsTypeExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		assert.Nil(t, res, "empty result expected")
+	}
+}
+
+func TestParseIsExpression(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("'test2' is System.String")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.IsTypeExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}
+
+func TestParseIsExpressionNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, errorItemCollection := testParse("123 is System.String")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.IsTypeExpression)(nil), res) {
+		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+		}
+	}
+}

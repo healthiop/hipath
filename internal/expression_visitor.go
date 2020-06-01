@@ -192,3 +192,22 @@ func visitBooleanExpression(ctx antlr.ParserRuleContext, args []interface{}) (pa
 
 	return expression.NewBooleanExpression(evalLeft, booleanOp, evalRight), nil
 }
+
+func (v *Visitor) VisitTypeExpression(ctx *parser.TypeExpressionContext) interface{} {
+	return v.visitTree(ctx, 3, visitTypeExpression)
+}
+
+func visitTypeExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	evaluator := args[0].(pathsys.Evaluator)
+	op := args[1].(string)
+	name := expression.ExtractIdentifier(args[2].(string))
+
+	switch op {
+	case "as":
+		return expression.NewAsTypeExpression(evaluator, name)
+	case "is":
+		return expression.NewIsTypeExpression(evaluator, name)
+	default:
+		return nil, fmt.Errorf("invalid type expression operator: %s", op)
+	}
+}
