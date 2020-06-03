@@ -112,14 +112,12 @@ func unwrapCollection(node interface{}) interface{} {
 
 func wrapCollection(ctx pathsys.ContextAccessor, node interface{}) pathsys.CollectionAccessor {
 	if node == nil {
-		return nil
+		return pathsys.EmptyCollection
 	}
 
 	if col, ok := node.(pathsys.CollectionAccessor); ok {
 		return col
 	}
 
-	col := ctx.NewCollection()
-	col.Add(node)
-	return col
+	return ctx.NewCollectionWithItem(node)
 }

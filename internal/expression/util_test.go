@@ -72,7 +72,10 @@ func TestUnwrapCollectionMore(t *testing.T) {
 
 func TestWrapCollectionNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	assert.Nil(t, wrapCollection(ctx, nil))
+	col := wrapCollection(ctx, nil)
+	if assert.NotNil(t, col, "collection expected") {
+		assert.True(t, col.Empty())
+	}
 }
 
 func TestWrapCollectionCollection(t *testing.T) {

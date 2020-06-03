@@ -89,6 +89,16 @@ func TestCollectionAddGet(t *testing.T) {
 	assert.Same(t, item1.TypeInfo(), c.ItemTypeInfo())
 }
 
+func TestNewCollectionWithItem(t *testing.T) {
+	ctx := newTestContext(t)
+	item1 := NewString("test1")
+	c := ctx.NewCollectionWithItem(item1)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 1, c.Count())
+	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, item1.TypeInfo(), c.ItemTypeInfo())
+}
+
 func TestCollectionAddBaseType(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
@@ -114,6 +124,17 @@ func TestCollectionAddGetModel(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, testTypeInfo, c.ItemTypeInfo())
+}
+
+func TestNewCollectionWithModemItem(t *testing.T) {
+	ctx := newTestContext(t)
+	item1 := newTestModelNode(10, false, testTypeInfo)
+	c := ctx.NewCollectionWithItem(item1)
+	c.Add(item1)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 2, c.Count())
+	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, testTypeInfo, c.ItemTypeInfo())
 }
 
@@ -422,4 +443,65 @@ func TestCollectionContainsModel(t *testing.T) {
 	col.Add(newTestModelNode(10.0, false, testTypeInfo))
 	col.Add(newTestModelNode(12.1, false, testTypeInfo))
 	assert.True(t, col.Contains(newTestModelNode(12.1, false, testTypeInfo)))
+}
+
+func TestEmptyCollectionSource(t *testing.T) {
+	o := NewEmptyCollectionWithSource("abc")
+	assert.Equal(t, "abc", o.Source())
+}
+
+func TestEmptyCollectionDataType(t *testing.T) {
+	c := NewEmptyCollection()
+	assert.Equal(t, CollectionDataType, c.DataType())
+}
+
+func TestEmptyCollectionTypeInfo(t *testing.T) {
+	c := NewEmptyCollection()
+	ti := c.TypeInfo()
+	if assert.NotNil(t, ti, "type info expected") {
+		assert.Equal(t, "System.Collection", ti.String())
+		if assert.NotNil(t, ti, "base type info expected") {
+			assert.Equal(t, "System.Any", ti.Base().String())
+		}
+	}
+}
+
+func TestEmptyCollectionEmpty(t *testing.T) {
+	c := NewEmptyCollection()
+	assert.True(t, c.Empty(), "new collection must be empty")
+	assert.Equal(t, 0, c.Count())
+	assert.Same(t, UndefinedTypeInfo, c.ItemTypeInfo())
+}
+
+func TestEmptyCollectionGet(t *testing.T) {
+	c := NewEmptyCollection()
+	assert.Panics(t, func() { c.Get(0) })
+}
+
+func TestEmptyCollectionEqual(t *testing.T) {
+	ctx := newTestContext(t)
+	c1 := NewEmptyCollection()
+	c2 := NewCollection(ctx.ModelAdapter())
+	assert.True(t, c1.Equal(c2))
+	assert.True(t, c1.Equivalent(c2))
+}
+
+func TestEmptyCollectionEqualNot(t *testing.T) {
+	ctx := newTestContext(t)
+	c1 := NewEmptyCollection()
+	c2 := NewCollection(ctx.ModelAdapter())
+	c2.Add(NewString("test"))
+	assert.False(t, c1.Equal(c2))
+	assert.False(t, c1.Equivalent(c2))
+}
+
+func TestEmptyCollectionNoCol(t *testing.T) {
+	c1 := NewEmptyCollection()
+	assert.False(t, c1.Equal(NewString("")))
+	assert.False(t, c1.Equivalent(NewString("")))
+}
+
+func TestEmptyCollectionContains(t *testing.T) {
+	c := NewEmptyCollection()
+	assert.False(t, c.Contains(False))
 }

@@ -175,3 +175,483 @@ func TestExistsPathFuncValueErrorFilter(t *testing.T) {
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no res expected")
 }
+
+func TestAllPathFuncNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, nil, nil, pathsys.NewLoop(loopEval))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllPathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, nil, nil, pathsys.NewLoop(loopEval))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllPathFuncSingleValue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewNumberLiteralInt(10))
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, pathsys.NewInteger(10), nil, pathsys.NewLoop(loopEval))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllPathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	node := ctx.NewCollection()
+	node.Add(pathsys.NewInteger(0))
+	node.Add(pathsys.NewInteger(1))
+	node.Add(pathsys.NewInteger(2))
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, node, nil, pathsys.NewLoop(loopEval))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllPathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	node := ctx.NewCollection()
+	node.Add(pathsys.NewInteger(0))
+	node.Add(pathsys.NewInteger(2))
+	node.Add(pathsys.NewInteger(1))
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, node, nil, pathsys.NewLoop(loopEval))
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAllPathFuncError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	f := newAllFunction()
+	res, err := f.Execute(ctx, pathsys.NewString("test"), nil, pathsys.NewLoop(newTestErrorExpression()))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestAllPathFuncInvalidType(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	f := newAllFunction()
+	res, err := f.Execute(ctx, pathsys.NewString("test"), nil, pathsys.NewLoop(NewRawStringLiteral("")))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestAllTruePathFuncTypeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.True)
+	col.Add(pathsys.NewString("test"))
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestAllTruePathFuncNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllTruePathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllTruePathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.True)
+	col.Add(pathsys.True)
+	col.Add(pathsys.True)
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllTruePathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.True)
+	col.Add(pathsys.False)
+	col.Add(pathsys.True)
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyTruePathFuncNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newAnyTrueFunction()
+	res, err := f.Execute(ctx, nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyTruePathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+
+	f := newAnyTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyTruePathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.False)
+	col.Add(pathsys.True)
+	col.Add(pathsys.False)
+
+	f := newAnyTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAnyTruePathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.False)
+	col.Add(pathsys.False)
+	col.Add(pathsys.False)
+
+	f := newAnyTrueFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAllFalsePathFuncNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newAllFalseFunction()
+	res, err := f.Execute(ctx, nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllFalsePathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+
+	f := newAllFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllFalsePathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.False)
+	col.Add(pathsys.False)
+	col.Add(pathsys.False)
+
+	f := newAllFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAllFalsePathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.False)
+	col.Add(pathsys.True)
+	col.Add(pathsys.False)
+
+	f := newAllFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyFalsePathFuncNil(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newAnyFalseFunction()
+	res, err := f.Execute(ctx, nil, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyFalsePathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+
+	f := newAnyFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestAnyFalsePathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.True)
+	col.Add(pathsys.False)
+	col.Add(pathsys.True)
+
+	f := newAnyFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestAnyFalsePathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.True)
+	col.Add(pathsys.True)
+	col.Add(pathsys.True)
+
+	f := newAnyFalseFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestSubsetOfPathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test1"))
+	col.Add(pathsys.NewString("test4"))
+
+	other := ctx.NewCollection()
+	other.Add(pathsys.NewString("test4"))
+	other.Add(pathsys.NewString("test1"))
+	other.Add(pathsys.NewString("test2"))
+	other.Add(pathsys.NewString("test3"))
+
+	f := newSubsetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestSubsetOfPathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test1"))
+	col.Add(pathsys.NewString("test4"))
+
+	other := ctx.NewCollection()
+	other.Add(pathsys.NewString("test4"))
+	other.Add(pathsys.NewString("test5"))
+	other.Add(pathsys.NewString("test2"))
+	other.Add(pathsys.NewString("test3"))
+
+	f := newSubsetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestSubsetOfPathFuncFalseLessItems(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test1"))
+	col.Add(pathsys.NewString("test4"))
+
+	other := ctx.NewCollection()
+	other.Add(pathsys.NewString("test3"))
+	other.Add(pathsys.NewString("test1"))
+
+	f := newSubsetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestSupersetOfPathFuncTrue(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	other := ctx.NewCollection()
+	other.Add(pathsys.NewString("test3"))
+	other.Add(pathsys.NewString("test1"))
+	other.Add(pathsys.NewString("test4"))
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test4"))
+	col.Add(pathsys.NewString("test1"))
+	col.Add(pathsys.NewString("test2"))
+	col.Add(pathsys.NewString("test3"))
+
+	f := newSupersetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestSupersetOfPathFuncFalse(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	other := ctx.NewCollection()
+	other.Add(pathsys.NewString("test3"))
+	other.Add(pathsys.NewString("test1"))
+	other.Add(pathsys.NewString("test4"))
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test4"))
+	col.Add(pathsys.NewString("test5"))
+	col.Add(pathsys.NewString("test2"))
+	col.Add(pathsys.NewString("test3"))
+
+	f := newSupersetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}
+
+func TestCountPathFunc(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test1"))
+
+	f := newCountFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, int32(2), res.(pathsys.IntegerAccessor).Int())
+	}
+}
+
+func TestDistinctPathFuncOneItem(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+
+	f := newDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 1, col.Count()) {
+			assert.Equal(t, pathsys.NewString("test3"), col.Get(0))
+		}
+	}
+}
+
+func TestDistinctPathFunc(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test4"))
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test1"))
+
+	f := newDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		col := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 3, col.Count()) {
+			assert.Equal(t, pathsys.NewString("test3"), col.Get(0))
+			assert.Equal(t, pathsys.NewString("test4"), col.Get(1))
+			assert.Equal(t, pathsys.NewString("test1"), col.Get(2))
+		}
+	}
+}
+
+func TestIsDistinctPathFuncEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestIsDistinctPathFuncOneItem(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestIsDistinctPathFunc(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test5"))
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.True, res)
+}
+
+func TestIsDistinctPathFuncNot(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test3"))
+	col.Add(pathsys.NewString("test5"))
+	col.Add(pathsys.NewString("test3"))
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, col, nil, nil)
+	assert.NoError(t, err, "no error expected")
+	assert.Equal(t, pathsys.False, res)
+}

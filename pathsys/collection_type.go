@@ -28,6 +28,8 @@
 
 package pathsys
 
+var EmptyCollection = NewEmptyCollection()
+
 var collectionTypeInfo = newAnyTypeInfo("Collection")
 
 type collectionType struct {
@@ -43,7 +45,7 @@ type CollectionAccessor interface {
 	Empty() bool
 	Count() int
 	Get(i int) interface{}
-	Contains(node interface{}) bool
+	Contains(item interface{}) bool
 }
 
 func IsCollection(node interface{}) bool {
@@ -55,8 +57,8 @@ func IsCollection(node interface{}) bool {
 
 type CollectionModifier interface {
 	CollectionAccessor
-	Add(node interface{})
-	AddUnique(node interface{}) bool
+	Add(item interface{})
+	AddUnique(item interface{}) bool
 	AddAll(collection CollectionAccessor) int
 	AddAllUnique(collection CollectionAccessor) int
 }
@@ -65,7 +67,18 @@ func NewCollection(adapter ModelAdapter) CollectionModifier {
 	return NewCollectionWithSource(adapter, nil)
 }
 
+func NewCollectionWithItem(adapter ModelAdapter, item interface{}) CollectionModifier {
+	c := newCollection(adapter, nil)
+	c.items = make([]interface{}, 1)
+	c.items[0] = c.prepareItem(item, true)
+	return c
+}
+
 func NewCollectionWithSource(adapter ModelAdapter, source interface{}) CollectionModifier {
+	return newCollection(adapter, source)
+}
+
+func newCollection(adapter ModelAdapter, source interface{}) *collectionType {
 	if adapter == nil {
 		panic("no adapter has been specified")
 	}
@@ -107,81 +120,86 @@ func (c *collectionType) Get(i int) interface{} {
 	return c.items[i]
 }
 
-func (c *collectionType) Contains(node interface{}) bool {
+func (c *collectionType) Contains(item interface{}) bool {
 	if c.items == nil {
 		return false
 	}
 
 	for _, o := range c.items {
-		if ModelEqual(c.adapter, node, o) {
+		if ModelEqual(c.adapter, item, o) {
 			return true
 		}
 	}
 	return false
 }
 
-func (c *collectionType) Add(node interface{}) {
-	c.add(node, true)
+func (c *collectionType) Add(item interface{}) {
+	c.add(item, true)
 }
 
-func (c *collectionType) add(node interface{}, convert bool) {
+func (c *collectionType) add(item interface{}, convert bool) {
 	if c.items == nil {
 		c.items = make([]interface{}, 0)
 	}
+	c.items = append(c.items, c.prepareItem(item, convert))
+}
 
-	if node != nil {
-		if convert {
-			if _, ok := node.(AnyAccessor); !ok {
-				node = c.adapter.ConvertToSystem(node)
-			}
-		}
+func (c *collectionType) prepareItem(item interface{}, convert bool) interface{} {
+	if item == nil {
+		return nil
+	}
 
-		typeInfo := ModelTypeInfo(c.adapter, node)
-		if c.itemTypeInfo == nil {
-			c.itemTypeInfo = typeInfo
-		} else {
-			typeInfo = CommonBaseType(c.itemTypeInfo, typeInfo)
-			if typeInfo != nil {
-				c.itemTypeInfo = typeInfo
-			} else {
-				c.itemTypeInfo = UndefinedTypeInfo
-			}
+	if convert {
+		if _, ok := item.(AnyAccessor); !ok {
+			item = c.adapter.ConvertToSystem(item)
 		}
 	}
 
-	c.items = append(c.items, node)
+	typeInfo := ModelTypeInfo(c.adapter, item)
+	if c.itemTypeInfo == nil {
+		c.itemTypeInfo = typeInfo
+	} else {
+		typeInfo = CommonBaseType(c.itemTypeInfo, typeInfo)
+		if typeInfo != nil {
+			c.itemTypeInfo = typeInfo
+		} else {
+			c.itemTypeInfo = UndefinedTypeInfo
+		}
+	}
+
+	return item
 }
 
-func (c *collectionType) AddUnique(node interface{}) bool {
+func (c *collectionType) AddUnique(item interface{}) bool {
 	if c.items == nil {
-		c.Add(node)
+		c.Add(item)
 		return true
 	}
 
-	if node == nil {
+	if item == nil {
 		for _, o := range c.items {
 			if o == nil {
 				return false
 			}
 		}
 	} else {
-		if sysNode, ok := node.(AnyAccessor); ok {
+		if sysNode, ok := item.(AnyAccessor); ok {
 			for _, o := range c.items {
 				if o != nil && SystemAnyEqual(sysNode, o) {
 					return false
 				}
 			}
 		} else {
-			node = c.adapter.ConvertToSystem(node)
+			item = c.adapter.ConvertToSystem(item)
 			for _, o := range c.items {
-				if o != nil && ModelEqual(c.adapter, node, o) {
+				if o != nil && ModelEqual(c.adapter, item, o) {
 					return false
 				}
 			}
 		}
 	}
 
-	c.add(node, false)
+	c.add(item, false)
 	return true
 }
 
@@ -204,8 +222,8 @@ func (c *collectionType) AddAllUnique(collection CollectionAccessor) int {
 	return added
 }
 
-func (c *collectionType) Equal(node interface{}) bool {
-	if o, ok := node.(CollectionAccessor); !ok {
+func (c *collectionType) Equal(item interface{}) bool {
+	if o, ok := item.(CollectionAccessor); !ok {
 		return false
 	} else {
 		return c.Count() == o.Count() &&
@@ -213,8 +231,8 @@ func (c *collectionType) Equal(node interface{}) bool {
 	}
 }
 
-func (c *collectionType) Equivalent(node interface{}) bool {
-	if o, ok := node.(CollectionAccessor); !ok {
+func (c *collectionType) Equivalent(item interface{}) bool {
+	if o, ok := item.(CollectionAccessor); !ok {
 		return false
 	} else {
 		return c.Count() == o.Count() &&
@@ -240,4 +258,60 @@ func collectionDeepEquivalent(adapter ModelAdapter, c1 CollectionAccessor, c2 Co
 		}
 	}
 	return true
+}
+
+type emptyCollectionType struct {
+	baseAnyType
+}
+
+func NewEmptyCollection() CollectionAccessor {
+	return NewEmptyCollectionWithSource(nil)
+}
+
+func NewEmptyCollectionWithSource(source interface{}) CollectionAccessor {
+	return &emptyCollectionType{
+		baseAnyType: baseAnyType{
+			source: source,
+		},
+	}
+}
+
+func (c *emptyCollectionType) DataType() DataTypes {
+	return CollectionDataType
+}
+
+func (c *emptyCollectionType) TypeInfo() TypeInfoAccessor {
+	return collectionTypeInfo
+}
+
+func (c *emptyCollectionType) Equal(item interface{}) bool {
+	if o, ok := item.(CollectionAccessor); !ok {
+		return false
+	} else {
+		return o.Empty()
+	}
+}
+
+func (c *emptyCollectionType) Equivalent(item interface{}) bool {
+	return c.Equal(item)
+}
+
+func (c *emptyCollectionType) ItemTypeInfo() TypeInfoAccessor {
+	return UndefinedTypeInfo
+}
+
+func (c *emptyCollectionType) Empty() bool {
+	return true
+}
+
+func (c *emptyCollectionType) Count() int {
+	return 0
+}
+
+func (c *emptyCollectionType) Get(int) interface{} {
+	panic("cannot get an item from an empty collection")
+}
+
+func (c *emptyCollectionType) Contains(interface{}) bool {
+	return false
 }

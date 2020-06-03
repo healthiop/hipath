@@ -205,6 +205,10 @@ func (t *testContext) NewCollection() CollectionModifier {
 	return NewCollection(t.modelAdapter)
 }
 
+func (t *testContext) NewCollectionWithItem(item interface{}) CollectionModifier {
+	return NewCollectionWithItem(t.modelAdapter, item)
+}
+
 func (t *testContext) ContextNode() interface{} {
 	return nil
 }

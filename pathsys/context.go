@@ -141,4 +141,5 @@ type ContextAccessor interface {
 	ContextNode() interface{}
 	ModelAdapter() ModelAdapter
 	NewCollection() CollectionModifier
+	NewCollectionWithItem(item interface{}) CollectionModifier
 }

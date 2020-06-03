@@ -166,6 +166,10 @@ func (t *testContext) NewCollection() pathsys.CollectionModifier {
 	return pathsys.NewCollection(t.modelAdapter)
 }
 
+func (t *testContext) NewCollectionWithItem(item interface{}) pathsys.CollectionModifier {
+	return pathsys.NewCollectionWithItem(t.modelAdapter, item)
+}
+
 func (t *testContext) ContextNode() interface{} {
 	return t.node
 }

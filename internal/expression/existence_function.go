@@ -76,10 +76,7 @@ func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 		if loopEvaluator == nil {
 			return pathsys.True, nil
 		}
-
-		nc := ctx.NewCollection()
-		nc.Add(node)
-		col = nc
+		col = ctx.NewCollectionWithItem(node)
 	}
 	count := col.Count()
 
@@ -106,4 +103,195 @@ func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 	}
 
 	return pathsys.BooleanOf(found), nil
+}
+
+type allFunction struct {
+	pathsys.BaseFunction
+}
+
+func newAllFunction() *allFunction {
+	return &allFunction{
+		BaseFunction: pathsys.NewBaseFunction("all", 0, 1, 1),
+	}
+}
+
+func (f *allFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	loopEvaluator := loop.Evaluator()
+	col := wrapCollection(ctx, node)
+	count := col.Count()
+	for i := 0; i < count; i++ {
+		this := col.Get(i)
+		loop.IncIndex(this)
+
+		res, err := loopEvaluator.Evaluate(ctx, this, loop)
+		if err != nil {
+			return nil, err
+		}
+		if b, ok := res.(pathsys.BooleanAccessor); !ok {
+			return nil, fmt.Errorf("parameter expression must return boolean, but returned %T", res)
+		} else if !b.Bool() {
+			return pathsys.False, nil
+		}
+	}
+
+	return pathsys.True, nil
+}
+
+type allAnyTrueFalseFunction struct {
+	pathsys.BaseFunction
+	all bool
+	t   bool
+}
+
+func newAllAnyTrueFalseFunction(name string, all, t bool) *allAnyTrueFalseFunction {
+	return &allAnyTrueFalseFunction{
+		BaseFunction: pathsys.NewBaseFunction(name, -1, 0, 0),
+		all:          all,
+		t:            t,
+	}
+}
+
+func newAllTrueFunction() *allAnyTrueFalseFunction {
+	return newAllAnyTrueFalseFunction("allTrue", true, true)
+}
+
+func newAnyTrueFunction() *allAnyTrueFalseFunction {
+	return newAllAnyTrueFalseFunction("anyTrue", false, true)
+}
+
+func newAllFalseFunction() *allAnyTrueFalseFunction {
+	return newAllAnyTrueFalseFunction("allFalse", true, false)
+}
+
+func newAnyFalseFunction() *allAnyTrueFalseFunction {
+	return newAllAnyTrueFalseFunction("anyFalse", false, false)
+}
+
+func (f *allAnyTrueFalseFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	col := wrapCollection(ctx, node)
+	count := col.Count()
+	for i := 0; i < count; i++ {
+		this := col.Get(i)
+		if b, ok := this.(pathsys.BooleanAccessor); !ok {
+			return nil, fmt.Errorf("collection must contain only boolean values, but contains %T", this)
+		} else if f.all && f.t != b.Bool() {
+			return pathsys.False, nil
+		} else if !f.all && f.t == b.Bool() {
+			return pathsys.True, nil
+		}
+	}
+
+	if f.all {
+		return pathsys.True, nil
+	}
+	return pathsys.False, nil
+}
+
+type subsetOfFunction struct {
+	pathsys.BaseFunction
+}
+
+func newSubsetOfFunction() *subsetOfFunction {
+	return &subsetOfFunction{
+		BaseFunction: pathsys.NewBaseFunction("subsetOf", -1, 1, 1),
+	}
+}
+
+func (f *subsetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	col := wrapCollection(ctx, node)
+	count := col.Count()
+	if count > 0 {
+		otherCol := wrapCollection(ctx, args[0])
+		for i := 0; i < count; i++ {
+			if !otherCol.Contains(col.Get(i)) {
+				return pathsys.False, nil
+			}
+		}
+	}
+	return pathsys.True, nil
+}
+
+type supersetOfFunction struct {
+	pathsys.BaseFunction
+}
+
+func newSupersetOfFunction() *supersetOfFunction {
+	return &supersetOfFunction{
+		BaseFunction: pathsys.NewBaseFunction("supersetOf", -1, 1, 1),
+	}
+}
+
+func (f *supersetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	otherCol := wrapCollection(ctx, args[0])
+	count := otherCol.Count()
+	if count > 0 {
+		col := wrapCollection(ctx, node)
+		for i := 0; i < count; i++ {
+			if !col.Contains(otherCol.Get(i)) {
+				return pathsys.False, nil
+			}
+		}
+	}
+	return pathsys.True, nil
+}
+
+type countFunction struct {
+	pathsys.BaseFunction
+}
+
+func newCountFunction() *countFunction {
+	return &countFunction{
+		BaseFunction: pathsys.NewBaseFunction("count", -1, 0, 0),
+	}
+}
+
+func (f *countFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	col := wrapCollection(ctx, node)
+	return pathsys.NewInteger(int32(col.Count())), nil
+}
+
+type distinctFunction struct {
+	pathsys.BaseFunction
+}
+
+func newDistinctFunction() *distinctFunction {
+	return &distinctFunction{
+		BaseFunction: pathsys.NewBaseFunction("distinct", -1, 0, 0),
+	}
+}
+
+func (f *distinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	col := wrapCollection(ctx, node)
+	if col.Count() < 2 {
+		return col, nil
+	}
+
+	res := ctx.NewCollection()
+	res.AddAllUnique(col)
+	return res, nil
+}
+
+type isDistinctFunction struct {
+	pathsys.BaseFunction
+}
+
+func newIsDistinctFunction() *isDistinctFunction {
+	return &isDistinctFunction{
+		BaseFunction: pathsys.NewBaseFunction("isDistinct", -1, 0, 0),
+	}
+}
+
+func (f *isDistinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	col := wrapCollection(ctx, node)
+	if col.Empty() {
+		return nil, nil
+	}
+
+	if col.Count() == 1 {
+		return pathsys.True, nil
+	}
+
+	res := ctx.NewCollection()
+	res.AddAllUnique(col)
+	return pathsys.BooleanOf(col.Count() == res.Count()), nil
 }

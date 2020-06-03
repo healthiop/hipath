@@ -37,6 +37,16 @@ var functions = []pathsys.FunctionExecutor{
 	// existence
 	newEmptyFunction(),
 	newExistsFunction(),
+	newAllFunction(),
+	newAllTrueFunction(),
+	newAnyTrueFunction(),
+	newAllFalseFunction(),
+	newAnyFalseFunction(),
+	newSubsetOfFunction(),
+	newSupersetOfFunction(),
+	newCountFunction(),
+	newDistinctFunction(),
+	newIsDistinctFunction(),
 	// combining
 	newUnionFunction(),
 	newCombineFunction(),
