@@ -51,6 +51,13 @@ func TestLoopIncIndex(t *testing.T) {
 	assert.Same(t, evaluator, loop.Evaluator())
 }
 
+func TestLoopWithIndexIncIndex(t *testing.T) {
+	evaluator := newTestEvaluator()
+	loop := NewLoopWithIndex(evaluator, 5)
+	assert.Equal(t, 5, loop.IncIndex(NewString("test")))
+	assert.Equal(t, 5, loop.Index())
+}
+
 func TestLoopThisOutsideLoop(t *testing.T) {
 	evaluator := newTestEvaluator()
 	loop := NewLoop(evaluator)

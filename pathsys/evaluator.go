@@ -48,6 +48,10 @@ func NewLoop(evaluator Evaluator) Looper {
 	return &loop{evaluator, nil, -1, nil}
 }
 
+func NewLoopWithIndex(evaluator Evaluator, index int) Looper {
+	return &loop{evaluator, nil, index - 1, nil}
+}
+
 func (c *loop) Evaluator() Evaluator {
 	return c.evaluator
 }

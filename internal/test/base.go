@@ -36,6 +36,7 @@ import (
 
 var testBaseTypeInfo = pathsys.NewTypeInfo(pathsys.NewFQTypeName("base", "TEST"))
 var testTypeInfo = pathsys.NewTypeInfoWithBase(pathsys.NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
+var testElementTypeInfo = pathsys.NewTypeInfoWithBase(pathsys.NewFQTypeName("Element", "TEST"), testBaseTypeInfo)
 
 type testModelNode struct {
 	value float64
@@ -68,6 +69,10 @@ func newTestModel(t *testing.T) pathsys.ModelAdapter {
 }
 
 func (a *testModel) ConvertToSystem(node interface{}) interface{} {
+	if m, ok := node.(map[string]interface{}); ok {
+		return m
+	}
+
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		a.t.Errorf("not a test model node: %T", node)
 		return nil
@@ -80,6 +85,10 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 }
 
 func (a *testModel) TypeInfo(node interface{}) pathsys.TypeInfoAccessor {
+	if _, ok := node.(map[string]interface{}); ok {
+		return testElementTypeInfo
+	}
+
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		if _, ok := node.(pathsys.StringAccessor); !ok {
 			a.t.Errorf("not a test model node: %T", node)
@@ -94,6 +103,14 @@ func (a *testModel) TypeInfo(node interface{}) pathsys.TypeInfoAccessor {
 }
 
 func (a *testModel) Equal(node1 interface{}, node2 interface{}) bool {
+	if m1, ok := node1.(map[string]interface{}); ok {
+		if m2, ok := node2.(map[string]interface{}); !ok {
+			return false
+		} else {
+			return m1["id"] == m2["id"]
+		}
+	}
+
 	n1, ok := node1.(testModelNodeAccessor)
 	if !ok {
 		a.t.Errorf("not a test model node: %T", node1)

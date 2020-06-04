@@ -47,6 +47,11 @@ var functions = []pathsys.FunctionExecutor{
 	newCountFunction(),
 	newDistinctFunction(),
 	newIsDistinctFunction(),
+	// filtering and projection
+	newWhereFunction(),
+	newSelectFunction(),
+	newRepeatFunction(),
+	newOfTypeFunction(),
 	// combining
 	newUnionFunction(),
 	newCombineFunction(),
