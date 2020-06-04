@@ -52,6 +52,15 @@ var functions = []pathsys.FunctionExecutor{
 	newSelectFunction(),
 	newRepeatFunction(),
 	newOfTypeFunction(),
+	// sub-setting
+	newSingleFunction(),
+	newFirstFunction(),
+	newLastFunction(),
+	newTailFunction(),
+	newSkipFunction(),
+	newTakeFunction(),
+	newIntersectFunction(),
+	newExcludeFunction(),
 	// combining
 	newUnionFunction(),
 	newCombineFunction(),
