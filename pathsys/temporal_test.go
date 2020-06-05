@@ -201,6 +201,13 @@ func TestQuantityDateTimePrecisionUnitNil(t *testing.T) {
 	assert.Error(t, err, "error expected")
 }
 
+func TestQuantityDateTimePrecisionUCUM(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(2.5), NewString("a"))
+	v, _, err := quantityDateTimePrecision(q)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, v, "no result value expected")
+}
+
 func TestQuantityDateTimePrecisionYear(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(2.5), NewString("year"))
 	v, p, err := quantityDateTimePrecision(q)
@@ -281,6 +288,16 @@ func TestQuantityDateTimePrecisionMillisecond(t *testing.T) {
 	assert.Equal(t, NanoTimePrecision, p)
 }
 
+func TestQuantityDateTimePrecisionNanosecond(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(2.5), NewString("nanosecond"))
+	v, p, err := quantityDateTimePrecision(q)
+	assert.NoError(t, err, "error expected")
+	if assert.NotNil(t, v) {
+		assert.Equal(t, 2.5, v.Float64())
+	}
+	assert.Equal(t, NanoTimePrecision, p)
+}
+
 func TestQuantityDateTimePrecisionInvalidUnit(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(2.5), NewString("x"))
 	_, _, err := quantityDateTimePrecision(q)
@@ -327,6 +344,14 @@ func newDateTemporalAccessorMock(time time.Time, precision DateTimePrecisions) D
 }
 
 func (d *dateTemporalAccessorMock) Source() interface{} {
+	panic("implement me")
+}
+
+func (d *dateTemporalAccessorMock) Date() DateAccessor {
+	panic("implement me")
+}
+
+func (d *dateTemporalAccessorMock) DateTime() DateTimeAccessor {
 	panic("implement me")
 }
 

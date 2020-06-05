@@ -79,6 +79,8 @@ type DateTemporalAccessor interface {
 	Year() int
 	Month() int
 	Day() int
+	Date() DateAccessor
+	DateTime() DateTimeAccessor
 }
 
 func (t *temporalType) Precision() DateTimePrecisions {
@@ -185,25 +187,33 @@ func quantityDateTimePrecision(q QuantityAccessor) (NumberAccessor, DateTimePrec
 		return nil, NanoTimePrecision, fmt.Errorf("quantity has no date/time unit")
 	}
 
-	switch unit.String() {
-	case YearQuantityUnit.String():
+	qu := QuantityUnitByNameString(unit)
+	if qu == nil {
+		return nil, NanoTimePrecision, fmt.Errorf(
+			"quantity has no valid date/time unit: %s", unit.String())
+	}
+
+	switch qu {
+	case YearQuantityUnit:
 		return value, YearDatePrecision, nil
-	case MonthQuantityUnit.String():
+	case MonthQuantityUnit:
 		return value, MonthDatePrecision, nil
-	case WeekQuantityUnit.String():
+	case WeekQuantityUnit:
 		v, _ := value.Calc(weekDayFactor, MultiplicationOp)
 		return v.Value(), DayDatePrecision, nil
-	case DayQuantityUnit.String():
+	case DayQuantityUnit:
 		return value, DayDatePrecision, nil
-	case HourQuantityUnit.String():
+	case HourQuantityUnit:
 		return value, HourTimePrecision, nil
-	case MinuteQuantityUnit.String():
+	case MinuteQuantityUnit:
 		return value, MinuteTimePrecision, nil
-	case SecondQuantityUnit.String():
+	case SecondQuantityUnit:
 		return value, SecondTimePrecision, nil
-	case MillisecondQuantityUnit.String():
+	case MillisecondQuantityUnit:
 		v, _ := value.Calc(milliNanosecondFactor, MultiplicationOp)
 		return v.Value(), NanoTimePrecision, nil
+	case NanosecondQuantityUnit:
+		return value, NanoTimePrecision, nil
 	default:
 		return nil, NanoTimePrecision, fmt.Errorf(
 			"quantity has no valid date/time unit: %s", unit.String())

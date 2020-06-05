@@ -95,3 +95,24 @@ func TestWrapCollectionNoCollection(t *testing.T) {
 		}
 	}
 }
+
+func TestEmptyCollectionNil(t *testing.T) {
+	assert.True(t, emptyCollection(nil))
+}
+
+func TestEmptyCollectionEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	assert.True(t, emptyCollection(col))
+}
+
+func TestEmptyCollectionNotEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	col := ctx.NewCollection()
+	col.Add(pathsys.NewString("test"))
+	assert.False(t, emptyCollection(col))
+}
+
+func TestEmptyCollectionOther(t *testing.T) {
+	assert.False(t, emptyCollection(pathsys.NewString("test")))
+}

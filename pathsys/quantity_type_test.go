@@ -111,6 +111,48 @@ func TestQuantityEqualUnitDiffers(t *testing.T) {
 	assert.Equal(t, false, q1.Equivalent(q2))
 }
 
+func TestQuantityEqualExpDiffers(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), NewString("m2"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), NewString("m3"))
+	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, false, q1.Equivalent(q2))
+}
+
+func TestQuantityEqualUnitFactor(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(7), NewString("days"))
+	q2 := NewQuantity(NewDecimalFloat64(1), NewString("week"))
+	assert.Equal(t, true, q1.Equal(q2))
+	assert.Equal(t, true, q1.Equivalent(q2))
+}
+
+func TestQuantityEqualUnitFactorExpLeft(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(1), NewString("week2"))
+	q2 := NewQuantity(NewDecimalFloat64(49), NewString("days2"))
+	assert.Equal(t, true, q1.Equal(q2))
+	assert.Equal(t, true, q1.Equivalent(q2))
+}
+
+func TestQuantityEqualUnitFactorExpRight(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(49), NewString("days2"))
+	q2 := NewQuantity(NewDecimalFloat64(1), NewString("week2"))
+	assert.Equal(t, true, q1.Equal(q2))
+	assert.Equal(t, true, q1.Equivalent(q2))
+}
+
+func TestQuantityEqualUnitFactorNot(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(7), NewString("days"))
+	q2 := NewQuantity(NewDecimalFloat64(2), NewString("week"))
+	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, false, q1.Equivalent(q2))
+}
+
+func TestQuantityEqualUnitFactorEquivalent(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(7), NewString("d"))
+	q2 := NewQuantity(NewDecimalFloat64(7), NewString("days"))
+	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, true, q1.Equivalent(q2))
+}
+
 func TestQuantityEqualInteger(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47), NewString("g"))
 	assert.Equal(t, true, q1.Equal(NewInteger(47)))
@@ -148,7 +190,7 @@ func TestQuantityStringValueOnly(t *testing.T) {
 
 func TestQuantityString(t *testing.T) {
 	q := NewQuantity(NewDecimalFloat64(47.1), NewString("g"))
-	assert.Equal(t, "47.1 g", q.String())
+	assert.Equal(t, "47.1 'g'", q.String())
 }
 
 func TestQuantityWithValueNil(t *testing.T) {
@@ -181,46 +223,25 @@ func TestQuantityArithmeticOpSupported(t *testing.T) {
 	assert.False(t, d.ArithmeticOpSupported(ModOp), "MOD must not be supported")
 }
 
-func TestExtractQuantityCodeExpNil(t *testing.T) {
-	unit, exp := extractQuantityCodeExp(nil)
-	assert.Equal(t, "", unit)
-	assert.Equal(t, 0, exp)
-}
-
-func TestExtractQuantityCodeExpSingleCharUnit(t *testing.T) {
-	unit, exp := extractQuantityCodeExp(NewString("m"))
-	assert.Equal(t, "m", unit)
-	assert.Equal(t, 1, exp)
-}
-
-func TestExtractQuantityCodeExpMultiCharUnit(t *testing.T) {
-	unit, exp := extractQuantityCodeExp(NewString("cm"))
-	assert.Equal(t, "cm", unit)
-	assert.Equal(t, 1, exp)
-}
-
-func TestExtractQuantityCodeExpExp(t *testing.T) {
-	unit, exp := extractQuantityCodeExp(NewString("m2"))
-	assert.Equal(t, "m", unit)
-	assert.Equal(t, 2, exp)
-}
-
 func TestMergeQuantityUnitsCodesDiffers(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2),
 		NewString("g"))
 	q2 := NewQuantity(NewDecimalFloat64(47.2),
 		NewString("m"))
-	code, err := mergeQuantityUnits(q1, q2, AdditionOp)
+	_, _, _, _, err := mergeQuantityUnits(q1, q2, AdditionOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, code, "no code expected")
 }
 
 func TestMergeQuantityUnitsCodesNil(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2), nil)
-	q2 := NewQuantity(NewDecimalFloat64(47.2), nil)
-	code, err := mergeQuantityUnits(q1, q2, AdditionOp)
-	assert.NoError(t, err, "no error expected")
-	assert.Nil(t, code)
+	q2 := NewQuantity(NewDecimalFloat64(49.2), nil)
+	v1, v2, unit, exp, err := mergeQuantityUnits(q1, q2, AdditionOp)
+	if assert.NoError(t, err, "no error expected") {
+		assert.Equal(t, 47.2, v1.Float64())
+		assert.Equal(t, 49.2, v2.Float64())
+		assert.Same(t, EmptyQuantityUnit, unit)
+		assert.Equal(t, 1, exp)
+	}
 }
 
 func TestMergeQuantityUnitsAdditionExpsDiffers(t *testing.T) {
@@ -228,33 +249,29 @@ func TestMergeQuantityUnitsAdditionExpsDiffers(t *testing.T) {
 		NewString("m"))
 	q2 := NewQuantity(NewDecimalFloat64(47.2),
 		NewString("m2"))
-	code, err := mergeQuantityUnits(q1, q2, AdditionOp)
+	_, _, _, _, err := mergeQuantityUnits(q1, q2, AdditionOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, code, "no code expected")
 }
 
 func TestMergeQuantityUnitsSubtractionExpsDiffers(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2), NewString("m"))
 	q2 := NewQuantity(NewDecimalFloat64(47.2), NewString("m2"))
-	code, err := mergeQuantityUnits(q1, q2, SubtractionOp)
+	_, _, _, _, err := mergeQuantityUnits(q1, q2, SubtractionOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, code, "no code expected")
 }
 
 func TestMergeQuantityUnitsMultiplicationExpsError(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2), NewString("m2"))
 	q2 := NewQuantity(NewDecimalFloat64(47.2), NewString("m2"))
-	code, err := mergeQuantityUnits(q1, q2, MultiplicationOp)
+	_, _, _, _, err := mergeQuantityUnits(q1, q2, MultiplicationOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, code, "no code expected")
 }
 
 func TestMergeQuantityUnitsDivisionExpError(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2), NewString("m2"))
 	q2 := NewQuantity(NewDecimalFloat64(47.2), NewString("m2"))
-	code, err := mergeQuantityUnits(q1, q2, MultiplicationOp)
+	_, _, _, _, err := mergeQuantityUnits(q1, q2, MultiplicationOp)
 	assert.Error(t, err, "error expected")
-	assert.Nil(t, code, "no code expected")
 }
 
 func TestQuantityCalcAddition(t *testing.T) {
@@ -270,6 +287,33 @@ func TestQuantityCalcAdditionValue(t *testing.T) {
 	q1 := NewQuantity(NewDecimalFloat64(47.2), NewString("m"))
 	r, err := q1.Calc(NewDecimalInt(20), AdditionOp)
 	e := NewQuantity(NewDecimalFloat64(67.2), NewString("m"))
+	assert.NoError(t, err, "no error expected")
+	assert.True(t, e.Equal(r))
+}
+
+func TestQuantityCalcAdditionConvertUnit(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(26), NewString("hours"))
+	q2 := NewQuantity(NewDecimalFloat64(2), NewString("days"))
+	r, err := q1.Calc(q2, AdditionOp)
+	e := NewQuantity(NewDecimalFloat64(74), NewString("hours"))
+	assert.NoError(t, err, "no error expected")
+	assert.True(t, e.Equal(r))
+}
+
+func TestQuantityCalcAdditionConvertUnitWithExpLeft(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(26), NewString("hours2"))
+	q2 := NewQuantity(NewDecimalFloat64(2), NewString("days2"))
+	r, err := q1.Calc(q2, AdditionOp)
+	e := NewQuantity(NewDecimalFloat64(1178), NewString("hours2"))
+	assert.NoError(t, err, "no error expected")
+	assert.True(t, e.Equal(r))
+}
+
+func TestQuantityCalcAdditionConvertUnitWithExpRight(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(2), NewString("days2"))
+	q2 := NewQuantity(NewDecimalFloat64(26), NewString("hours2"))
+	r, err := q1.Calc(q2, AdditionOp)
+	e := NewQuantity(NewDecimalFloat64(1178), NewString("hours2"))
 	assert.NoError(t, err, "no error expected")
 	assert.True(t, e.Equal(r))
 }
@@ -331,6 +375,13 @@ func TestQuantityCompareEqual(t *testing.T) {
 	assert.Equal(t, 0, res)
 }
 
+func TestQuantityCompareEqualUnitFactor(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(1.0), NewString("hour")).
+		Compare(NewQuantity(NewDecimalFloat64(60.0), NewString("minutes")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 0, res)
+}
+
 func TestQuantityCompareEqualUnitNil(t *testing.T) {
 	res, status := NewQuantity(NewDecimalFloat64(10.21), nil).
 		Compare(NewQuantity(NewDecimalFloat64(10.21), nil))
@@ -366,11 +417,46 @@ func TestQuantityCompareLessThan(t *testing.T) {
 	assert.Equal(t, -1, res)
 }
 
+func TestQuantityCompareLessThanUnitFactor(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(1), NewString("week")).
+		Compare(NewQuantity(NewDecimalFloat64(8), NewString("day")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareLessThanUnitFactorExpLeft(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(1), NewString("week2")).
+		Compare(NewQuantity(NewDecimalFloat64(50), NewString("day2")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
+func TestQuantityCompareLessThanUnitFactorExpRight(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(48), NewString("day2")).
+		Compare(NewQuantity(NewDecimalFloat64(1), NewString("week2")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, -1, res)
+}
+
 func TestQuantityCompareGreaterThan(t *testing.T) {
 	res, status := NewQuantity(NewDecimalFloat64(10.21), NewString("cm")).
 		Compare(NewQuantity(NewDecimalFloat64(10.11), NewString("cm")))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, 1, res)
+}
+
+func TestQuantityCompareGreaterThanUnitFactor(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(1), NewString("week")).
+		Compare(NewQuantity(NewDecimalFloat64(6), NewString("days")))
+	assert.Equal(t, Evaluated, status)
+	assert.Equal(t, 1, res)
+}
+
+func TestQuantityCompareGreaterThanUnitFactorEquivalent(t *testing.T) {
+	res, status := NewQuantity(NewDecimalFloat64(2), NewString("d")).
+		Compare(NewQuantity(NewDecimalFloat64(1), NewString("days")))
+	assert.Equal(t, Empty, status)
+	assert.Equal(t, -1, res)
 }
 
 func TestQuantityCompareInteger(t *testing.T) {
@@ -385,4 +471,55 @@ func TestQuantityCompareQuantity(t *testing.T) {
 		NewQuantity(NewDecimalFloat64(10.71), NewString("cm")))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, -1, res)
+}
+
+func TestQuantityToUnitToNil(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.64), NewString("cm"))
+	assert.Nil(t, q.ToUnit(nil))
+}
+
+func TestQuantityToUnitNil(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.64), nil)
+	assert.Nil(t, q.ToUnit(NewString("cm")))
+}
+
+func TestQuantityToUnitExpDiffer(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.64), NewString("years2"))
+	assert.Nil(t, q.ToUnit(NewString("days3")))
+}
+
+func TestQuantityToUnitNoCommonBase(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.64), NewString("years"))
+	assert.Nil(t, q.ToUnit(NewString("d")))
+}
+
+func TestQuantityToUnitEqual(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.64), NewString("cm"))
+	assert.Same(t, q, q.ToUnit(NewString("cm")))
+}
+
+func TestQuantityToUnit(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(10.5), NewString("days"))
+	q = q.ToUnit(NewString("week"))
+	if assert.NotNil(t, q) {
+		if assert.NotNil(t, q.Value()) {
+			assert.Equal(t, 1.5, q.Value().Float64())
+		}
+		if assert.NotNil(t, q.Unit()) {
+			assert.Equal(t, "weeks", q.Unit().String())
+		}
+	}
+}
+
+func TestQuantityToUnitExp(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(1), NewString("weeks2"))
+	q = q.ToUnit(NewString("days2"))
+	if assert.NotNil(t, q) {
+		if assert.NotNil(t, q.Value()) {
+			assert.Equal(t, 49.0, q.Value().Float64())
+		}
+		if assert.NotNil(t, q.Unit()) {
+			assert.Equal(t, "days2", q.Unit().String())
+		}
+	}
 }

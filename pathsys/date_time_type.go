@@ -48,6 +48,11 @@ type dateTimeType struct {
 
 type DateTimeAccessor interface {
 	DateTemporalAccessor
+	Hour() int
+	Minute() int
+	Second() int
+	Nanosecond() int
+	Location() *time.Location
 }
 
 func NewDateTime(value time.Time) DateTimeAccessor {
@@ -191,6 +196,18 @@ func (t *dateTimeType) DataType() DataTypes {
 	return DateTimeDataType
 }
 
+func (t *dateTimeType) Date() DateAccessor {
+	precision := t.precision
+	if precision > DayDatePrecision {
+		precision = DayDatePrecision
+	}
+	return NewDateYMDWithPrecision(t.Year(), t.Month(), t.Day(), precision)
+}
+
+func (t *dateTimeType) DateTime() DateTimeAccessor {
+	return t
+}
+
 func (t *dateTimeType) Time() time.Time {
 	return t.value
 }
@@ -205,6 +222,26 @@ func (t *dateTimeType) Month() int {
 
 func (t *dateTimeType) Day() int {
 	return t.value.Day()
+}
+
+func (t *dateTimeType) Hour() int {
+	return t.value.Hour()
+}
+
+func (t *dateTimeType) Minute() int {
+	return t.value.Minute()
+}
+
+func (t *dateTimeType) Second() int {
+	return t.value.Second()
+}
+
+func (t *dateTimeType) Nanosecond() int {
+	return t.value.Nanosecond()
+}
+
+func (t *dateTimeType) Location() *time.Location {
+	return t.value.Location()
 }
 
 func (t *dateTimeType) TypeInfo() TypeInfoAccessor {
@@ -301,19 +338,15 @@ func (t *dateTimeType) String() string {
 	}
 	if t.precision >= HourTimePrecision {
 		_, offset := t.value.Zone()
-		if offset == 0 {
-			b.WriteByte('Z')
+		if offset >= 0 {
+			b.WriteByte('+')
 		} else {
-			if offset > 0 {
-				b.WriteByte('+')
-			} else {
-				b.WriteByte('-')
-				offset = -offset
-			}
-			writeStringBuilderInt(&b, offset/3600, 2)
-			b.WriteByte(':')
-			writeStringBuilderInt(&b, (offset%3600)/60, 2)
+			b.WriteByte('-')
+			offset = -offset
 		}
+		writeStringBuilderInt(&b, offset/3600, 2)
+		b.WriteByte(':')
+		writeStringBuilderInt(&b, (offset%3600)/60, 2)
 	}
 
 	return b.String()

@@ -76,6 +76,29 @@ func TestDateValue(t *testing.T) {
 		expectedTime.UnixNano(), value.UnixNano())
 }
 
+func TestDateDate(t *testing.T) {
+	testTime := time.Now().Add(-time.Hour * 78)
+	o := NewDate(testTime)
+	assert.Same(t, o, o.Date())
+}
+
+func TestDateDateTime(t *testing.T) {
+	testTime := time.Date(2018, 5, 20, 17, 48, 14, 123, time.Local)
+	d := NewDate(testTime).DateTime()
+	assert.Equal(t, testTime.Year(), d.Year())
+	assert.Equal(t, int(testTime.Month()), d.Month())
+	assert.Equal(t, testTime.Day(), d.Day())
+	assert.Equal(t, DayDatePrecision, d.Precision())
+}
+
+func TestDateDateTimePrecision(t *testing.T) {
+	d := NewDateYMDWithPrecision(2018, 5, 20, MonthDatePrecision).DateTime()
+	assert.Equal(t, 2018, d.Year())
+	assert.Equal(t, 5, d.Month())
+	assert.Equal(t, 1, d.Day())
+	assert.Equal(t, MonthDatePrecision, d.Precision())
+}
+
 func TestDateYMD(t *testing.T) {
 	o := NewDateYMD(2020, 4, 23)
 

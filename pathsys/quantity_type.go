@@ -30,27 +30,12 @@ package pathsys
 
 import (
 	"fmt"
-	"regexp"
-	"strconv"
 	"strings"
 )
 
 var UCUMSystemURI = NewString("http://unitsofmeasure.org")
 
-var (
-	YearQuantityUnit        = NewString("year")
-	MonthQuantityUnit       = NewString("month")
-	WeekQuantityUnit        = NewString("week")
-	DayQuantityUnit         = NewString("day")
-	HourQuantityUnit        = NewString("hour")
-	MinuteQuantityUnit      = NewString("minute")
-	SecondQuantityUnit      = NewString("second")
-	MillisecondQuantityUnit = NewString("millisecond")
-)
-
 var QuantityTypeInfo = newAnyTypeInfo("Quantity")
-
-var quantityCodeExpRegexp = regexp.MustCompile("^(.*[^\\d])([1-3])$")
 
 type quantityType struct {
 	baseAnyType
@@ -67,6 +52,7 @@ type QuantityAccessor interface {
 	ArithmeticApplier
 
 	Unit() StringAccessor
+	ToUnit(unit StringAccessor) QuantityAccessor
 }
 
 func NewQuantity(value DecimalAccessor, unit StringAccessor) QuantityAccessor {
@@ -134,11 +120,21 @@ func (t *quantityType) Equivalent(node interface{}) bool {
 }
 
 func quantityValueEqual(t QuantityAccessor, node interface{}, equivalent bool) bool {
-	if o, ok := node.(QuantityAccessor); ok {
-		return Equal(t.Value(), o.Value()) &&
-			Equal(t.Unit(), o.Unit())
-	}
-	if d, ok := node.(DecimalValueAccessor); ok {
+	if q, ok := node.(QuantityAccessor); ok {
+		if Equal(t.Unit(), q.Unit()) {
+			return Equal(t.Value(), q.Value())
+		}
+
+		u1, exp1 := QuantityUnitWithNameString(t.Unit())
+		u2, exp2 := QuantityUnitWithNameString(q.Unit())
+		if exp1 != exp2 {
+			return false
+		}
+		v1, v2, u := ConvertUnitToBase(t.Value(), u1, exp1, q.Value(), u2, exp2, !equivalent)
+		if u != nil {
+			return Equal(v1, v2)
+		}
+	} else if d, ok := node.(DecimalValueAccessor); ok {
 		v1 := t.Value()
 		v2 := d.Value()
 		if equivalent {
@@ -152,6 +148,15 @@ func quantityValueEqual(t QuantityAccessor, node interface{}, equivalent bool) b
 func (t *quantityType) Compare(comparator Comparator) (int, OperatorStatus) {
 	if q, ok := comparator.(QuantityAccessor); ok {
 		if !Equal(t.Unit(), q.Unit()) {
+			u1, exp1 := QuantityUnitWithNameString(t.Unit())
+			u2, exp2 := QuantityUnitWithNameString(q.Unit())
+			if exp1 == exp2 {
+				v1, v2, u := ConvertUnitToBase(t.Value(), u1, exp1, q.Value(), u2, exp2, true)
+				if u != nil {
+					return decimalValueCompare(v1, v2)
+				}
+			}
+
 			return -1, Empty
 		}
 	}
@@ -159,17 +164,43 @@ func (t *quantityType) Compare(comparator Comparator) (int, OperatorStatus) {
 	return decimalValueCompare(t.value, comparator)
 }
 
+func (t *quantityType) ToUnit(unit StringAccessor) QuantityAccessor {
+	u2, exp2 := QuantityUnitWithNameString(unit)
+	if u2 == nil {
+		return nil
+	}
+
+	u1, exp1 := QuantityUnitWithNameString(t.Unit())
+	if u1 == nil || exp1 != exp2 {
+		return nil
+	}
+
+	if u1.Equal(u2) {
+		return t
+	}
+
+	u := u1.CommonBase(u2, true)
+	if u == nil {
+		return nil
+	}
+
+	f1, f2 := u1.Factor(u, exp1), u2.Factor(u, exp2)
+	v, _ := t.Value().Calc(f1, MultiplicationOp)
+	v, _ = v.Value().Calc(f2, DivisionOp)
+
+	val := v.Value()
+	return NewQuantity(val, u2.NameWithExp(val, exp2))
+}
+
 func (t *quantityType) String() string {
 	var b strings.Builder
 	b.Grow(32)
-	if t.value != nil {
-		b.WriteString(t.value.String())
-	}
+	b.WriteString(t.value.String())
 	if t.unit != nil {
-		if b.Len() > 0 {
-			b.WriteByte(' ')
-		}
+		b.WriteByte(' ')
+		b.WriteByte('\'')
 		b.WriteString(t.unit.String())
+		b.WriteByte('\'')
 	}
 	return b.String()
 }
@@ -183,37 +214,49 @@ func (t *quantityType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (Dec
 		return nil, fmt.Errorf("arithmetic operator not supported: %c", op)
 	}
 
-	var unit = t.unit
-	if q, ok := operand.(QuantityAccessor); ok {
+	var valLeft, varRight DecimalAccessor
+	var unit QuantityUnitAccessor
+	var exp int
+	if q, ok := operand.(QuantityAccessor); !ok {
+		valLeft, varRight = t.Value(), operand.Value()
+		unit, exp = QuantityUnitWithNameString(t.Unit())
+	} else {
 		var err error
-		unit, err = mergeQuantityUnits(t, q, op)
+		valLeft, varRight, unit, exp, err = mergeQuantityUnits(t, q, op)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	value, _ := t.Value().Calc(operand.Value(), op)
-	return NewQuantity(value.Value(), unit), nil
+	value, _ := valLeft.Calc(varRight, op)
+	return NewQuantity(value.Value(), unit.NameWithExp(value.Value(), exp)), nil
 }
 
-func mergeQuantityUnits(l QuantityAccessor, r QuantityAccessor, op ArithmeticOps) (StringAccessor, error) {
-	leftUnit, leftExp := extractQuantityCodeExp(l.Unit())
-	rightUnit, rightExp := extractQuantityCodeExp(r.Unit())
+func mergeQuantityUnits(l QuantityAccessor, r QuantityAccessor, op ArithmeticOps) (DecimalAccessor, DecimalAccessor, QuantityUnitAccessor, int, error) {
+	leftVal, rightVal := l.Value(), r.Value()
+	leftUnit, leftExp := QuantityUnitWithNameString(l.Unit())
+	rightUnit, rightExp := QuantityUnitWithNameString(r.Unit())
 
-	if leftUnit != rightUnit {
-		return nil, fmt.Errorf("units are not equal: %s != %s",
-			leftUnit, rightUnit)
+	var unit QuantityUnitAccessor
+	if leftUnit == nil && rightUnit == nil {
+		return leftVal, rightVal, EmptyQuantityUnit, 1, nil
 	}
-
-	if len(leftUnit) == 0 {
-		return nil, nil
+	if leftUnit != nil && leftUnit.Equal(rightUnit) {
+		unit = leftUnit
+	} else {
+		leftVal, rightVal, unit = ConvertUnitToMostGranular(
+			leftVal, leftUnit, leftExp, rightVal, rightUnit, rightExp, true)
+		if unit == nil {
+			return nil, nil, nil, 1, fmt.Errorf("units are not equal: %s != %s",
+				leftUnit, rightUnit)
+		}
 	}
 
 	exp := leftExp
 	switch op {
 	case AdditionOp, SubtractionOp:
 		if leftExp != rightExp {
-			return nil, fmt.Errorf("units exponents are not equal: %d != %d",
+			return nil, nil, nil, 1, fmt.Errorf("units exponents are not equal: %d != %d",
 				leftExp, rightExp)
 		}
 	case MultiplicationOp:
@@ -223,30 +266,8 @@ func mergeQuantityUnits(l QuantityAccessor, r QuantityAccessor, op ArithmeticOps
 	}
 
 	if exp < 1 || exp > 3 {
-		return nil, fmt.Errorf("resulting unit exponent is invalid (must be between 1 and 3): %d", exp)
+		return nil, nil, nil, 1, fmt.Errorf("resulting unit exponent is invalid (must be between 1 and 3): %d", exp)
 	}
 
-	if exp == 1 {
-		return NewString(leftUnit), nil
-	}
-	return NewString(leftUnit + strconv.FormatInt(int64(exp), 10)), nil
-}
-
-func extractQuantityCodeExp(string StringAccessor) (string, int) {
-	if string == nil {
-		return "", 0
-	}
-
-	value := string.String()
-	if len(value) < 2 {
-		return value, 1
-	}
-
-	parts := quantityCodeExpRegexp.FindStringSubmatch(value)
-	if parts == nil {
-		return value, 1
-	}
-
-	exp, _ := strconv.Atoi(parts[2])
-	return parts[1], exp
+	return leftVal, rightVal, unit, exp, nil
 }
