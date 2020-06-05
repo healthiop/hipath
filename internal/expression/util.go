@@ -121,3 +121,13 @@ func wrapCollection(ctx pathsys.ContextAccessor, node interface{}) pathsys.Colle
 
 	return ctx.NewCollectionWithItem(node)
 }
+
+func emptyCollection(node interface{}) bool {
+	if node == nil {
+		return true
+	}
+	if col, ok := node.(pathsys.CollectionAccessor); ok {
+		return col.Empty()
+	}
+	return false
+}

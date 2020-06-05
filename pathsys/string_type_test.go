@@ -33,6 +33,14 @@ import (
 	"testing"
 )
 
+func TestStringOfEmpty(t *testing.T) {
+	assert.Nil(t, StringOf(""))
+}
+
+func TestStringOf(t *testing.T) {
+	assert.Equal(t, NewString("test"), StringOf("test"))
+}
+
 func TestStringSource(t *testing.T) {
 	o := NewStringWithSource("xyz", "abc")
 	assert.Equal(t, "abc", o.Source())

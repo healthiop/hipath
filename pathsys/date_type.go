@@ -138,6 +138,14 @@ func (t *dateType) LowestPrecision() DateTimePrecisions {
 	return YearDatePrecision
 }
 
+func (t *dateType) Date() DateAccessor {
+	return t
+}
+
+func (t *dateType) DateTime() DateTimeAccessor {
+	return NewDateTimeYMDHMSNWithPrecision(t.year, t.month, t.day, 0, 0, 0, 0, time.Local, t.precision)
+}
+
 func (t *dateType) Year() int {
 	return t.year
 }

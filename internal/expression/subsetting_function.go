@@ -129,7 +129,7 @@ func newSkipFunction() *skipFunction {
 
 func (f *skipFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	var num int
-	if n, ok := args[0].(pathsys.NumberAccessor); !ok {
+	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
 	} else {
 		num = int(n.Int())
@@ -164,7 +164,7 @@ func newTakeFunction() *takeFunction {
 
 func (f *takeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	var num int
-	if n, ok := args[0].(pathsys.NumberAccessor); !ok {
+	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
 	} else {
 		num = int(n.Int())

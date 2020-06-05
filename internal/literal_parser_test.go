@@ -123,7 +123,7 @@ func TestParseTimeLiteral(t *testing.T) {
 	}
 }
 
-func TestParseQuantityLiteral(t *testing.T) {
+func TestParseQuantityLiteralPlural(t *testing.T) {
 	res, errorItemCollection := testParse("736.2321 years")
 
 	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
@@ -134,6 +134,24 @@ func TestParseQuantityLiteral(t *testing.T) {
 		q := res.(pathsys.QuantityAccessor)
 		if assert.NotNil(t, q.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, q.Value().Float64())
+		}
+		if assert.NotNil(t, q.Unit(), "quantity code expected") {
+			assert.Equal(t, "years", q.Unit().String())
+		}
+	}
+}
+
+func TestParseQuantityLiteralSingular(t *testing.T) {
+	res, errorItemCollection := testParse("1 year")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
+		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		q := res.(pathsys.QuantityAccessor)
+		if assert.NotNil(t, q.Value(), "quantity value expected") {
+			assert.Equal(t, 1.0, q.Value().Float64())
 		}
 		if assert.NotNil(t, q.Unit(), "quantity code expected") {
 			assert.Equal(t, "year", q.Unit().String())

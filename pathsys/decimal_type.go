@@ -36,6 +36,13 @@ import (
 
 var DecimalTypeInfo = newAnyTypeInfo("Decimal")
 
+var (
+	DecimalZero  = NewDecimalInt(0)
+	DecimalOne   = NewDecimalInt(1)
+	DecimalTwo   = NewDecimalInt(2)
+	DecimalThree = NewDecimalInt(3)
+)
+
 type decimalType struct {
 	baseAnyType
 	value decimal.Decimal
@@ -49,6 +56,7 @@ type DecimalAccessor interface {
 	Float64() float64
 	BigFloat() *big.Float
 	Decimal() decimal.Decimal
+	Sqrt(d2 DecimalAccessor) DecimalAccessor
 }
 
 func NewDecimal(value decimal.Decimal) DecimalAccessor {
@@ -83,6 +91,21 @@ func NewDecimalFloat64WithSource(value float64, source interface{}) DecimalAcces
 	return newDecimal(decimal.NewFromFloat(value), source)
 }
 
+func DecimalOfInt(value int32) DecimalAccessor {
+	switch value {
+	case 0:
+		return DecimalZero
+	case 1:
+		return DecimalOne
+	case 2:
+		return DecimalTwo
+	case 3:
+		return DecimalThree
+	default:
+		return NewDecimalInt(value)
+	}
+}
+
 func ParseDecimal(value string) (DecimalAccessor, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
@@ -102,6 +125,13 @@ func newDecimal(value decimal.Decimal, source interface{}) DecimalAccessor {
 
 func (t *decimalType) DataType() DataTypes {
 	return DecimalDataType
+}
+
+func (t *decimalType) Sqrt(d2 DecimalAccessor) DecimalAccessor {
+	if DecimalOne.Decimal().Equal(d2.Decimal()) {
+		return t
+	}
+	return NewDecimal(t.value.Pow(d2.Decimal()))
 }
 
 func (t *decimalType) Int() int32 {

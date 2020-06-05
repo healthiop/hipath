@@ -68,9 +68,37 @@ func TestDateTimeValue(t *testing.T) {
 	assert.Equal(t, testTime.Year(), o.Year())
 	assert.Equal(t, int(testTime.Month()), o.Month())
 	assert.Equal(t, testTime.Day(), o.Day())
+	assert.Equal(t, testTime.Hour(), o.Hour())
+	assert.Equal(t, testTime.Minute(), o.Minute())
+	assert.Equal(t, testTime.Second(), o.Second())
+	assert.Equal(t, testTime.Nanosecond(), o.Nanosecond())
+	assert.Same(t, testTime.Location(), o.Location())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",
 		testTime.UnixNano(), value.UnixNano())
+}
+
+func TestDateTimeDate(t *testing.T) {
+	testTime := time.Date(2018, 5, 20, 17, 48, 14, 123, time.Local)
+	d := NewDateTime(testTime).Date()
+	assert.Equal(t, testTime.Year(), d.Year())
+	assert.Equal(t, int(testTime.Month()), d.Month())
+	assert.Equal(t, testTime.Day(), d.Day())
+	assert.Equal(t, DayDatePrecision, d.Precision())
+}
+
+func TestDateTimeDatePrecision(t *testing.T) {
+	d := NewDateTimeYMDHMSNWithPrecision(2018, 5, 20, 17, 48, 14, 123, time.Local, MonthDatePrecision).Date()
+	assert.Equal(t, 2018, d.Year())
+	assert.Equal(t, 5, d.Month())
+	assert.Equal(t, 1, d.Day())
+	assert.Equal(t, MonthDatePrecision, d.Precision())
+}
+
+func TestDateTimeDateTime(t *testing.T) {
+	testTime := time.Date(2018, 5, 20, 17, 48, 14, 123, time.Local)
+	d := NewDateTime(testTime)
+	assert.Same(t, d, d.DateTime())
 }
 
 func TestParseDateTimeCompleteTzPos(t *testing.T) {

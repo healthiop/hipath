@@ -64,6 +64,20 @@ var functions = []pathsys.FunctionExecutor{
 	// combining
 	newUnionFunction(),
 	newCombineFunction(),
+	// conversion
+	newIIfFunction(),
+	toBooleanFunc,
+	newConvertsToBooleanFunction(),
+	toIntegerFunc,
+	newConvertsToIntegerFunction(),
+	toDateFunc,
+	newConvertsToDateFunction(),
+	toDateTimeFunc,
+	newConvertsToDateTimeFunction(),
+	toDecimalFunc,
+	newConvertsToDecimalFunction(),
+	toQuantityFunc,
+	newConvertsToQuantityFunction(),
 	// aggregate
 	newAggregateFunction(),
 }

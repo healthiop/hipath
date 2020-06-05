@@ -359,15 +359,13 @@ func TestTimeCompareEqualTypeDiffers(t *testing.T) {
 }
 
 func TestTimeCompareLessThan(t *testing.T) {
-	now := time.Now()
-	res, status := NewTime(now.Add(-2 * time.Hour)).Compare(NewTime(now))
+	res, status := NewTimeHMSN(17, 18, 21, 0).Compare(NewTimeHMSN(19, 15, 17, 0))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, -1, res)
 }
 
 func TestTimeCompareGreaterThan(t *testing.T) {
-	now := time.Now()
-	res, status := NewTime(now).Compare(NewTime(now.Add(-2 * time.Hour)))
+	res, status := NewTimeHMSN(19, 15, 17, 0).Compare(NewTimeHMSN(17, 18, 21, 0))
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, 1, res)
 }

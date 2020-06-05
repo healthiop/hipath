@@ -462,3 +462,38 @@ func TestDecimalCompareQuantity(t *testing.T) {
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, -1, res)
 }
+
+func TestDecimalSqrtOne(t *testing.T) {
+	res := NewDecimalInt(20).Sqrt(NewDecimalInt(1))
+	assert.Equal(t, 20.0, res.Float64())
+}
+
+func TestDecimalSqrt(t *testing.T) {
+	res := NewDecimalInt(20).Sqrt(NewDecimalInt(3))
+	assert.Equal(t, 8000.0, res.Float64())
+}
+
+func TestDecimalOfIntZero(t *testing.T) {
+	res := DecimalOfInt(0)
+	assert.Equal(t, 0.0, res.Float64())
+}
+
+func TestDecimalOfIntOne(t *testing.T) {
+	res := DecimalOfInt(1)
+	assert.Equal(t, 1.0, res.Float64())
+}
+
+func TestDecimalOfIntTwo(t *testing.T) {
+	res := DecimalOfInt(2)
+	assert.Equal(t, 2.0, res.Float64())
+}
+
+func TestDecimalOfIntThree(t *testing.T) {
+	res := DecimalOfInt(3)
+	assert.Equal(t, 3.0, res.Float64())
+}
+
+func TestDecimalOfIntFour(t *testing.T) {
+	res := DecimalOfInt(4)
+	assert.Equal(t, 4.0, res.Float64())
+}

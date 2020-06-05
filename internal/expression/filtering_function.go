@@ -202,7 +202,7 @@ func newOfTypeFunction() *ofTypeFunction {
 func (f *ofTypeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	var typeSpec pathsys.StringAccessor
 	var ok bool
-	if typeSpec, ok = args[0].(pathsys.StringAccessor); !ok {
+	if typeSpec, ok = unwrapCollection(args[0]).(pathsys.StringAccessor); !ok {
 		return nil, fmt.Errorf("not a valid type specifier: %T", args[0])
 	}
 

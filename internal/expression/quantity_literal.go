@@ -58,32 +58,11 @@ func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
 		return nil, nil
 	}
 
-	var convertedUnit pathsys.StringAccessor
-	switch unit {
-	case "year", "years":
-		convertedUnit = pathsys.YearQuantityUnit
-	case "month", "months":
-		convertedUnit = pathsys.MonthQuantityUnit
-	case "week", "weeks":
-		convertedUnit = pathsys.WeekQuantityUnit
-	case "day", "days":
-		convertedUnit = pathsys.DayQuantityUnit
-	case "hour", "hours":
-		convertedUnit = pathsys.HourQuantityUnit
-	case "minute", "minutes":
-		convertedUnit = pathsys.MinuteQuantityUnit
-	case "second", "seconds", "s":
-		convertedUnit = pathsys.SecondQuantityUnit
-	case "millisecond", "milliseconds", "ms":
-		convertedUnit = pathsys.MillisecondQuantityUnit
-	default:
-		u := parseStringLiteral(unit, stringDelimiterChar)
-		if !quantityUnitRegexp.MatchString(u) {
-			return nil, fmt.Errorf("invalid quantity unit: %s", u)
-		}
-		convertedUnit = pathsys.NewString(u)
+	u := parseStringLiteral(unit, stringDelimiterChar)
+	if !quantityUnitRegexp.MatchString(u) {
+		return nil, fmt.Errorf("invalid quantity unit: %s", u)
 	}
-	return convertedUnit, nil
+	return pathsys.NewString(u), nil
 }
 
 func (e *QuantityLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {

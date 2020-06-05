@@ -45,6 +45,13 @@ type StringAccessor interface {
 	Stringifier
 }
 
+func StringOf(value string) StringAccessor {
+	if len(value) == 0 {
+		return nil
+	}
+	return NewString(value)
+}
+
 func NewString(value string) StringAccessor {
 	return NewStringWithSource(value, nil)
 }
