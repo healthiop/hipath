@@ -69,6 +69,11 @@ func TestStringValue(t *testing.T) {
 	assert.Equal(t, "Test", value)
 }
 
+func TestStringLength(t *testing.T) {
+	o := NewString("Test")
+	assert.Equal(t, 4, o.Length())
+}
+
 func TestStringEqualNil(t *testing.T) {
 	assert.Equal(t, false, NewString("").Equal(nil))
 }

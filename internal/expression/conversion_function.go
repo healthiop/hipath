@@ -76,11 +76,8 @@ var toBooleanFunc = &toBooleanFunction{
 
 func (f *toBooleanFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	if b, ok := any.(pathsys.BooleanAccessor); ok {
@@ -94,8 +91,8 @@ func (f *toBooleanFunction) Execute(ctx pathsys.ContextAccessor, node interface{
 		if f == 0.0 {
 			return pathsys.False, nil
 		}
-	} else if any.DataType() == pathsys.StringDataType {
-		s := strings.ToLower(any.(pathsys.StringAccessor).String())
+	} else if s, ok := any.(pathsys.StringAccessor); ok {
+		s := strings.ToLower(s.String())
 		switch s {
 		case "true", "t", "yes", "y", "1", "1.0":
 			return pathsys.True, nil
@@ -130,11 +127,8 @@ var toIntegerFunc = &toIntegerFunction{
 
 func (f *toIntegerFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	switch any.DataType() {
@@ -178,11 +172,8 @@ var toDecimalFunc = &toDecimalFunction{
 
 func (f *toDecimalFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	if n, ok := any.(pathsys.NumberAccessor); ok {
@@ -228,19 +219,16 @@ var toDateFunc = &toDateFunction{
 
 func (f *toDateFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	var d pathsys.DateAccessor
 	if t, ok := any.(pathsys.DateTemporalAccessor); ok {
 		d = t.Date()
-	} else if any.DataType() == pathsys.StringDataType {
+	} else if s, ok := any.(pathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseDate(any.(pathsys.StringAccessor).String())
+		d, err = pathsys.ParseDate(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -272,19 +260,16 @@ var toDateTimeFunc = &toDateTimeFunction{
 
 func (f *toDateTimeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	var d pathsys.DateTimeAccessor
 	if t, ok := any.(pathsys.DateTemporalAccessor); ok {
 		d = t.DateTime()
-	} else if any.DataType() == pathsys.StringDataType {
+	} else if s, ok := any.(pathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseDateTime(any.(pathsys.StringAccessor).String())
+		d, err = pathsys.ParseDateTime(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -318,11 +303,8 @@ var quantityStringPattern = regexp.MustCompile("^([+\\-]?\\d+(?:\\.\\d+)?)\\s*('
 
 func (f *toQuantityFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	var q pathsys.QuantityAccessor
@@ -339,8 +321,8 @@ func (f *toQuantityFunction) Execute(ctx pathsys.ContextAccessor, node interface
 			v = pathsys.DecimalZero
 		}
 		q = pathsys.NewQuantity(v, pathsys.DefaultQuantityUnit.Name(v))
-	} else if any.DataType() == pathsys.StringDataType {
-		m := quantityStringPattern.FindStringSubmatch(any.(pathsys.StringAccessor).String())
+	} else if s, ok := any.(pathsys.StringAccessor); ok {
+		m := quantityStringPattern.FindStringSubmatch(s.String())
 		if m == nil {
 			return nil, nil
 		}
@@ -387,11 +369,8 @@ var toStringFunc = &toStringFunction{
 
 func (f *toStringFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	return pathsys.NewString(any.(pathsys.Stringifier).String()), nil
@@ -420,19 +399,16 @@ var toTimeFunc = &toTimeFunction{
 
 func (f *toTimeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
-	if err != nil {
+	if any == nil || err != nil {
 		return nil, err
-	}
-	if any == nil {
-		return nil, nil
 	}
 
 	var d pathsys.TimeAccessor
 	if t, ok := any.(pathsys.TimeAccessor); ok {
 		d = t
-	} else if any.DataType() == pathsys.StringDataType {
+	} else if s, ok := any.(pathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseTime(any.(pathsys.StringAccessor).String())
+		d, err = pathsys.ParseTime(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -481,12 +457,10 @@ func convertibleAny(node interface{}) (pathsys.AnyAccessor, error) {
 		return nil, nil
 	}
 
-	var any pathsys.AnyAccessor
-	var ok bool
-	if any, ok = value.(pathsys.AnyAccessor); !ok {
+	if any, ok := value.(pathsys.AnyAccessor); !ok {
 		return nil, nil
 	} else {
-		if _, ok = any.(pathsys.CollectionAccessor); ok {
+		if _, ok := any.(pathsys.CollectionAccessor); ok {
 			return nil, fmt.Errorf("collection with multiple items cannot be converted")
 		}
 		return any, nil

@@ -26,86 +26,49 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package pathsys
+package expression
 
-import "strings"
+import (
+	"fmt"
+	"github.com/volsch/gohipath/pathsys"
+	"strings"
+)
 
-var StringTypeInfo = newAnyTypeInfo("String")
-
-var EmptyString = newString("", nil)
-
-type stringType struct {
-	baseAnyType
-	value string
+type indexOfFunction struct {
+	pathsys.BaseFunction
 }
 
-type StringAccessor interface {
-	AnyAccessor
-	Comparator
-	Stringifier
-	Length() int
-}
-
-func StringOf(value string) StringAccessor {
-	if len(value) == 0 {
-		return nil
-	}
-	return NewString(value)
-}
-
-func NewString(value string) StringAccessor {
-	return NewStringWithSource(value, nil)
-}
-
-func NewStringWithSource(value string, source interface{}) StringAccessor {
-	return newString(value, source)
-}
-
-func newString(value string, source interface{}) StringAccessor {
-	return &stringType{
-		baseAnyType: baseAnyType{
-			source: source,
-		},
-		value: value,
+func newIndexOfFunction() *indexOfFunction {
+	return &indexOfFunction{
+		BaseFunction: pathsys.NewBaseFunction("indexOf", -1, 1, 1),
 	}
 }
 
-func (t *stringType) DataType() DataTypes {
-	return StringDataType
-}
-
-func (t *stringType) String() string {
-	return t.value
-}
-
-func (t *stringType) Length() int {
-	return len(t.value)
-}
-
-func (e *stringType) TypeInfo() TypeInfoAccessor {
-	return StringTypeInfo
-}
-
-func (t *stringType) Equal(node interface{}) bool {
-	if !SystemAnyTypeEqual(t, node) {
-		return false
+func (f *indexOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+	s, err := stringNode(node)
+	if s == nil || err != nil {
+		return nil, err
 	}
 
-	return t.String() == node.(Stringifier).String()
-}
-
-func (t *stringType) Equivalent(node interface{}) bool {
-	if !SystemAnyTypeEqual(t, node) {
-		return false
+	var ss pathsys.StringAccessor
+	var ok bool
+	if ss, ok = args[0].(pathsys.StringAccessor); !ok {
+		return nil, fmt.Errorf("substring is not a string: %T", args[0])
 	}
 
-	return NormalizedStringEqual(t.String(), node.(Stringifier).String())
+	i := strings.Index(s.String(), ss.String())
+	return pathsys.NewInteger(int32(i)), nil
 }
 
-func (t *stringType) Compare(comparator Comparator) (int, OperatorStatus) {
-	if !TypeEqual(t, comparator) {
-		return -1, Inconvertible
+func stringNode(node interface{}) (pathsys.StringAccessor, error) {
+	value := unwrapCollection(node)
+	if value == nil {
+		return nil, nil
+	}
+
+	if s, ok := value.(pathsys.StringAccessor); !ok {
+		return nil, fmt.Errorf("not a string: %T", value)
 	} else {
-		return strings.Compare(t.value, comparator.(StringAccessor).String()), Evaluated
+		return s, nil
 	}
 }

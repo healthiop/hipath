@@ -84,6 +84,7 @@ var functionTests = []struct {
 	{"convertsToString", newConvertsToStringFunction(), -1, 0, 0},
 	{"toTime", toTimeFunc, -1, 0, 0},
 	{"convertsToTime", newConvertsToTimeFunction(), -1, 0, 0},
+	{"indexOf", newIndexOfFunction(), -1, 1, 1},
 	{"aggregate", newAggregateFunction(), 0, 1, 2},
 }
 

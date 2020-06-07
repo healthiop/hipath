@@ -82,6 +82,8 @@ var functions = []pathsys.FunctionExecutor{
 	newConvertsToStringFunction(),
 	toTimeFunc,
 	newConvertsToTimeFunction(),
+	// string manipulation
+	newIndexOfFunction(),
 	// aggregate
 	newAggregateFunction(),
 }
