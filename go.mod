@@ -31,7 +31,8 @@ module github.com/volsch/gohipath
 go 1.14
 
 require (
-	github.com/antlr/antlr4 v0.0.0-20200119161855-7a3f40bc341d
+	github.com/antlr/antlr4 v0.0.0-20201124204520-1364da5ed347
 	github.com/shopspring/decimal v1.2.0
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.6.1
+	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
