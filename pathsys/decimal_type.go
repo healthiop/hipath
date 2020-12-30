@@ -31,16 +31,19 @@ package pathsys
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
+	"math"
 	"math/big"
 )
 
 var DecimalTypeInfo = newAnyTypeInfo("Decimal")
 
 var (
-	DecimalZero  = NewDecimalInt(0)
-	DecimalOne   = NewDecimalInt(1)
-	DecimalTwo   = NewDecimalInt(2)
-	DecimalThree = NewDecimalInt(3)
+	DecimalZero    = NewDecimalInt(0)
+	DecimalOne     = NewDecimalInt(1)
+	DecimalTwo     = NewDecimalInt(2)
+	DecimalThree   = NewDecimalInt(3)
+	DecimalDotFive = NewDecimalFloat64(.5)
+	DecimalE       = NewDecimalFloat64(math.E)
 )
 
 type decimalType struct {
@@ -50,13 +53,7 @@ type decimalType struct {
 
 type DecimalAccessor interface {
 	NumberAccessor
-	Int() int32
-	Int64() int64
-	Float32() float32
-	Float64() float64
-	BigFloat() *big.Float
-	Decimal() decimal.Decimal
-	Sqrt(d2 DecimalAccessor) DecimalAccessor
+	Primitive() decimal.Decimal
 }
 
 func NewDecimal(value decimal.Decimal) DecimalAccessor {
@@ -127,13 +124,6 @@ func (t *decimalType) DataType() DataTypes {
 	return DecimalDataType
 }
 
-func (t *decimalType) Sqrt(d2 DecimalAccessor) DecimalAccessor {
-	if DecimalOne.Decimal().Equal(d2.Decimal()) {
-		return t
-	}
-	return NewDecimal(t.value.Pow(d2.Decimal()))
-}
-
 func (t *decimalType) Int() int32 {
 	return int32(t.value.IntPart())
 }
@@ -158,6 +148,25 @@ func (t *decimalType) BigFloat() *big.Float {
 
 func (t *decimalType) Decimal() decimal.Decimal {
 	return t.value
+}
+
+func (t *decimalType) Primitive() decimal.Decimal {
+	return t.value
+}
+
+func (t *decimalType) One() bool {
+	return DecimalOne.Decimal().Equal(t.value)
+}
+
+func (t *decimalType) Positive() bool {
+	return t.value.IsPositive()
+}
+
+func (t *decimalType) HasFraction() bool {
+	if t.value.Exponent() >= 0 {
+		return false
+	}
+	return !t.value.Equal(t.value.Truncate(0))
 }
 
 func (t *decimalType) Value() DecimalAccessor {
@@ -244,8 +253,65 @@ func (t *decimalType) String() string {
 	return t.value.StringFixed(-exp)
 }
 
+func (t *decimalType) Ceiling() NumberAccessor {
+	return NewInteger(int32(t.value.Ceil().IntPart()))
+}
+
+func (t *decimalType) Exp() NumberAccessor {
+	if t.HasFraction() {
+		return NewDecimalFloat64(math.Exp(t.Float64()))
+	}
+	return NewDecimal(DecimalE.Decimal().Pow(t.value))
+}
+
+func (t *decimalType) Floor() NumberAccessor {
+	return NewInteger(int32(t.value.Floor().IntPart()))
+}
+
+func (t *decimalType) Ln() (NumberAccessor, error) {
+	if !t.value.IsPositive() {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive values %d", t.value)
+	}
+	return NewDecimalFloat64(math.Log(t.Float64())), nil
+}
+
+func (t *decimalType) Log(base NumberAccessor) (NumberAccessor, error) {
+	if !t.value.IsPositive() {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive values %f", t.Float64())
+	}
+	if !base.Positive() {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive base %f", base.Float64())
+	}
+	return NewDecimalFloat64(math.Log(t.Float64()) / math.Log(base.Float64())), nil
+}
+
+func (t *decimalType) Power(exponent NumberAccessor) (NumberAccessor, bool) {
+	if exponent.One() {
+		return t, true
+	}
+	if exponent.HasFraction() {
+		r := math.Pow(t.Float64(), exponent.Float64())
+		if math.IsNaN(r) {
+			return nil, false
+		}
+		return NewDecimalFloat64(r), true
+	}
+	return NewDecimal(t.value.Pow(exponent.Decimal())), true
+}
+
+func (t *decimalType) Round(precision int32) (NumberAccessor, error) {
+	if precision < 0 {
+		return nil, fmt.Errorf("precision must not be negative %d", precision)
+	}
+	return NewDecimal(t.value.Round(precision)), nil
+}
+
+func (t *decimalType) Sqrt() (NumberAccessor, bool) {
+	return t.Power(DecimalDotFive)
+}
+
 func (t *decimalType) Truncate(precision int32) NumberAccessor {
-	return NewDecimal(t.Decimal().Truncate(precision))
+	return NewDecimal(t.value.Truncate(precision))
 }
 
 func (t *decimalType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {

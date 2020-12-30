@@ -65,6 +65,7 @@ func TestNewDecimal(t *testing.T) {
 	o := NewDecimal(decimal.NewFromFloat(-4711.12))
 	assert.Equal(t, -4711.12, o.Float64())
 	assert.Equal(t, "-4711.12", o.String())
+	assert.True(t, decimal.NewFromFloat(-4711.12).Equal(o.Primitive()))
 }
 
 func TestNewDecimalInt(t *testing.T) {
@@ -412,12 +413,6 @@ func (d *decimalValueAccessorMock) String() string {
 	panic("implement me")
 }
 
-func TestDecimalTruncate(t *testing.T) {
-	v := NewDecimalFloat64(23223.187636)
-	r, _ := v.Truncate(2).Decimal().Float64()
-	assert.Equal(t, 23223.18, r)
-}
-
 func TestDecimalValueFloat64Nil(t *testing.T) {
 	assert.Nil(t, DecimalValueFloat64(nil))
 }
@@ -463,16 +458,6 @@ func TestDecimalCompareQuantity(t *testing.T) {
 	assert.Equal(t, -1, res)
 }
 
-func TestDecimalSqrtOne(t *testing.T) {
-	res := NewDecimalInt(20).Sqrt(NewDecimalInt(1))
-	assert.Equal(t, 20.0, res.Float64())
-}
-
-func TestDecimalSqrt(t *testing.T) {
-	res := NewDecimalInt(20).Sqrt(NewDecimalInt(3))
-	assert.Equal(t, 8000.0, res.Float64())
-}
-
 func TestDecimalOfIntZero(t *testing.T) {
 	res := DecimalOfInt(0)
 	assert.Equal(t, 0.0, res.Float64())
@@ -506,4 +491,160 @@ func TestDecimalAbsPos(t *testing.T) {
 func TestDecimalAbsNeg(t *testing.T) {
 	res := NewDecimalFloat64(-10.21).Abs()
 	assert.Equal(t, 10.21, res.Value().Float64())
+}
+
+func TestDecimalIsOne(t *testing.T) {
+	assert.True(t, NewDecimalInt(1).One())
+}
+
+func TestDecimalIsOneNot(t *testing.T) {
+	assert.False(t, NewDecimalFloat64(1.01).One())
+}
+
+func TestDecimalHasFractionZero(t *testing.T) {
+	assert.False(t, NewDecimalInt(0).HasFraction())
+}
+
+func TestDecimalHasFractionIntPos(t *testing.T) {
+	assert.False(t, NewDecimalInt(2).HasFraction())
+}
+
+func TestDecimalHasFractionIntNeg(t *testing.T) {
+	assert.False(t, NewDecimalInt(-2).HasFraction())
+}
+
+func TestDecimalHasFraction(t *testing.T) {
+	assert.True(t, NewDecimalFloat64(2.00000000001).HasFraction())
+}
+
+func TestDecimalHasFractionDot(t *testing.T) {
+	assert.True(t, NewDecimalFloat64(.5).HasFraction())
+}
+
+func TestDecimalHasFractionMinusDot(t *testing.T) {
+	assert.True(t, NewDecimalFloat64(-.5).HasFraction())
+}
+
+func TestDecimalPos(t *testing.T) {
+	assert.True(t, NewDecimalFloat64(.000000000001).Positive())
+}
+
+func TestDecimalPosNot(t *testing.T) {
+	assert.False(t, NewDecimalFloat64(0).Positive())
+}
+
+func TestDecimalCeiling(t *testing.T) {
+	assert.Equal(t, 8.0, NewDecimalFloat64(7.1).Ceiling().Float64())
+}
+
+func TestDecimalExp(t *testing.T) {
+	assert.InDelta(t, 54.59815, NewDecimalFloat64(4).Exp().Float64(), .000001)
+}
+
+func TestDecimalExpFraction(t *testing.T) {
+	assert.InDelta(t, 90.01713, NewDecimalFloat64(4.5).Exp().Float64(), .000002)
+}
+
+func TestDecimalFloor(t *testing.T) {
+	assert.Equal(t, 7.0, NewDecimalFloat64(7.9).Floor().Float64())
+}
+
+func TestDecimalLn(t *testing.T) {
+	res, err := NewDecimalFloat64(7.5).Ln()
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, res) {
+		assert.InDelta(t, 2.0149, res.Float64(), .00001)
+	}
+}
+
+func TestDecimalLnZero(t *testing.T) {
+	res, err := NewDecimalInt(0).Ln()
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestDecimalLog(t *testing.T) {
+	res, err := NewDecimalFloat64(7.5).Log(NewDecimalFloat64(2.2))
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, res) {
+		assert.InDelta(t, 2.5555, res.Float64(), .00001)
+	}
+}
+
+func TestDecimalLogZero(t *testing.T) {
+	res, err := NewDecimalFloat64(0).Log(NewInteger(2))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestDecimalLogBaseZero(t *testing.T) {
+	res, err := NewDecimalFloat64(7).Log(NewInteger(0))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestDecimalPower(t *testing.T) {
+	res, ok := NewDecimalFloat64(20.5).Power(NewDecimalFloat64(3.5))
+	assert.True(t, ok)
+	assert.InDelta(t, 39006.6374, res.Float64(), 0.00005)
+}
+
+func TestDecimalPowerExp1(t *testing.T) {
+	res, ok := NewDecimalFloat64(20.5).Power(NewDecimalInt(1))
+	assert.True(t, ok)
+	assert.Equal(t, 20.5, res.Float64())
+}
+
+func TestDecimalPowerNaN(t *testing.T) {
+	res, ok := NewDecimalInt(-1).Power(NewDecimalFloat64(0.5))
+	assert.False(t, ok)
+	assert.Nil(t, res, "NaN expected")
+}
+
+func TestDecimalRound(t *testing.T) {
+	res, err := NewDecimalFloat64(7.82481).Round(3)
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, res) {
+		assert.Equal(t, 7.825, res.Float64())
+	}
+}
+
+func TestDecimalRoundPrecisionZero(t *testing.T) {
+	res, err := NewDecimalFloat64(7.812).Round(0)
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, res) {
+		assert.Equal(t, 8.0, res.Float64())
+	}
+}
+
+func TestDecimalRoundPrecisionNeg(t *testing.T) {
+	res, err := NewDecimalFloat64(7).Round(-1)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestDecimalSqrt(t *testing.T) {
+	res, ok := NewDecimalFloat64(16.6).Sqrt()
+	assert.True(t, ok)
+	if assert.NotNil(t, res) {
+		assert.InDelta(t, 4.0743, res.Float64(), .00001)
+	}
+}
+
+func TestDecimalSqrtNan(t *testing.T) {
+	res, ok := NewDecimalFloat64(-1).Sqrt()
+	assert.False(t, ok)
+	assert.Nil(t, res, "NaN expected")
+}
+
+func TestDecimalSqrtNanFraction(t *testing.T) {
+	res, ok := NewDecimalFloat64(-.5).Sqrt()
+	assert.False(t, ok)
+	assert.Nil(t, res, "NaN expected")
+}
+
+func TestDecimalTruncate(t *testing.T) {
+	v := NewDecimalFloat64(23223.187636)
+	r, _ := v.Truncate(2).Decimal().Float64()
+	assert.Equal(t, 23223.18, r)
 }

@@ -197,7 +197,7 @@ func TestSelectPathFuncEvalNil(t *testing.T) {
 
 func TestRepeatPathFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	f := newRepeatFunction()
+	f := repeatFunc
 	res, err := f.Execute(ctx, nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
@@ -220,7 +220,7 @@ func TestRepeatPathFunc(t *testing.T) {
 
 	loopEval := NewMemberInvocation("item")
 
-	f := newRepeatFunction()
+	f := repeatFunc
 	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
 	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
@@ -244,7 +244,7 @@ func TestRepeatPathFuncErr(t *testing.T) {
 
 	loopEval := NewMemberInvocation("item")
 
-	f := newRepeatFunction()
+	f := repeatFunc
 	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
@@ -279,7 +279,7 @@ func TestRepeatPathFuncColInCol(t *testing.T) {
 
 	loopEval := NewMemberInvocation("items")
 
-	f := newRepeatFunction()
+	f := repeatFunc
 	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
 	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
@@ -308,7 +308,7 @@ func TestRepeatPathFuncColInColError(t *testing.T) {
 
 	loopEval := NewMemberInvocation("items")
 
-	f := newRepeatFunction()
+	f := repeatFunc
 	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")

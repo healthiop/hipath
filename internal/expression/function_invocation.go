@@ -50,7 +50,7 @@ var functions = []pathsys.FunctionExecutor{
 	// filtering and projection
 	newWhereFunction(),
 	newSelectFunction(),
-	newRepeatFunction(),
+	repeatFunc,
 	newOfTypeFunction(),
 	// sub-setting
 	newSingleFunction(),
@@ -97,11 +97,30 @@ var functions = []pathsys.FunctionExecutor{
 	newToCharsFunction(),
 	// math
 	newAbsFunction(),
+	newCeilingFunction(),
+	newExpFunction(),
+	newFloorFunction(),
+	newLnFunction(),
+	newLogFunction(),
+	newPowerFunction(),
+	newRoundFunction(),
+	newSqrtFunction(),
+	newTruncateFunction(),
+	// tree navigation
+	childrenFunc,
+	newDescendantsFunction(),
+	// utility
+	newTraceFunction(),
+	newNowFunction(),
+	newTimeOfDayFunction(),
+	newTodayFunction(),
 	// aggregate
 	newAggregateFunction(),
 }
 
 var functionsByName = createFunctionsByName(functions)
+
+var emptyFunctionArgs = []interface{}{}
 
 type FunctionInvocation struct {
 	executor        pathsys.FunctionExecutor
@@ -129,27 +148,33 @@ func newFunctionInvocation(executor pathsys.FunctionExecutor, argEvaluators []pa
 }
 
 func (f *FunctionInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
-	evaluatorParam := f.executor.EvaluatorParam()
-	args := make([]interface{}, len(f.paramEvaluators))
+	var args []interface{}
+	ac := len(f.paramEvaluators)
+	if ac == 0 {
+		args = emptyFunctionArgs
+	} else {
+		evaluatorParam := f.executor.EvaluatorParam()
+		args = make([]interface{}, len(f.paramEvaluators))
 
-	var loopEvaluator pathsys.Evaluator
-	for pos, argEvaluator := range f.paramEvaluators {
-		if evaluatorParam == pos {
-			loopEvaluator = argEvaluator
-		} else {
-			if argEvaluator != nil {
-				if arg, err := argEvaluator.Evaluate(ctx, node, loop); err != nil {
-					return nil, fmt.Errorf("error in argument %d of executor invocation %s: %v",
-						pos, f.executor.Name(), err)
-				} else {
-					args[pos] = arg
+		var loopEvaluator pathsys.Evaluator
+		for pos, argEvaluator := range f.paramEvaluators {
+			if evaluatorParam == pos {
+				loopEvaluator = argEvaluator
+			} else {
+				if argEvaluator != nil {
+					if arg, err := argEvaluator.Evaluate(ctx, node, loop); err != nil {
+						return nil, fmt.Errorf("error in argument %d of executor invocation %s: %v",
+							pos, f.executor.Name(), err)
+					} else {
+						args[pos] = arg
+					}
 				}
 			}
 		}
-	}
 
-	if evaluatorParam >= 0 {
-		loop = pathsys.NewLoop(loopEvaluator)
+		if evaluatorParam >= 0 {
+			loop = pathsys.NewLoop(loopEvaluator)
+		}
 	}
 
 	return f.executor.Execute(ctx, node, args, loop)

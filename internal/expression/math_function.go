@@ -39,7 +39,7 @@ type absFunction struct {
 
 func newAbsFunction() *absFunction {
 	return &absFunction{
-		BaseFunction: pathsys.NewBaseFunction("abs", -1, 1, 1),
+		BaseFunction: pathsys.NewBaseFunction("abs", -1, 0, 0),
 	}
 }
 
@@ -52,6 +52,216 @@ func (f *absFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []i
 	return a.Abs(), nil
 }
 
+type ceilingFunction struct {
+	pathsys.BaseFunction
+}
+
+func newCeilingFunction() *ceilingFunction {
+	return &ceilingFunction{
+		BaseFunction: pathsys.NewBaseFunction("ceiling", -1, 0, 0),
+	}
+}
+
+func (f *ceilingFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	return n.Ceiling(), nil
+}
+
+type expFunction struct {
+	pathsys.BaseFunction
+}
+
+func newExpFunction() *expFunction {
+	return &expFunction{
+		BaseFunction: pathsys.NewBaseFunction("exp", -1, 0, 0),
+	}
+}
+
+func (f *expFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	return n.Exp(), nil
+}
+
+type floorFunction struct {
+	pathsys.BaseFunction
+}
+
+func newFloorFunction() *floorFunction {
+	return &floorFunction{
+		BaseFunction: pathsys.NewBaseFunction("floor", -1, 0, 0),
+	}
+}
+
+func (f *floorFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	return n.Floor(), nil
+}
+
+type lnFunction struct {
+	pathsys.BaseFunction
+}
+
+func newLnFunction() *lnFunction {
+	return &lnFunction{
+		BaseFunction: pathsys.NewBaseFunction("ln", -1, 0, 0),
+	}
+}
+
+func (f *lnFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	return n.Ln()
+}
+
+type logFunction struct {
+	pathsys.BaseFunction
+}
+
+func newLogFunction() *logFunction {
+	return &logFunction{
+		BaseFunction: pathsys.NewBaseFunction("log", -1, 1, 1),
+	}
+}
+
+func (f *logFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	base, err := numberNode(args[0])
+	if base == nil || err != nil {
+		return nil, err
+	}
+
+	return n.Log(base)
+}
+
+type powerFunction struct {
+	pathsys.BaseFunction
+}
+
+func newPowerFunction() *powerFunction {
+	return &powerFunction{
+		BaseFunction: pathsys.NewBaseFunction("power", -1, 1, 1),
+	}
+}
+
+func (f *powerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	exponent, err := numberNode(args[0])
+	if exponent == nil || err != nil {
+		return nil, err
+	}
+
+	r, ok := n.Power(exponent)
+	if !ok {
+		return nil, nil
+	}
+	return r, nil
+}
+
+type roundFunction struct {
+	pathsys.BaseFunction
+}
+
+func newRoundFunction() *roundFunction {
+	return &roundFunction{
+		BaseFunction: pathsys.NewBaseFunction("round", -1, 0, 1),
+	}
+}
+
+func (f *roundFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	precision := int32(0)
+	if len(args) > 0 {
+		p, err := integerNode(args[0])
+		if p == nil || err != nil {
+			return nil, err
+		}
+		precision = p.Int()
+	}
+
+	r, err := n.Round(precision)
+	if err != nil {
+		return nil, err
+	}
+
+	if i, ok := r.(pathsys.IntegerAccessor); ok {
+		return pathsys.NewDecimal(i.Decimal()), nil
+	}
+	return r, nil
+}
+
+type sqrtFunction struct {
+	pathsys.BaseFunction
+}
+
+func newSqrtFunction() *sqrtFunction {
+	return &sqrtFunction{
+		BaseFunction: pathsys.NewBaseFunction("sqrt", -1, 0, 0),
+	}
+}
+
+func (f *sqrtFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	r, ok := n.Sqrt()
+	if !ok {
+		return nil, nil
+	}
+	return r, nil
+}
+
+type truncateFunction struct {
+	pathsys.BaseFunction
+}
+
+func newTruncateFunction() *truncateFunction {
+	return &truncateFunction{
+		BaseFunction: pathsys.NewBaseFunction("truncate", -1, 0, 0),
+	}
+}
+
+func (f *truncateFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	n, err := numberNode(node)
+	if n == nil || err != nil {
+		return nil, err
+	}
+
+	t := n.Truncate(0)
+	if i, ok := t.(pathsys.IntegerAccessor); ok {
+		return i, nil
+	}
+	return pathsys.NewInteger(t.Int()), nil
+}
+
 func arithmeticNode(node interface{}) (pathsys.ArithmeticApplier, error) {
 	value := unwrapCollection(node)
 	if value == nil {
@@ -60,6 +270,32 @@ func arithmeticNode(node interface{}) (pathsys.ArithmeticApplier, error) {
 
 	if a, ok := value.(pathsys.ArithmeticApplier); !ok {
 		return nil, fmt.Errorf("arithmetic cannot be applied: %T", value)
+	} else {
+		return a, nil
+	}
+}
+
+func numberNode(node interface{}) (pathsys.NumberAccessor, error) {
+	value := unwrapCollection(node)
+	if value == nil {
+		return nil, nil
+	}
+
+	if a, ok := value.(pathsys.NumberAccessor); !ok {
+		return nil, fmt.Errorf("not a number: %T", value)
+	} else {
+		return a, nil
+	}
+}
+
+func integerNode(node interface{}) (pathsys.IntegerAccessor, error) {
+	value := unwrapCollection(node)
+	if value == nil {
+		return nil, nil
+	}
+
+	if a, ok := value.(pathsys.IntegerAccessor); !ok {
+		return nil, fmt.Errorf("not an integer: %T", value)
 	} else {
 		return a, nil
 	}

@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"github.com/shopspring/decimal"
 	"math"
+	"math/big"
 	"strconv"
 )
 
@@ -45,6 +46,7 @@ type integerType struct {
 
 type IntegerAccessor interface {
 	NumberAccessor
+	Primitive() int32
 }
 
 func NewInteger(value int32) IntegerAccessor {
@@ -84,12 +86,36 @@ func (t *integerType) Int64() int64 {
 	return int64(t.value)
 }
 
+func (t *integerType) Float32() float32 {
+	return float32(t.value)
+}
+
 func (t *integerType) Float64() float64 {
 	return float64(t.value)
 }
 
+func (t *integerType) BigFloat() *big.Float {
+	return t.Decimal().BigFloat()
+}
+
 func (t *integerType) Decimal() decimal.Decimal {
 	return t.Value().Decimal()
+}
+
+func (t *integerType) Primitive() int32 {
+	return t.value
+}
+
+func (t *integerType) One() bool {
+	return t.value == 1
+}
+
+func (t *integerType) Positive() bool {
+	return t.value > 0
+}
+
+func (t *integerType) HasFraction() bool {
+	return false
 }
 
 func (t *integerType) TypeInfo() TypeInfoAccessor {
@@ -120,20 +146,16 @@ func (t *integerType) Negate() AnyAccessor {
 }
 
 func (t *integerType) Equal(node interface{}) bool {
-	if o, ok := node.(AnyAccessor); ok {
-		if o.DataType() == IntegerDataType {
-			return t.Int() == o.(IntegerAccessor).Int()
-		}
+	if o, ok := node.(IntegerAccessor); ok {
+		return t.Int() == o.Int()
 	}
 
 	return decimalValueEqual(t, node)
 }
 
 func (t *integerType) Equivalent(node interface{}) bool {
-	if o, ok := node.(AnyAccessor); ok {
-		if o.DataType() == IntegerDataType {
-			return t.Int() == o.(IntegerAccessor).Int()
-		}
+	if o, ok := node.(IntegerAccessor); ok {
+		return t.Int() == o.Int()
 	}
 
 	return decimalValueEquivalent(t, node)
@@ -158,6 +180,60 @@ func (t *integerType) String() string {
 	return strconv.FormatInt(int64(t.value), 10)
 }
 
+func (t *integerType) Ceiling() NumberAccessor {
+	return t
+}
+
+func (t *integerType) Exp() NumberAccessor {
+	return NewDecimalFloat64(math.Exp(t.Float64()))
+}
+
+func (t *integerType) Floor() NumberAccessor {
+	return t
+}
+
+func (t *integerType) Ln() (NumberAccessor, error) {
+	if t.value <= 0 {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive values %d", t.value)
+	}
+	return NewDecimalFloat64(math.Log(t.Float64())), nil
+}
+
+func (t *integerType) Log(base NumberAccessor) (NumberAccessor, error) {
+	if t.value <= 0 {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive values %d", t.value)
+	}
+	if !base.Positive() {
+		return nil, fmt.Errorf("logarithmus cannot be applied to non-positive base %f", base.Float64())
+	}
+	return NewDecimalFloat64(math.Log(t.Float64()) / math.Log(base.Float64())), nil
+}
+
+func (t *integerType) Power(exponent NumberAccessor) (NumberAccessor, bool) {
+	if exponent.One() {
+		return t, true
+	}
+	if exponent.DataType() == IntegerDataType {
+		return NewInteger(int32(math.Pow(t.Float64(), exponent.Float64()))), true
+	}
+	return NewDecimalInt(t.Int()).Power(exponent)
+}
+
+func (t *integerType) Round(precision int32) (NumberAccessor, error) {
+	if precision < 0 {
+		return nil, fmt.Errorf("precision must not be negative %d", precision)
+	}
+	return t, nil
+}
+
+func (t *integerType) Sqrt() (NumberAccessor, bool) {
+	r := math.Sqrt(t.Float64())
+	if math.IsNaN(r) {
+		return nil, false
+	}
+	return NewDecimalFloat64(r), true
+}
+
 func (t *integerType) Truncate(int32) NumberAccessor {
 	return t
 }
@@ -171,30 +247,30 @@ func (t *integerType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (Deci
 		return nil, fmt.Errorf("arithmetic operator not supported: %c", op)
 	}
 
-	if operand.DataType() == IntegerDataType {
-		operandValue := operand.(IntegerAccessor).Int()
+	if ov, ok := operand.(IntegerAccessor); ok {
+		pov := ov.Primitive()
 		switch op {
 		case AdditionOp:
-			return NewInteger(t.Int() + operandValue), nil
+			return NewInteger(t.Int() + pov), nil
 		case SubtractionOp:
-			return NewInteger(t.Int() - operandValue), nil
+			return NewInteger(t.Int() - pov), nil
 		case MultiplicationOp:
-			return NewInteger(t.Int() * operandValue), nil
+			return NewInteger(t.Int() * pov), nil
 		case DivisionOp:
-			if operandValue == 0 {
+			if pov == 0 {
 				return nil, nil
 			}
-			return NewDecimalFloat64(float64(t.Int()) / float64(operandValue)), nil
+			return NewDecimalFloat64(float64(t.Int()) / float64(pov)), nil
 		case DivOp:
-			if operandValue == 0 {
+			if pov == 0 {
 				return nil, nil
 			}
-			return NewInteger(t.Int() / operandValue), nil
+			return NewInteger(t.Int() / pov), nil
 		case ModOp:
-			if operandValue == 0 {
+			if pov == 0 {
 				return nil, nil
 			}
-			return NewInteger(t.Int() % operandValue), nil
+			return NewInteger(t.Int() % pov), nil
 		default:
 			panic(fmt.Sprintf("Unhandled operator: %d", op))
 		}

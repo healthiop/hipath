@@ -34,6 +34,7 @@ type ModelAdapter interface {
 	Equal(node1 interface{}, node2 interface{}) bool
 	Equivalent(node1 interface{}, node2 interface{}) bool
 	Navigate(node interface{}, name string) (interface{}, error)
+	Children(node interface{}) (CollectionAccessor, error)
 }
 
 func ModelTypeInfo(adapter ModelAdapter, node interface{}) TypeInfoAccessor {
@@ -136,10 +137,16 @@ func SystemAnyEqual(node1 AnyAccessor, node2 interface{}) bool {
 	return Equal(node1, sysNode2)
 }
 
+type Tracer interface {
+	Enabled(name string) bool
+	Trace(name string, col CollectionAccessor)
+}
+
 type ContextAccessor interface {
 	EnvVar(name string) (interface{}, bool)
 	ContextNode() interface{}
 	ModelAdapter() ModelAdapter
 	NewCollection() CollectionModifier
 	NewCollectionWithItem(item interface{}) CollectionModifier
+	Tracer() Tracer
 }

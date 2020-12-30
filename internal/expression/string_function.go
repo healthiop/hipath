@@ -380,16 +380,3 @@ func stringNode(node interface{}) (pathsys.StringAccessor, error) {
 		return s, nil
 	}
 }
-
-func integerNode(node interface{}) (pathsys.IntegerAccessor, error) {
-	value := unwrapCollection(node)
-	if value == nil {
-		return nil, nil
-	}
-
-	if a, ok := value.(pathsys.IntegerAccessor); !ok || a.DataType() != pathsys.IntegerDataType {
-		return nil, fmt.Errorf("not an integer: %T", value)
-	} else {
-		return a, nil
-	}
-}

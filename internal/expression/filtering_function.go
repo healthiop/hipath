@@ -122,15 +122,13 @@ type repeatFunction struct {
 	pathsys.BaseFunction
 }
 
-func newRepeatFunction() *repeatFunction {
-	return &repeatFunction{
-		BaseFunction: pathsys.NewBaseFunction("repeat", 0, 1, 1),
-	}
+var repeatFunc = &repeatFunction{
+	BaseFunction: pathsys.NewBaseFunction("repeat", 0, 1, 1),
 }
 
 func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	projected := ctx.NewCollection()
-	err := repeatFunc(ctx, node, loop, projected)
+	err := repeat(ctx, node, loop, projected)
 
 	if err != nil || projected.Empty() {
 		projected = nil
@@ -139,7 +137,7 @@ func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 	return projected, err
 }
 
-func repeatFunc(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
+func repeat(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -156,7 +154,7 @@ func repeatFunc(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Loop
 			return err
 		}
 		if res != nil {
-			err := repeatFuncRecursively(ctx, res, loop, projected)
+			err := repeatRecursively(ctx, res, loop, projected)
 			if err != nil {
 				return err
 			}
@@ -166,13 +164,13 @@ func repeatFunc(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Loop
 	return nil
 }
 
-func repeatFuncRecursively(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
+func repeatRecursively(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
 	if col, ok := node.(pathsys.CollectionAccessor); ok {
 		count := col.Count()
 		for i := 0; i < count; i++ {
 			n := col.Get(i)
 			if n != nil && projected.AddUnique(n) {
-				err := repeatFunc(ctx, n, pathsys.NewLoopWithIndex(
+				err := repeat(ctx, n, pathsys.NewLoopWithIndex(
 					loop.Evaluator(), i), projected)
 				if err != nil {
 					return err
@@ -180,7 +178,7 @@ func repeatFuncRecursively(ctx pathsys.ContextAccessor, node interface{}, loop p
 			}
 		}
 	} else if projected.AddUnique(node) {
-		err := repeatFunc(ctx, node, pathsys.NewLoop(
+		err := repeat(ctx, node, pathsys.NewLoop(
 			loop.Evaluator()), projected)
 		if err != nil {
 			return err

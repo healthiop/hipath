@@ -140,7 +140,7 @@ type QuantityUnitAccessor interface {
 	RootBase() QuantityUnitBaseAccessor
 	HasBase(unit QuantityUnitAccessor, equal bool) bool
 	CommonBase(other QuantityUnitAccessor, equal bool) QuantityUnitAccessor
-	Factor(other QuantityUnitAccessor, exp int) DecimalAccessor
+	Factor(other QuantityUnitAccessor, exp int) NumberAccessor
 }
 
 func NewQuantityUnitBase(unit QuantityUnitAccessor, equal bool, factor float64) QuantityUnitBaseAccessor {
@@ -302,7 +302,7 @@ func (q *quantityUnit) CommonBase(other QuantityUnitAccessor, equal bool) Quanti
 	return found
 }
 
-func (q *quantityUnit) Factor(other QuantityUnitAccessor, exp int) DecimalAccessor {
+func (q *quantityUnit) Factor(other QuantityUnitAccessor, exp int) NumberAccessor {
 	if q == other {
 		return DecimalOne
 	}
@@ -312,7 +312,8 @@ func (q *quantityUnit) Factor(other QuantityUnitAccessor, exp int) DecimalAccess
 				if exp == 1 {
 					return b.DecimalFactor()
 				}
-				return b.DecimalFactor().Sqrt(DecimalOfInt(int32(exp)))
+				f, _ := b.DecimalFactor().Power(DecimalOfInt(int32(exp)))
+				return f
 			}
 		}
 	}

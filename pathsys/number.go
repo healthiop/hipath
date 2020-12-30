@@ -31,6 +31,7 @@ package pathsys
 import (
 	"github.com/shopspring/decimal"
 	"math"
+	"math/big"
 )
 
 var decimalTen = decimal.NewFromInt32(10)
@@ -65,11 +66,24 @@ type NumberAccessor interface {
 	DecimalValueAccessor
 	Negator
 	ArithmeticApplier
+	Ceiling() NumberAccessor
+	Exp() NumberAccessor
+	Floor() NumberAccessor
+	Ln() (NumberAccessor, error)
+	Log(base NumberAccessor) (NumberAccessor, error)
+	Power(exponent NumberAccessor) (NumberAccessor, bool)
+	Round(precision int32) (NumberAccessor, error)
+	Sqrt() (NumberAccessor, bool)
 	Truncate(precision int32) NumberAccessor
 	Int() int32
 	Int64() int64
+	Float32() float32
 	Float64() float64
+	BigFloat() *big.Float
 	Decimal() decimal.Decimal
+	One() bool
+	Positive() bool
+	HasFraction() bool
 }
 
 func leastPrecisionDecimal(d1 decimal.Decimal, d2 decimal.Decimal) (decimal.Decimal, decimal.Decimal) {

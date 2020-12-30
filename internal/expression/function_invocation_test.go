@@ -38,6 +38,26 @@ import (
 
 var testLoop = pathsys.NewLoop(nil)
 
+func TestFunctionInvocationNoArgs(t *testing.T) {
+	function := &testInvocationArgsFunction{
+		t:            t,
+		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 0),
+	}
+
+	ctx := test.NewTestContext(t)
+	e := newFunctionInvocation(function, []pathsys.Evaluator{})
+
+	tt := newTestingType(t)
+	res, err := e.Evaluate(ctx, tt, testLoop)
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
+		c := res.(pathsys.CollectionAccessor)
+		if assert.Equal(t, 1, c.Count()) {
+			assert.Equal(t, pathsys.NewInteger(0), c.Get(0))
+		}
+	}
+}
+
 func TestFunctionInvocationArgs(t *testing.T) {
 	function := &testInvocationArgsFunction{
 		t:            t,
@@ -54,10 +74,11 @@ func TestFunctionInvocationArgs(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
 		c := res.(pathsys.CollectionAccessor)
-		if assert.Equal(t, 3, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
-			assert.Nil(t, c.Get(1))
-			assert.Equal(t, pathsys.NewString("test2"), c.Get(2))
+		if assert.Equal(t, 4, c.Count()) {
+			assert.Equal(t, pathsys.NewInteger(3), c.Get(0))
+			assert.Equal(t, pathsys.NewString("test1"), c.Get(1))
+			assert.Nil(t, c.Get(2))
+			assert.Equal(t, pathsys.NewString("test2"), c.Get(3))
 		}
 	}
 	assert.Equal(t, 1, testExpression.invocationCount)
@@ -140,6 +161,7 @@ func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, _ inte
 	assert.Same(t, testLoop, loop)
 
 	c := ctx.NewCollection()
+	c.Add(pathsys.NewInteger(int32(len(args))))
 	for _, a := range args {
 		c.Add(a)
 	}

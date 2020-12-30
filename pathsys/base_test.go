@@ -185,6 +185,10 @@ func (a *testModel) Navigate(interface{}, string) (interface{}, error) {
 	panic("implement me")
 }
 
+func (a *testModel) Children(_ interface{}) (CollectionAccessor, error) {
+	panic("implement me")
+}
+
 type testContext struct {
 	modelAdapter ModelAdapter
 }
@@ -210,5 +214,9 @@ func (t *testContext) NewCollectionWithItem(item interface{}) CollectionModifier
 }
 
 func (t *testContext) ContextNode() interface{} {
+	return nil
+}
+
+func (t *testContext) Tracer() Tracer {
 	return nil
 }

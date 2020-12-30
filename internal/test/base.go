@@ -31,6 +31,7 @@ package test
 import (
 	"fmt"
 	"github.com/volsch/gohipath/pathsys"
+	"sort"
 	"testing"
 )
 
@@ -107,7 +108,8 @@ func (a *testModel) Equal(node1 interface{}, node2 interface{}) bool {
 		if m2, ok := node2.(map[string]interface{}); !ok {
 			return false
 		} else {
-			return m1["id"] == m2["id"]
+			id := m1["id"]
+			return id != nil && id == m2["id"]
 		}
 	}
 
@@ -155,8 +157,34 @@ func (a *testModel) Navigate(node interface{}, name string) (interface{}, error)
 	return result, nil
 }
 
+func (a *testModel) Children(node interface{}) (pathsys.CollectionAccessor, error) {
+	if _, ok := node.(pathsys.AnyAccessor); ok {
+		return nil, nil
+	}
+
+	model, ok := node.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("cannot be cast to map: %T", node)
+	}
+
+	res := pathsys.NewCollection(a)
+	keys := make([]string, 0)
+	for k := range model {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		v := model[k]
+		if v != nil {
+			res.Add(model[k])
+		}
+	}
+	return res, nil
+}
+
 type testContext struct {
 	modelAdapter pathsys.ModelAdapter
+	tracer       pathsys.Tracer
 	node         interface{}
 }
 
@@ -166,6 +194,14 @@ func NewTestContext(t *testing.T) pathsys.ContextAccessor {
 
 func NewTestContextWithNode(t *testing.T, node interface{}) pathsys.ContextAccessor {
 	return &testContext{modelAdapter: newTestModel(t), node: node}
+}
+
+func NewTestContextWithNodeAndTracer(t *testing.T, node interface{}, tracer pathsys.Tracer) pathsys.ContextAccessor {
+	return &testContext{
+		modelAdapter: newTestModel(t),
+		tracer:       tracer,
+		node:         node,
+	}
 }
 
 func (t *testContext) EnvVar(name string) (interface{}, bool) {
@@ -189,4 +225,8 @@ func (t *testContext) NewCollectionWithItem(item interface{}) pathsys.Collection
 
 func (t *testContext) ContextNode() interface{} {
 	return t.node
+}
+
+func (t *testContext) Tracer() pathsys.Tracer {
+	return t.tracer
 }
