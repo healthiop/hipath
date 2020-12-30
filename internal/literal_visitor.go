@@ -87,7 +87,7 @@ func (v *Visitor) VisitQuantity(ctx *parser.QuantityContext) interface{} {
 	return v.visitTree(ctx, 2, visitQuantity)
 }
 
-func visitQuantity(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitQuantity(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	number := args[0].(string)
 	unit := args[1].(string)
 	return expression.ParseQuantityLiteral(number, unit)

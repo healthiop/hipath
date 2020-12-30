@@ -523,3 +523,25 @@ func TestQuantityToUnitExp(t *testing.T) {
 		}
 	}
 }
+
+func TestQuantityAbsPos(t *testing.T) {
+	res := NewQuantity(NewDecimalFloat64(2.1), NewString("mg")).Abs()
+	if assert.Implements(t, (*QuantityAccessor)(nil), res) {
+		q := res.(QuantityAccessor)
+		assert.Equal(t, 2.1, q.Value().Float64())
+		if assert.NotNil(t, q.Unit()) {
+			assert.Equal(t, "mg", q.Unit().String())
+		}
+	}
+}
+
+func TestQuantityAbsNeg(t *testing.T) {
+	res := NewQuantity(NewDecimalFloat64(-2.1), NewString("mg")).Abs()
+	if assert.Implements(t, (*QuantityAccessor)(nil), res) {
+		q := res.(QuantityAccessor)
+		assert.Equal(t, 2.1, q.Value().Float64())
+		if assert.NotNil(t, q.Unit()) {
+			assert.Equal(t, "mg", q.Unit().String())
+		}
+	}
+}

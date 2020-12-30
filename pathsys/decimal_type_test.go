@@ -497,3 +497,13 @@ func TestDecimalOfIntFour(t *testing.T) {
 	res := DecimalOfInt(4)
 	assert.Equal(t, 4.0, res.Float64())
 }
+
+func TestDecimalAbsPos(t *testing.T) {
+	res := NewDecimalFloat64(10.21).Abs()
+	assert.Equal(t, 10.21, res.Value().Float64())
+}
+
+func TestDecimalAbsNeg(t *testing.T) {
+	res := NewDecimalFloat64(-10.21).Abs()
+	assert.Equal(t, 10.21, res.Value().Float64())
+}

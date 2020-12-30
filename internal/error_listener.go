@@ -43,7 +43,7 @@ func NewErrorListener(errorItemCollection *ErrorItemCollection) *ErrorListener {
 	return l
 }
 
-func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
-	line, column int, msg string, e antlr.RecognitionException) {
+func (l *ErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{},
+	line, column int, msg string, _ antlr.RecognitionException) {
 	l.errorItemCollection.AddError(line, column, msg)
 }

@@ -394,3 +394,13 @@ func TestIntegerCompareQuantity(t *testing.T) {
 	assert.Equal(t, Evaluated, status)
 	assert.Equal(t, -1, res)
 }
+
+func TestIntegerAbsPos(t *testing.T) {
+	res := NewInteger(10).Abs()
+	assert.Equal(t, 10.0, res.Value().Float64())
+}
+
+func TestIntegerAbsNeg(t *testing.T) {
+	res := NewInteger(-10).Abs()
+	assert.Equal(t, 10.0, res.Value().Float64())
+}

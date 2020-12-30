@@ -55,6 +55,7 @@ type DecimalValueAccessor interface {
 
 type ArithmeticApplier interface {
 	Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error)
+	Abs() DecimalValueAccessor
 }
 
 type NumberAccessor interface {

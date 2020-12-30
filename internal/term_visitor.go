@@ -51,7 +51,7 @@ func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) int
 	return v.visitTree(ctx, 2, visitExternalConstant)
 }
 
-func visitExternalConstant(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitExternalConstant(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	name := args[1].(string)
 	return expression.ParseExtConstantTerm(expression.ExtractIdentifier(name)), nil
 }
@@ -60,7 +60,7 @@ func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interfa
 	return v.visitTree(ctx, 1, visitInvocationTerm)
 }
 
-func visitInvocationTerm(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitInvocationTerm(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	invocationEvaluator := args[0].(pathsys.Evaluator)
 	return expression.NewInvocationTerm(invocationEvaluator), nil
 }

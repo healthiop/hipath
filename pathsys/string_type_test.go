@@ -33,8 +33,16 @@ import (
 	"testing"
 )
 
+func TestStringOfNilEmpty(t *testing.T) {
+	assert.Nil(t, StringOfNil(""))
+}
+
+func TestStringOfNil(t *testing.T) {
+	assert.Equal(t, NewString("test"), StringOfNil("test"))
+}
+
 func TestStringOfEmpty(t *testing.T) {
-	assert.Nil(t, StringOf(""))
+	assert.Same(t, EmptyString, StringOf(""))
 }
 
 func TestStringOf(t *testing.T) {

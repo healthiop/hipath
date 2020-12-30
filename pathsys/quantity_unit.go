@@ -164,9 +164,9 @@ func NewQuantityUnit(singular, plural, ucum string, bases ...QuantityUnitBaseAcc
 	}
 
 	return &quantityUnit{
-		singular: StringOf(singular),
-		plural:   StringOf(plural),
-		ucum:     StringOf(ucum),
+		singular: StringOfNil(singular),
+		plural:   StringOfNil(plural),
+		ucum:     StringOfNil(ucum),
 		rootBase: rootBase,
 		bases:    bases,
 	}
@@ -174,7 +174,7 @@ func NewQuantityUnit(singular, plural, ucum string, bases ...QuantityUnitBaseAcc
 
 func NewQuantityUnitWithUCUM(ucum string) QuantityUnitAccessor {
 	return &quantityUnit{
-		ucum: StringOf(ucum),
+		ucum: StringOfNil(ucum),
 	}
 }
 

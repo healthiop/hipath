@@ -85,6 +85,18 @@ var functionTests = []struct {
 	{"toTime", toTimeFunc, -1, 0, 0},
 	{"convertsToTime", newConvertsToTimeFunction(), -1, 0, 0},
 	{"indexOf", newIndexOfFunction(), -1, 1, 1},
+	{"substring", newSubstringFunction(), -1, 1, 2},
+	{"startsWith", newStartsWithFunction(), -1, 1, 1},
+	{"endsWith", newEndsWithFunction(), -1, 1, 1},
+	{"contains", newContainsFunction(), -1, 1, 1},
+	{"upper", newUpperFunction(), -1, 0, 0},
+	{"lower", newLowerFunction(), -1, 0, 0},
+	{"replace", newReplaceFunction(), -1, 2, 2},
+	{"matches", newMatchesFunction(), -1, 1, 1},
+	{"replaceMatches", newReplaceMatchesFunction(), -1, 2, 2},
+	{"length", newLengthFunction(), -1, 0, 0},
+	{"toChars", newToCharsFunction(), -1, 0, 0},
+	{"abs", newAbsFunction(), -1, 1, 1},
 	{"aggregate", newAggregateFunction(), 0, 1, 2},
 }
 

@@ -31,75 +31,36 @@ package expression
 import (
 	"fmt"
 	"github.com/volsch/gohipath/pathsys"
-	"testing"
 )
 
-type testExpression struct {
-	res             interface{}
-	invocationCount int
-	node            interface{}
-	loop            pathsys.Looper
+type absFunction struct {
+	pathsys.BaseFunction
 }
 
-func newTestExpression(res interface{}) *testExpression {
-	return &testExpression{res: res}
+func newAbsFunction() *absFunction {
+	return &absFunction{
+		BaseFunction: pathsys.NewBaseFunction("abs", -1, 1, 1),
+	}
 }
 
-func (e *testExpression) Evaluate(_ pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
-	e.invocationCount = e.invocationCount + 1
-	e.node = node
-	e.loop = loop
-	return e.res, nil
+func (f *absFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+	a, err := arithmeticNode(node)
+	if a == nil || err != nil {
+		return nil, err
+	}
+
+	return a.Abs(), nil
 }
 
-type testErrorExpression struct {
-}
+func arithmeticNode(node interface{}) (pathsys.ArithmeticApplier, error) {
+	value := unwrapCollection(node)
+	if value == nil {
+		return nil, nil
+	}
 
-func newTestErrorExpression() *testErrorExpression {
-	return &testErrorExpression{}
-}
-
-func (e *testErrorExpression) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
-	return nil, fmt.Errorf("an error occurred")
-}
-
-type testingAccessor interface {
-	pathsys.AnyAccessor
-	testing() *testing.T
-}
-
-type testingType struct {
-	t *testing.T
-}
-
-func newTestingType(t *testing.T) testingAccessor {
-	return &testingType{t}
-}
-
-func (t *testingType) testing() *testing.T {
-	return t.t
-}
-
-func (t *testingType) Source() interface{} {
-	panic("implement me")
-}
-
-func (t *testingType) DataType() pathsys.DataTypes {
-	panic("implement me")
-}
-
-func (t *testingType) TypeInfo() pathsys.TypeInfoAccessor {
-	panic("implement me")
-}
-
-func (t *testingType) Empty() bool {
-	panic("implement me")
-}
-
-func (t *testingType) Equal(interface{}) bool {
-	panic("implement me")
-}
-
-func (t *testingType) Equivalent(interface{}) bool {
-	panic("implement me")
+	if a, ok := value.(pathsys.ArithmeticApplier); !ok {
+		return nil, fmt.Errorf("arithmetic cannot be applied: %T", value)
+	} else {
+		return a, nil
+	}
 }

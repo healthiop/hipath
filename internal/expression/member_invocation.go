@@ -41,7 +41,7 @@ func NewMemberInvocation(name string) *MemberInvocation {
 	return &MemberInvocation{name}
 }
 
-func (i *MemberInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (i *MemberInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, _ pathsys.Looper) (interface{}, error) {
 	if node == nil {
 		return nil, fmt.Errorf("cannot extract path from empty: %s", i.name)
 	}

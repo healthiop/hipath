@@ -135,7 +135,7 @@ type testInvocationArgsFunction struct {
 	t *testing.T
 }
 
-func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, _ interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
 	t := f.t
 	assert.Same(t, testLoop, loop)
 
@@ -151,7 +151,7 @@ type testInvocationLoopFunction struct {
 	t *testing.T
 }
 
-func (f *testInvocationLoopFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *testInvocationLoopFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	t := f.t
 	if assert.NotNil(t, loop) && assert.NotNil(t, loop.Evaluator()) {
 		res, err := loop.Evaluator().Evaluate(nil, nil, nil)

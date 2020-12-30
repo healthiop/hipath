@@ -45,7 +45,7 @@ func newIIfFunction() *iifFunction {
 	}
 }
 
-func (f *iifFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *iifFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	criterion := unwrapCollection(args[0])
 	var criterionValue bool
 	if criterion != nil {
@@ -74,7 +74,7 @@ var toBooleanFunc = &toBooleanFunction{
 	BaseFunction: pathsys.NewBaseFunction("toBoolean", -1, 0, 0),
 }
 
-func (f *toBooleanFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toBooleanFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -125,7 +125,7 @@ var toIntegerFunc = &toIntegerFunction{
 	BaseFunction: pathsys.NewBaseFunction("toInteger", -1, 0, 0),
 }
 
-func (f *toIntegerFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toIntegerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -170,7 +170,7 @@ var toDecimalFunc = &toDecimalFunction{
 	BaseFunction: pathsys.NewBaseFunction("toDecimal", -1, 0, 0),
 }
 
-func (f *toDecimalFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toDecimalFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -217,7 +217,7 @@ var toDateFunc = &toDateFunction{
 	BaseFunction: pathsys.NewBaseFunction("toDate", -1, 0, 0),
 }
 
-func (f *toDateFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toDateFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -258,7 +258,7 @@ var toDateTimeFunc = &toDateTimeFunction{
 	BaseFunction: pathsys.NewBaseFunction("toDateTime", -1, 0, 0),
 }
 
-func (f *toDateTimeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toDateTimeFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -301,7 +301,7 @@ var toQuantityFunc = &toQuantityFunction{
 
 var quantityStringPattern = regexp.MustCompile("^([+\\-]?\\d+(?:\\.\\d+)?)\\s*('(?:[^']+)'|(?:[a-zA-Z]+))?$")
 
-func (f *toQuantityFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toQuantityFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -367,7 +367,7 @@ var toStringFunc = &toStringFunction{
 	BaseFunction: pathsys.NewBaseFunction("toString", -1, 0, 0),
 }
 
-func (f *toStringFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toStringFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
@@ -397,7 +397,7 @@ var toTimeFunc = &toTimeFunction{
 	BaseFunction: pathsys.NewBaseFunction("toTime", -1, 0, 0),
 }
 
-func (f *toTimeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *toTimeFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err

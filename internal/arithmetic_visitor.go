@@ -44,7 +44,7 @@ func (v *Visitor) VisitMultiplicativeExpression(ctx *parser.MultiplicativeExpres
 	return v.visitTree(ctx, 3, visitArithmeticExpression)
 }
 
-func visitArithmeticExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitArithmeticExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	leftEvaluator := args[0].(pathsys.Evaluator)
 	stringOp := args[1].(string)
 	rightEvaluator := args[2].(pathsys.Evaluator)

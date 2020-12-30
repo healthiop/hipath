@@ -43,7 +43,7 @@ func (v *Visitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
 	return v.visitTree(ctx, 3, visitFunction)
 }
 
-func visitFunction(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitFunction(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	name := args[0].(string)
 
 	var paramEvaluators []pathsys.Evaluator
@@ -83,7 +83,7 @@ func (v *Visitor) VisitMemberInvocation(ctx *parser.MemberInvocationContext) int
 	return v.visitTree(ctx, 1, visitMemberInvocation)
 }
 
-func visitMemberInvocation(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitMemberInvocation(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	name := args[0].(string)
 	return expression.NewMemberInvocation(expression.ExtractIdentifier(name)), nil
 }

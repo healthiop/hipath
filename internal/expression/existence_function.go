@@ -43,7 +43,7 @@ func newEmptyFunction() *emptyFunction {
 	}
 }
 
-func (f *emptyFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *emptyFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	if node == nil {
 		return pathsys.True, nil
 	}
@@ -65,7 +65,7 @@ func newExistsFunction() *existsFunction {
 	}
 }
 
-func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *existsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	if node == nil {
 		return pathsys.False, nil
 	}
@@ -115,7 +115,7 @@ func newAllFunction() *allFunction {
 	}
 }
 
-func (f *allFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *allFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	loopEvaluator := loop.Evaluator()
 	col := wrapCollection(ctx, node)
 	count := col.Count()
@@ -167,7 +167,7 @@ func newAnyFalseFunction() *allAnyTrueFalseFunction {
 	return newAllAnyTrueFalseFunction("anyFalse", false, false)
 }
 
-func (f *allAnyTrueFalseFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *allAnyTrueFalseFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	for i := 0; i < count; i++ {
@@ -197,7 +197,7 @@ func newSubsetOfFunction() *subsetOfFunction {
 	}
 }
 
-func (f *subsetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *subsetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count > 0 {
@@ -221,7 +221,7 @@ func newSupersetOfFunction() *supersetOfFunction {
 	}
 }
 
-func (f *supersetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *supersetOfFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	otherCol := wrapCollection(ctx, args[0])
 	count := otherCol.Count()
 	if count > 0 {
@@ -245,7 +245,7 @@ func newCountFunction() *countFunction {
 	}
 }
 
-func (f *countFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *countFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	return pathsys.NewInteger(int32(col.Count())), nil
 }
@@ -260,7 +260,7 @@ func newDistinctFunction() *distinctFunction {
 	}
 }
 
-func (f *distinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *distinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	if col.Count() < 2 {
 		return col, nil
@@ -281,7 +281,7 @@ func newIsDistinctFunction() *isDistinctFunction {
 	}
 }
 
-func (f *isDistinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *isDistinctFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	if col.Empty() {
 		return nil, nil

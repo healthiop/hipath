@@ -40,7 +40,7 @@ func newUnionFunction() *unionFunction {
 	}
 }
 
-func (f *unionFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *unionFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	return uniteCollections(ctx, node, args[0]), nil
 }
 
@@ -54,6 +54,6 @@ func newCombineFunction() *combineFunction {
 	}
 }
 
-func (f *combineFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *combineFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	return combineCollections(ctx, node, args[0]), nil
 }

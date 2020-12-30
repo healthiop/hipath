@@ -43,7 +43,7 @@ func newSingleFunction() *singleFunction {
 	}
 }
 
-func (f *singleFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *singleFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -65,7 +65,7 @@ func newFirstFunction() *firstFunction {
 	}
 }
 
-func (f *firstFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *firstFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	if col.Empty() {
 		return nil, nil
@@ -83,7 +83,7 @@ func newLastFunction() *lastFunction {
 	}
 }
 
-func (f *lastFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *lastFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -102,7 +102,7 @@ func newTailFunction() *tailFunction {
 	}
 }
 
-func (f *tailFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *tailFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count < 2 {
@@ -127,7 +127,7 @@ func newSkipFunction() *skipFunction {
 	}
 }
 
-func (f *skipFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *skipFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	var num int
 	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
@@ -162,7 +162,7 @@ func newTakeFunction() *takeFunction {
 	}
 }
 
-func (f *takeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *takeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	var num int
 	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
@@ -199,7 +199,7 @@ func newIntersectFunction() *intersectFunction {
 	}
 }
 
-func (f *intersectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *intersectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	other := wrapCollection(ctx, args[0])
 	if other.Empty() {
 		return nil, nil
@@ -237,7 +237,7 @@ func newExcludeFunction() *excludeFunction {
 	}
 }
 
-func (f *excludeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *excludeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	other := wrapCollection(ctx, args[0])
 	col := wrapCollection(ctx, node)
 	count := col.Count()

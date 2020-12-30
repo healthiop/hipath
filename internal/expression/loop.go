@@ -42,7 +42,7 @@ func NewThisInvocation() *ThisInvocation {
 	return thisInvocation
 }
 
-func (t *ThisInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *ThisInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("this invocation can only be used inside a loop")
 	}
@@ -58,7 +58,7 @@ func NewIndexInvocation() *IndexInvocation {
 	return indexInvocation
 }
 
-func (t *IndexInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *IndexInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("index invocation can only be used inside a loop")
 	}
@@ -74,7 +74,7 @@ func NewTotalInvocation() *TotalInvocation {
 	return totalInvocation
 }
 
-func (t *TotalInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *TotalInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("index invocation can only be used inside a loop")
 	}

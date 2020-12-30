@@ -189,7 +189,7 @@ func mustEvalLocation(value string) *time.Location {
 		return time.UTC
 	}
 
-	return time.FixedZone(string(offset), offset)
+	return time.FixedZone(fmt.Sprint(offset), offset)
 }
 
 func (t *dateTimeType) DataType() DataTypes {

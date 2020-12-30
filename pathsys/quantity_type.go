@@ -271,3 +271,7 @@ func mergeQuantityUnits(l QuantityAccessor, r QuantityAccessor, op ArithmeticOps
 
 	return leftVal, rightVal, unit, exp, nil
 }
+
+func (t *quantityType) Abs() DecimalValueAccessor {
+	return NewQuantity(t.Value().Abs().(DecimalAccessor), t.Unit())
+}

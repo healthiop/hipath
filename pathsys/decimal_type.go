@@ -294,6 +294,10 @@ func decimalCalc(leftOperand NumberAccessor, rightOperand DecimalAccessor, op Ar
 	}
 }
 
+func (t *decimalType) Abs() DecimalValueAccessor {
+	return NewDecimal(t.value.Abs())
+}
+
 func DecimalValueFloat64(node interface{}) interface{} {
 	if v, ok := node.(DecimalAccessor); !ok {
 		return nil

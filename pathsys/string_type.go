@@ -46,9 +46,16 @@ type StringAccessor interface {
 	Length() int
 }
 
-func StringOf(value string) StringAccessor {
+func StringOfNil(value string) StringAccessor {
 	if len(value) == 0 {
 		return nil
+	}
+	return NewString(value)
+}
+
+func StringOf(value string) StringAccessor {
+	if len(value) == 0 {
+		return EmptyString
 	}
 	return NewString(value)
 }

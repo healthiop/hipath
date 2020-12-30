@@ -44,7 +44,7 @@ func (v *Visitor) VisitPolarityExpression(ctx *parser.PolarityExpressionContext)
 	return v.visitTree(ctx, 2, visitPolarityExpression)
 }
 
-func visitPolarityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitPolarityExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	op := args[0].(string)
 	evaluator := args[1].(pathsys.Evaluator)
 
@@ -58,7 +58,7 @@ func (v *Visitor) VisitEqualityExpression(ctx *parser.EqualityExpressionContext)
 	return v.visitTree(ctx, 3, visitEqualityExpression)
 }
 
-func visitEqualityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitEqualityExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evalLeft := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
 	evalRight := args[2].(pathsys.Evaluator)
@@ -85,7 +85,7 @@ func (v *Visitor) VisitUnionExpression(ctx *parser.UnionExpressionContext) inter
 	return v.visitTree(ctx, 3, visitUnionExpression)
 }
 
-func visitUnionExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitUnionExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evalLeft := args[0].(pathsys.Evaluator)
 	evalRight := args[2].(pathsys.Evaluator)
 
@@ -96,7 +96,7 @@ func (v *Visitor) VisitIndexerExpression(ctx *parser.IndexerExpressionContext) i
 	return v.visitTree(ctx, 4, visitIndexerExpression)
 }
 
-func visitIndexerExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitIndexerExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	exprEvaluator := args[0].(pathsys.Evaluator)
 	indexEvaluator := args[2].(pathsys.Evaluator)
 
@@ -107,7 +107,7 @@ func (v *Visitor) VisitInvocationExpression(ctx *parser.InvocationExpressionCont
 	return v.visitTree(ctx, 3, visitInvocationExpression)
 }
 
-func visitInvocationExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitInvocationExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	exprEvaluator := args[0].(pathsys.Evaluator)
 	invocationEvaluator := args[2].(pathsys.Evaluator)
 
@@ -118,7 +118,7 @@ func (v *Visitor) VisitInequalityExpression(ctx *parser.InequalityExpressionCont
 	return v.visitTree(ctx, 3, visitInequalityExpression)
 }
 
-func visitInequalityExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitInequalityExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evalLeft := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
 	evalRight := args[2].(pathsys.Evaluator)
@@ -144,7 +144,7 @@ func (v *Visitor) VisitMembershipExpression(ctx *parser.MembershipExpressionCont
 	return v.visitTree(ctx, 3, visitMembershipExpression)
 }
 
-func visitMembershipExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitMembershipExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evalLeft := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
 	evalRight := args[2].(pathsys.Evaluator)
@@ -171,7 +171,7 @@ func (v *Visitor) VisitImpliesExpression(ctx *parser.ImpliesExpressionContext) i
 	return v.visitTree(ctx, 3, visitBooleanExpression)
 }
 
-func visitBooleanExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitBooleanExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evalLeft := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
 	evalRight := args[2].(pathsys.Evaluator)
@@ -197,7 +197,7 @@ func (v *Visitor) VisitTypeExpression(ctx *parser.TypeExpressionContext) interfa
 	return v.visitTree(ctx, 3, visitTypeExpression)
 }
 
-func visitTypeExpression(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitTypeExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
 	evaluator := args[0].(pathsys.Evaluator)
 	op := args[1].(string)
 	name := expression.ExtractIdentifier(args[2].(string))

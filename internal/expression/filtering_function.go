@@ -43,7 +43,7 @@ func newWhereFunction() *whereFunction {
 	}
 }
 
-func (f *whereFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *whereFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -85,7 +85,7 @@ func newSelectFunction() *selectFunction {
 	}
 }
 
-func (f *selectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *selectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -128,7 +128,7 @@ func newRepeatFunction() *repeatFunction {
 	}
 }
 
-func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
 	projected := ctx.NewCollection()
 	err := repeatFunc(ctx, node, loop, projected)
 
@@ -199,7 +199,7 @@ func newOfTypeFunction() *ofTypeFunction {
 	}
 }
 
-func (f *ofTypeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *ofTypeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
 	var typeSpec pathsys.StringAccessor
 	var ok bool
 	if typeSpec, ok = unwrapCollection(args[0]).(pathsys.StringAccessor); !ok {

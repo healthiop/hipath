@@ -31,6 +31,7 @@ package pathsys
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
+	"math"
 	"strconv"
 )
 
@@ -200,6 +201,10 @@ func (t *integerType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (Deci
 	}
 
 	return operand.WithValue(decimalCalc(t, operand.Value(), op)), nil
+}
+
+func (t *integerType) Abs() DecimalValueAccessor {
+	return NewInteger(int32(math.Abs(float64(t.Int()))))
 }
 
 func IntegerValue(node interface{}) interface{} {

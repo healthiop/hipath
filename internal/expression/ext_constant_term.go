@@ -41,7 +41,7 @@ func ParseExtConstantTerm(value string) *ExtConstantTerm {
 	return &ExtConstantTerm{value}
 }
 
-func (e *ExtConstantTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *ExtConstantTerm) Evaluate(ctx pathsys.ContextAccessor, _ interface{}, _ pathsys.Looper) (interface{}, error) {
 	res, found := ctx.EnvVar(e.name)
 	if !found {
 		return nil, fmt.Errorf("Environment variable has not been defined: %s", e.name)
