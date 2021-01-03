@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,8 +58,8 @@ func (a *nodeMock) DataType() DataTypes {
 	return UndefinedDataType
 }
 
-func (a *nodeMock) TypeInfo() TypeInfoAccessor {
-	return newAnyTypeInfo("Test")
+func (a *nodeMock) TypeSpec() TypeSpecAccessor {
+	return newAnyTypeSpec("Test")
 }
 
 func (a *nodeMock) Equal(node interface{}) bool {
@@ -82,24 +82,24 @@ func (a *nodeMock) Value() int {
 	return a.value
 }
 
-var testBaseTypeInfo = NewTypeInfo(NewFQTypeName("base", "TEST"))
-var testTypeInfo = NewTypeInfoWithBase(NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
-var testStringTypeInfo = NewTypeInfoWithBase(NewFQTypeName("string", "TEST"), testBaseTypeInfo)
+var testBaseTypeSpec = NewTypeSpec(NewFQTypeName("base", "TEST"))
+var testTypeSpec = NewTypeSpecWithBase(NewFQTypeName("type1", "TEST"), testBaseTypeSpec)
+var testStringTypeSpec = NewTypeSpecWithBase(NewFQTypeName("string", "TEST"), testBaseTypeSpec)
 
 type testModelNode struct {
 	value    float64
 	sys      bool
-	typeInfo TypeInfoAccessor
+	typeSpec TypeSpecAccessor
 }
 
 type testModelNodeAccessor interface {
 	testValue() float64
 	testSys() bool
-	testTypeInfo() TypeInfoAccessor
+	testTypeSpec() TypeSpecAccessor
 }
 
-func newTestModelNode(value float64, sys bool, typeInfo TypeInfoAccessor) *testModelNode {
-	return &testModelNode{value, sys, typeInfo}
+func newTestModelNode(value float64, sys bool, typeSpec TypeSpecAccessor) *testModelNode {
+	return &testModelNode{value, sys, typeSpec}
 }
 
 func (n *testModelNode) testValue() float64 {
@@ -110,8 +110,8 @@ func (n *testModelNode) testSys() bool {
 	return n.sys
 }
 
-func (n *testModelNode) testTypeInfo() TypeInfoAccessor {
-	return n.typeInfo
+func (n *testModelNode) testTypeSpec() TypeSpecAccessor {
+	return n.typeSpec
 }
 
 type testModel struct {
@@ -134,18 +134,18 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 	}
 }
 
-func (a *testModel) TypeInfo(node interface{}) TypeInfoAccessor {
+func (a *testModel) TypeSpec(node interface{}) TypeSpecAccessor {
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		if _, ok := node.(StringAccessor); ok {
-			return testStringTypeInfo
+			return testStringTypeSpec
 		}
 		a.t.Errorf("not a test model node: %T", node)
-		return UndefinedTypeInfo
+		return UndefinedTypeSpec
 	} else {
 		if n.testSys() {
 			a.t.Errorf("type of system node must not be requested")
 		}
-		return n.testTypeInfo()
+		return n.testTypeSpec()
 	}
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import (
 	"time"
 )
 
-var dateTimeTypeInfo = newAnyTypeInfo("DateTime")
+var dateTimeTypeSpec = newAnyTypeSpec("DateTime")
 
 var timeZoneOffsetRegexp = regexp.MustCompile("^([+-])(\\d{1,2})(?::(\\d{1,2}))$")
 var dateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?(?:T(?:([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00))?)?)?$")
@@ -244,8 +244,8 @@ func (t *dateTimeType) Location() *time.Location {
 	return t.value.Location()
 }
 
-func (t *dateTimeType) TypeInfo() TypeInfoAccessor {
-	return dateTimeTypeInfo
+func (t *dateTimeType) TypeSpec() TypeSpecAccessor {
+	return dateTimeTypeSpec
 }
 
 func (t *dateTimeType) LowestPrecision() DateTimePrecisions {

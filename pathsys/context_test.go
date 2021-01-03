@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,20 @@ import (
 	"testing"
 )
 
-func TestModelTypeInfoNil(t *testing.T) {
+func TestModelTypeSpecNil(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.Nil(t, ModelTypeInfo(ctx.ModelAdapter(), nil))
+	assert.Nil(t, ModelTypeSpec(ctx.ModelAdapter(), nil))
 }
 
-func TestModelTypeInfoSystem(t *testing.T) {
+func TestModelTypeSpecSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.Same(t, StringTypeInfo, ModelTypeInfo(ctx.ModelAdapter(), NewString("test")))
+	assert.Same(t, StringTypeSpec, ModelTypeSpec(ctx.ModelAdapter(), NewString("test")))
 }
 
-func TestModelTypeInfoModel(t *testing.T) {
+func TestModelTypeSpecModel(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.Same(t, testTypeInfo, ModelTypeInfo(ctx.ModelAdapter(),
-		newTestModelNode(10, false, testTypeInfo)))
+	assert.Same(t, testTypeSpec, ModelTypeSpec(ctx.ModelAdapter(),
+		newTestModelNode(10, false, testTypeSpec)))
 }
 
 func TestModelEqualBothNil(t *testing.T) {
@@ -66,12 +66,12 @@ func TestModelEqualRightNil(t *testing.T) {
 
 func TestModelEqualLeftSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.False(t, ModelEqual(ctx.ModelAdapter(), NewString(""), newTestModelNode(10, false, testTypeInfo)))
+	assert.False(t, ModelEqual(ctx.ModelAdapter(), NewString(""), newTestModelNode(10, false, testTypeSpec)))
 }
 
 func TestModelEqualRightSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.False(t, ModelEqual(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo), NewString("")))
+	assert.False(t, ModelEqual(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeSpec), NewString("")))
 }
 
 func TestModelEqualSystem(t *testing.T) {
@@ -87,13 +87,13 @@ func TestModelEqualSystemNot(t *testing.T) {
 func TestModelEqualModel(t *testing.T) {
 	ctx := newTestContext(t)
 	assert.True(t, ModelEqual(ctx.ModelAdapter(),
-		newTestModelNode(10, false, testTypeInfo), newTestModelNode(10, false, testTypeInfo)))
+		newTestModelNode(10, false, testTypeSpec), newTestModelNode(10, false, testTypeSpec)))
 }
 
 func TestModelEqualModelNot(t *testing.T) {
 	ctx := newTestContext(t)
 	assert.False(t, ModelEqual(ctx.ModelAdapter(),
-		newTestModelNode(10, false, testTypeInfo), newTestModelNode(11, false, testTypeInfo)))
+		newTestModelNode(10, false, testTypeSpec), newTestModelNode(11, false, testTypeSpec)))
 }
 
 func TestModelEquivalentBothNil(t *testing.T) {
@@ -113,12 +113,12 @@ func TestModelEquivalentRightNil(t *testing.T) {
 
 func TestModelEquivalentLeftSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.False(t, ModelEquivalent(ctx.ModelAdapter(), NewString(""), newTestModelNode(10, false, testTypeInfo)))
+	assert.False(t, ModelEquivalent(ctx.ModelAdapter(), NewString(""), newTestModelNode(10, false, testTypeSpec)))
 }
 
 func TestModelEquivalentRightSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.False(t, ModelEquivalent(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo), NewString("")))
+	assert.False(t, ModelEquivalent(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeSpec), NewString("")))
 }
 
 func TestModelEquivalentSystem(t *testing.T) {
@@ -134,13 +134,13 @@ func TestModelEquivalentSystemNot(t *testing.T) {
 func TestModelEquivalentModel(t *testing.T) {
 	ctx := newTestContext(t)
 	assert.True(t, ModelEquivalent(ctx.ModelAdapter(),
-		newTestModelNode(10, false, testTypeInfo), newTestModelNode(10.1, false, testTypeInfo)))
+		newTestModelNode(10, false, testTypeSpec), newTestModelNode(10.1, false, testTypeSpec)))
 }
 
 func TestModelEquivalentModelNot(t *testing.T) {
 	ctx := newTestContext(t)
 	assert.False(t, ModelEquivalent(ctx.ModelAdapter(),
-		newTestModelNode(10, false, testTypeInfo), newTestModelNode(11, false, testTypeInfo)))
+		newTestModelNode(10, false, testTypeSpec), newTestModelNode(11, false, testTypeSpec)))
 }
 
 func TestSystemAnyTypeEqualBothNil(t *testing.T) {
@@ -164,7 +164,7 @@ func TestSystemAnyTypeEqualSystemNot(t *testing.T) {
 }
 
 func TestSystemAnyTypeEqualModel(t *testing.T) {
-	assert.False(t, SystemAnyTypeEqual(NewString(""), newTestModelNode(0, false, testTypeInfo)))
+	assert.False(t, SystemAnyTypeEqual(NewString(""), newTestModelNode(0, false, testTypeSpec)))
 }
 
 func TestSystemAnyEqualBothNil(t *testing.T) {
@@ -188,7 +188,7 @@ func TestSystemAnyEqualSystemNot(t *testing.T) {
 }
 
 func TestSystemAnyEqualModel(t *testing.T) {
-	assert.False(t, SystemAnyEqual(NewString("test1"), newTestModelNode(10, false, testTypeInfo)))
+	assert.False(t, SystemAnyEqual(NewString("test1"), newTestModelNode(10, false, testTypeSpec)))
 }
 
 func TestHasModelTypeNil(t *testing.T) {
@@ -211,13 +211,13 @@ func TestHasModelTypeSystemNot(t *testing.T) {
 
 func TestHasModelTypeNonSystem(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.True(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo),
+	assert.True(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeSpec),
 		NewFQTypeName("base", "TEST")))
 }
 
 func TestHasModelTypeNonSystemNot(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.False(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeInfo),
+	assert.False(t, HasModelType(ctx.ModelAdapter(), newTestModelNode(10, false, testTypeSpec),
 		NewFQTypeName("other", "TEST")))
 }
 

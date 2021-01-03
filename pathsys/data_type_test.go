@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,8 @@ import (
 	"testing"
 )
 
-func TestNewElementTypeInfo(t *testing.T) {
-	i := newAnyTypeInfo("MyType")
+func TestNewElementTypeSpec(t *testing.T) {
+	i := newAnyTypeSpec("MyType")
 	assert.Equal(t, "System.MyType", i.String())
 	assert.Equal(t, "MyType", i.FQName().Name())
 	assert.Equal(t, "System", i.FQName().Namespace())

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,18 +30,18 @@ package pathsys
 
 var EmptyCollection = NewEmptyCollection()
 
-var collectionTypeInfo = newAnyTypeInfo("Collection")
+var collectionTypeSpec = newAnyTypeSpec("Collection")
 
 type collectionType struct {
 	baseAnyType
 	adapter      ModelAdapter
-	itemTypeInfo TypeInfoAccessor
+	itemTypeSpec TypeSpecAccessor
 	items        []interface{}
 }
 
 type CollectionAccessor interface {
 	AnyAccessor
-	ItemTypeInfo() TypeInfoAccessor
+	ItemTypeSpec() TypeSpecAccessor
 	Empty() bool
 	Count() int
 	Get(i int) interface{}
@@ -94,15 +94,15 @@ func (c *collectionType) DataType() DataTypes {
 	return CollectionDataType
 }
 
-func (c *collectionType) TypeInfo() TypeInfoAccessor {
-	return collectionTypeInfo
+func (c *collectionType) TypeSpec() TypeSpecAccessor {
+	return collectionTypeSpec
 }
 
-func (c *collectionType) ItemTypeInfo() TypeInfoAccessor {
-	if c.itemTypeInfo == nil {
-		return UndefinedTypeInfo
+func (c *collectionType) ItemTypeSpec() TypeSpecAccessor {
+	if c.itemTypeSpec == nil {
+		return UndefinedTypeSpec
 	}
-	return c.itemTypeInfo
+	return c.itemTypeSpec
 }
 
 func (c *collectionType) Empty() bool {
@@ -155,15 +155,15 @@ func (c *collectionType) prepareItem(item interface{}, convert bool) interface{}
 		}
 	}
 
-	typeInfo := ModelTypeInfo(c.adapter, item)
-	if c.itemTypeInfo == nil {
-		c.itemTypeInfo = typeInfo
+	typeSpec := ModelTypeSpec(c.adapter, item)
+	if c.itemTypeSpec == nil {
+		c.itemTypeSpec = typeSpec
 	} else {
-		typeInfo = CommonBaseType(c.itemTypeInfo, typeInfo)
-		if typeInfo != nil {
-			c.itemTypeInfo = typeInfo
+		typeSpec = CommonBaseType(c.itemTypeSpec, typeSpec)
+		if typeSpec != nil {
+			c.itemTypeSpec = typeSpec
 		} else {
-			c.itemTypeInfo = UndefinedTypeInfo
+			c.itemTypeSpec = UndefinedTypeSpec
 		}
 	}
 
@@ -280,8 +280,8 @@ func (c *emptyCollectionType) DataType() DataTypes {
 	return CollectionDataType
 }
 
-func (c *emptyCollectionType) TypeInfo() TypeInfoAccessor {
-	return collectionTypeInfo
+func (c *emptyCollectionType) TypeSpec() TypeSpecAccessor {
+	return collectionTypeSpec
 }
 
 func (c *emptyCollectionType) Equal(item interface{}) bool {
@@ -296,8 +296,8 @@ func (c *emptyCollectionType) Equivalent(item interface{}) bool {
 	return c.Equal(item)
 }
 
-func (c *emptyCollectionType) ItemTypeInfo() TypeInfoAccessor {
-	return UndefinedTypeInfo
+func (c *emptyCollectionType) ItemTypeSpec() TypeSpecAccessor {
+	return UndefinedTypeSpec
 }
 
 func (c *emptyCollectionType) Empty() bool {

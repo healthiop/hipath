@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ package pathsys
 
 import "strings"
 
-var StringTypeInfo = newAnyTypeInfo("String")
+var StringTypeSpec = newAnyTypeSpec("String")
 
 var EmptyString = newString("", nil)
 
@@ -89,8 +89,8 @@ func (t *stringType) Length() int {
 	return len(t.value)
 }
 
-func (e *stringType) TypeInfo() TypeInfoAccessor {
-	return StringTypeInfo
+func (e *stringType) TypeSpec() TypeSpecAccessor {
+	return StringTypeSpec
 }
 
 func (t *stringType) Equal(node interface{}) bool {

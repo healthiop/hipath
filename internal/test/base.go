@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,9 @@ import (
 	"testing"
 )
 
-var testBaseTypeInfo = pathsys.NewTypeInfo(pathsys.NewFQTypeName("base", "TEST"))
-var testTypeInfo = pathsys.NewTypeInfoWithBase(pathsys.NewFQTypeName("type1", "TEST"), testBaseTypeInfo)
-var testElementTypeInfo = pathsys.NewTypeInfoWithBase(pathsys.NewFQTypeName("Element", "TEST"), testBaseTypeInfo)
+var testBaseTypeSpec = pathsys.NewTypeSpec(pathsys.NewFQTypeName("base", "TEST"))
+var testTypeSpec = pathsys.NewTypeSpecWithBase(pathsys.NewFQTypeName("type1", "TEST"), testBaseTypeSpec)
+var testElementTypeSpec = pathsys.NewTypeSpecWithBase(pathsys.NewFQTypeName("Element", "TEST"), testBaseTypeSpec)
 
 type testModelNode struct {
 	value float64
@@ -85,21 +85,21 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 	}
 }
 
-func (a *testModel) TypeInfo(node interface{}) pathsys.TypeInfoAccessor {
+func (a *testModel) TypeSpec(node interface{}) pathsys.TypeSpecAccessor {
 	if _, ok := node.(map[string]interface{}); ok {
-		return testElementTypeInfo
+		return testElementTypeSpec
 	}
 
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		if _, ok := node.(pathsys.StringAccessor); !ok {
 			a.t.Errorf("not a test model node: %T", node)
 		}
-		return pathsys.UndefinedTypeInfo
+		return pathsys.UndefinedTypeSpec
 	} else {
 		if n.testSys() {
 			a.t.Errorf("type of system node must not be requested")
 		}
-		return testTypeInfo
+		return testTypeSpec
 	}
 }
 

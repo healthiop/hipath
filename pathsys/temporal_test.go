@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -379,7 +379,7 @@ func (d dateTemporalAccessorMock) DataType() DataTypes {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) TypeInfo() TypeInfoAccessor {
+func (d dateTemporalAccessorMock) TypeSpec() TypeSpecAccessor {
 	panic("implement me")
 }
 

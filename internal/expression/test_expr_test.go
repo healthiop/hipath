@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ func (t *testingType) DataType() pathsys.DataTypes {
 	panic("implement me")
 }
 
-func (t *testingType) TypeInfo() pathsys.TypeInfoAccessor {
+func (t *testingType) TypeSpec() pathsys.TypeSpecAccessor {
 	panic("implement me")
 }
 

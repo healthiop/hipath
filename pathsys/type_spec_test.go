@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,8 +49,8 @@ func TestNewTypeNameWithNamespace(t *testing.T) {
 	assert.Equal(t, "xyz.test", n.String())
 }
 
-func TestTypeInfoStringNil(t *testing.T) {
-	o := NewTypeInfoWithBase(nil, NewTypeInfo(NewFQTypeName("test", "test")))
+func TestTypeSpecStringNil(t *testing.T) {
+	o := NewTypeSpecWithBase(nil, NewTypeSpec(NewFQTypeName("test", "test")))
 	assert.Equal(t, "", o.String())
 }
 
@@ -86,37 +86,37 @@ func TestFQTypeNameEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, FQTypeNameEqual(NewFQTypeName("test1", "ns1"), nil))
 }
 
-func TestTypeInfoEqual(t *testing.T) {
-	ti1 := NewTypeInfoWithBase(
+func TestTypeSpecEqual(t *testing.T) {
+	ti1 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns1"),
-		NewTypeInfo(NewFQTypeName("test2", "ns2")))
-	ti2 := NewTypeInfoWithBase(
+		NewTypeSpec(NewFQTypeName("test2", "ns2")))
+	ti2 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns1"),
-		NewTypeInfo(NewFQTypeName("test2", "ns2")))
+		NewTypeSpec(NewFQTypeName("test2", "ns2")))
 	assert.Equal(t, true, ti1.Equal(ti2))
 }
 
-func TestTypeInfoEqualDiffers(t *testing.T) {
-	ti1 := NewTypeInfoWithBase(
+func TestTypeSpecEqualDiffers(t *testing.T) {
+	ti1 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns3"),
-		NewTypeInfo(NewFQTypeName("test2", "ns2")))
-	ti2 := NewTypeInfoWithBase(
+		NewTypeSpec(NewFQTypeName("test2", "ns2")))
+	ti2 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns1"),
-		NewTypeInfo(NewFQTypeName("test2", "ns2")))
+		NewTypeSpec(NewFQTypeName("test2", "ns2")))
 	assert.Equal(t, false, ti1.Equal(ti2))
 }
 
-func TestNewTypeInfo(t *testing.T) {
-	ti := NewTypeInfo(NewFQTypeName("test1", "ns3"))
+func TestNewTypeSpec(t *testing.T) {
+	ti := NewTypeSpec(NewFQTypeName("test1", "ns3"))
 	assert.Equal(t, "ns3.test1", ti.String())
 	assert.Nil(t, ti.Base(), "no base expected")
 	assert.Nil(t, ti.FQBaseName(), "no base name expected")
 }
 
-func TestNewTypeInfoWithBase(t *testing.T) {
-	ti := NewTypeInfoWithBase(
+func TestNewTypeSpecWithBase(t *testing.T) {
+	ti := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns3"),
-		NewTypeInfo(NewFQTypeName("test2", "ns2")))
+		NewTypeSpec(NewFQTypeName("test2", "ns2")))
 	assert.Equal(t, "ns3.test1", ti.String())
 	if assert.NotNil(t, ti.Base(), "base expected") {
 		assert.Equal(t, "ns2.test2", ti.Base().String())
@@ -125,67 +125,67 @@ func TestNewTypeInfoWithBase(t *testing.T) {
 }
 
 func TestCommonBaseTypeSame(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	patient := NewTypeInfoWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	patient := NewTypeSpecWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
 	assert.Same(t, patient, CommonBaseType(patient, patient))
 }
 
 func TestCommonBaseTypeMiddle(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	patient := NewTypeInfoWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
-	person := NewTypeInfoWithBase(NewFQTypeName("Person", "FHIR"), domainResource)
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	patient := NewTypeSpecWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
+	person := NewTypeSpecWithBase(NewFQTypeName("Person", "FHIR"), domainResource)
 	assert.Same(t, domainResource, CommonBaseType(patient, person))
 }
 
 func TestCommonBaseTypeRoot(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	patient := NewTypeInfoWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
-	medication := NewTypeInfoWithBase(NewFQTypeName("Medication", "FHIR"), resource)
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	patient := NewTypeSpecWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
+	medication := NewTypeSpecWithBase(NewFQTypeName("Medication", "FHIR"), resource)
 	assert.Same(t, resource, CommonBaseType(patient, medication))
 }
 
 func TestCommonBaseTypeNone(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	patient := NewTypeInfoWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
-	other := NewTypeInfo(NewFQTypeName("Other", ""))
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+	patient := NewTypeSpecWithBase(NewFQTypeName("Patient", "FHIR"), domainResource)
+	other := NewTypeSpec(NewFQTypeName("Other", ""))
 	assert.Nil(t, CommonBaseType(patient, other), "no common base type expected")
 }
 
-func TestTypeInfoExtends(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
+func TestTypeSpecExtends(t *testing.T) {
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
 	assert.True(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
 }
 
-func TestTypeInfoExtendsNil(t *testing.T) {
-	resource := NewTypeInfo(nil)
+func TestTypeSpecExtendsNil(t *testing.T) {
+	resource := NewTypeSpec(nil)
 	assert.False(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
 }
 
-func TestTypeInfoExtendsBase(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+func TestTypeSpecExtendsBase(t *testing.T) {
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
 	assert.True(t, domainResource.Extends(NewFQTypeName("Resource", "FHIR")))
 }
 
-func TestTypeInfoExtendsNot(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+func TestTypeSpecExtendsNot(t *testing.T) {
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
 	assert.False(t, domainResource.Extends(NewFQTypeName("Patient", "FHIR")))
 }
 
-func TestTypeInfoExtendsBaseWithoutNamespace(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+func TestTypeSpecExtendsBaseWithoutNamespace(t *testing.T) {
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
 	assert.True(t, domainResource.Extends(NewTypeName("Resource")))
 }
 
-func TestTypeInfoExtendsNotWithoutNamespace(t *testing.T) {
-	resource := NewTypeInfo(NewFQTypeName("Resource", "FHIR"))
-	domainResource := NewTypeInfoWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
+func TestTypeSpecExtendsNotWithoutNamespace(t *testing.T) {
+	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
+	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
 	assert.False(t, domainResource.Extends(NewTypeName("Patient")))
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ func TestUnionPathFunc(t *testing.T) {
 			assert.Equal(t, int32(14), pathsys.IntegerValue(c.Get(2)))
 			assert.Equal(t, 12.0, pathsys.DecimalValueFloat64(c.Get(3)))
 		}
-		assert.Equal(t, "System.Any", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.Any", c.ItemTypeSpec().String())
 	}
 }
 
@@ -75,7 +75,7 @@ func TestUnionPathFuncNoCollection(t *testing.T) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 
@@ -91,7 +91,7 @@ func TestUnionPathFuncArgNil(t *testing.T) {
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 
@@ -107,7 +107,7 @@ func TestUnionPathFuncObjNil(t *testing.T) {
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 
@@ -153,7 +153,7 @@ func TestCombinePathFunc(t *testing.T) {
 				return pathsys.NewDecimalInt(12).Equal(c.Get(4))
 			})
 		}
-		assert.Equal(t, "System.Any", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.Any", c.ItemTypeSpec().String())
 	}
 }
 
@@ -171,7 +171,7 @@ func TestCombinePathFuncNoCollection(t *testing.T) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 
@@ -187,7 +187,7 @@ func TestCombinePathFuncArgNil(t *testing.T) {
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 
@@ -203,7 +203,7 @@ func TestCombinePathFuncObjNil(t *testing.T) {
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
 		}
-		assert.Equal(t, "System.String", c.ItemTypeInfo().String())
+		assert.Equal(t, "System.String", c.ItemTypeSpec().String())
 	}
 }
 

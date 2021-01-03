@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,22 +30,22 @@ package pathsys
 
 type ModelAdapter interface {
 	ConvertToSystem(node interface{}) interface{}
-	TypeInfo(node interface{}) TypeInfoAccessor
+	TypeSpec(node interface{}) TypeSpecAccessor
 	Equal(node1 interface{}, node2 interface{}) bool
 	Equivalent(node1 interface{}, node2 interface{}) bool
 	Navigate(node interface{}, name string) (interface{}, error)
 	Children(node interface{}) (CollectionAccessor, error)
 }
 
-func ModelTypeInfo(adapter ModelAdapter, node interface{}) TypeInfoAccessor {
+func ModelTypeSpec(adapter ModelAdapter, node interface{}) TypeSpecAccessor {
 	if node == nil {
 		return nil
 	}
 
 	if n, ok := node.(AnyAccessor); ok {
-		return n.TypeInfo()
+		return n.TypeSpec()
 	}
-	return adapter.TypeInfo(node)
+	return adapter.TypeSpec(node)
 }
 
 func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccessor) bool {
@@ -56,14 +56,14 @@ func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccesso
 	namespace := name.Namespace()
 	if len(namespace) == 0 || namespace == NamespaceName {
 		if n, ok := node.(AnyAccessor); ok {
-			if n.TypeInfo().Extends(name) {
+			if n.TypeSpec().Extends(name) {
 				return true
 			}
 		}
 	}
 
 	if namespace != NamespaceName {
-		if adapter.TypeInfo(node).Extends(name) {
+		if adapter.TypeSpec(node).Extends(name) {
 			return true
 		}
 	}
@@ -116,7 +116,7 @@ func SystemAnyTypeEqual(node1 AnyAccessor, node2 interface{}) bool {
 		return false
 	}
 	if sysNode2, ok := node2.(AnyAccessor); ok {
-		return node1.TypeInfo().Equal(sysNode2.TypeInfo())
+		return node1.TypeSpec().Equal(sysNode2.TypeSpec())
 	}
 	return false
 }

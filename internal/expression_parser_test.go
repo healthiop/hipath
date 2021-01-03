@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,7 @@ func TestParseUnionExpression(t *testing.T) {
 				assert.Equal(t, pathsys.NewInteger(12), c.Get(1))
 				assert.Equal(t, pathsys.NewInteger(11), c.Get(2))
 			}
-			assert.Equal(t, "System.Integer", c.ItemTypeInfo().String())
+			assert.Equal(t, "System.Integer", c.ItemTypeSpec().String())
 		}
 	}
 }
@@ -266,7 +266,7 @@ func TestParseInvocationExpressionUnion(t *testing.T) {
 				assert.Equal(t, pathsys.NewInteger(12), c.Get(2))
 				assert.Equal(t, pathsys.NewInteger(14), c.Get(3))
 			}
-			assert.Equal(t, "System.Integer", c.ItemTypeInfo().String())
+			assert.Equal(t, "System.Integer", c.ItemTypeSpec().String())
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,8 +35,8 @@ import (
 
 const NamespaceName = "System"
 
-var UndefinedTypeInfo = NewTypeInfoWithBase(nil, nil)
-var anyTypeInfo = NewTypeInfo(NewFQTypeName("Any", NamespaceName))
+var UndefinedTypeSpec = NewTypeSpecWithBase(nil, nil)
+var anyTypeSpec = NewTypeSpec(NewFQTypeName("Any", NamespaceName))
 
 type fqTypeName struct {
 	namespace string
@@ -52,17 +52,17 @@ type FQTypeNameAccessor interface {
 	Equal(node FQTypeNameAccessor) bool
 }
 
-type typeInfo struct {
-	base   TypeInfoAccessor
+type typeSpec struct {
+	base   TypeSpecAccessor
 	fqName FQTypeNameAccessor
 }
 
-type TypeInfoAccessor interface {
-	Base() TypeInfoAccessor
+type TypeSpecAccessor interface {
+	Base() TypeSpecAccessor
 	FQName() FQTypeNameAccessor
 	FQBaseName() FQTypeNameAccessor
 	String() string
-	Equal(node TypeInfoAccessor) bool
+	Equal(node TypeSpecAccessor) bool
 	Extends(name FQTypeNameAccessor) bool
 }
 
@@ -115,12 +115,12 @@ func FQTypeNameEqual(t1 FQTypeNameAccessor, t2 FQTypeNameAccessor) bool {
 	return t1 == t2 || (t1 != nil && t2 != nil && t1.Equal(t2))
 }
 
-func NewTypeInfo(fqName FQTypeNameAccessor) TypeInfoAccessor {
-	return NewTypeInfoWithBase(fqName, nil)
+func NewTypeSpec(fqName FQTypeNameAccessor) TypeSpecAccessor {
+	return NewTypeSpecWithBase(fqName, nil)
 }
 
-func NewTypeInfoWithBase(fqName FQTypeNameAccessor, base TypeInfoAccessor) TypeInfoAccessor {
-	return &typeInfo{
+func NewTypeSpecWithBase(fqName FQTypeNameAccessor, base TypeSpecAccessor) TypeSpecAccessor {
+	return &typeSpec{
 		base:   base,
 		fqName: fqName,
 	}
@@ -145,33 +145,33 @@ func (t *fqTypeName) Equal(node FQTypeNameAccessor) bool {
 	return t.String() == node.String()
 }
 
-func (t *typeInfo) Base() TypeInfoAccessor {
+func (t *typeSpec) Base() TypeSpecAccessor {
 	return t.base
 }
 
-func (t *typeInfo) FQName() FQTypeNameAccessor {
+func (t *typeSpec) FQName() FQTypeNameAccessor {
 	return t.fqName
 }
 
-func (t *typeInfo) FQBaseName() FQTypeNameAccessor {
+func (t *typeSpec) FQBaseName() FQTypeNameAccessor {
 	if t.base == nil {
 		return nil
 	}
 	return t.base.FQName()
 }
 
-func (t *typeInfo) String() string {
+func (t *typeSpec) String() string {
 	if t.fqName == nil {
 		return ""
 	}
 	return t.fqName.String()
 }
 
-func (t *typeInfo) Equal(node TypeInfoAccessor) bool {
+func (t *typeSpec) Equal(node TypeSpecAccessor) bool {
 	return FQTypeNameEqual(t.FQName(), node.FQName())
 }
 
-func (t *typeInfo) Extends(name FQTypeNameAccessor) bool {
+func (t *typeSpec) Extends(name FQTypeNameAccessor) bool {
 	if t.fqName == nil {
 		return false
 	}
@@ -193,7 +193,7 @@ func (t *typeInfo) Extends(name FQTypeNameAccessor) bool {
 	return false
 }
 
-func CommonBaseType(ti1 TypeInfoAccessor, ti2 TypeInfoAccessor) TypeInfoAccessor {
+func CommonBaseType(ti1 TypeSpecAccessor, ti2 TypeSpecAccessor) TypeSpecAccessor {
 	for t1 := ti1; t1 != nil; t1 = t1.Base() {
 		for t2 := ti2; t2 != nil; t2 = t2.Base() {
 			if t1.Equal(t2) {
@@ -204,10 +204,10 @@ func CommonBaseType(ti1 TypeInfoAccessor, ti2 TypeInfoAccessor) TypeInfoAccessor
 	return nil
 }
 
-func newAnyTypeInfo(name string) TypeInfoAccessor {
-	return newAnyTypeInfoWithBase(name, anyTypeInfo)
+func newAnyTypeSpec(name string) TypeSpecAccessor {
+	return newAnyTypeSpecWithBase(name, anyTypeSpec)
 }
 
-func newAnyTypeInfoWithBase(name string, base TypeInfoAccessor) TypeInfoAccessor {
-	return NewTypeInfoWithBase(NewFQTypeName(name, NamespaceName), base)
+func newAnyTypeSpecWithBase(name string, base TypeSpecAccessor) TypeSpecAccessor {
+	return NewTypeSpecWithBase(NewFQTypeName(name, NamespaceName), base)
 }

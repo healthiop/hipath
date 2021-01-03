@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ import (
 	"fmt"
 )
 
-var BooleanTypeInfo = newAnyTypeInfo("Boolean")
+var BooleanTypeSpec = newAnyTypeSpec("Boolean")
 
 type booleanType struct {
 	baseAnyType
@@ -101,8 +101,8 @@ func (t *booleanType) String() string {
 	return "false"
 }
 
-func (e *booleanType) TypeInfo() TypeInfoAccessor {
-	return BooleanTypeInfo
+func (e *booleanType) TypeSpec() TypeSpecAccessor {
+	return BooleanTypeSpec
 }
 
 func (t *booleanType) Equal(node interface{}) bool {

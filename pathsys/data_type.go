@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ const (
 
 type AnyAccessor interface {
 	DataType() DataTypes
-	TypeInfo() TypeInfoAccessor
+	TypeSpec() TypeSpecAccessor
 	Source() interface{}
 	Equal(node interface{}) bool
 	Equivalent(node interface{}) bool
