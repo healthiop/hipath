@@ -68,17 +68,21 @@ func NewCollection(adapter ModelAdapter) CollectionModifier {
 }
 
 func NewCollectionWithItem(adapter ModelAdapter, item interface{}) CollectionModifier {
-	c := newCollection(adapter, nil)
+	c := newCollection(adapter, nil, nil)
 	c.items = make([]interface{}, 1)
 	c.items[0] = c.prepareItem(item, true)
 	return c
 }
 
 func NewCollectionWithSource(adapter ModelAdapter, source interface{}) CollectionModifier {
-	return newCollection(adapter, source)
+	return newCollection(adapter, nil, source)
 }
 
-func newCollection(adapter ModelAdapter, source interface{}) *collectionType {
+func NewCollectionWithItemTypeSpec(adapter ModelAdapter, itemTypeSpec TypeSpecAccessor) CollectionModifier {
+	return newCollection(adapter, itemTypeSpec, nil)
+}
+
+func newCollection(adapter ModelAdapter, itemTypeSpec TypeSpecAccessor, source interface{}) *collectionType {
 	if adapter == nil {
 		panic("no adapter has been specified")
 	}
@@ -86,7 +90,8 @@ func newCollection(adapter ModelAdapter, source interface{}) *collectionType {
 		baseAnyType: baseAnyType{
 			source: source,
 		},
-		adapter: adapter,
+		adapter:      adapter,
+		itemTypeSpec: itemTypeSpec,
 	}
 }
 
@@ -99,9 +104,6 @@ func (c *collectionType) TypeSpec() TypeSpecAccessor {
 }
 
 func (c *collectionType) ItemTypeSpec() TypeSpecAccessor {
-	if c.itemTypeSpec == nil {
-		return UndefinedTypeSpec
-	}
 	return c.itemTypeSpec
 }
 
@@ -152,18 +154,6 @@ func (c *collectionType) prepareItem(item interface{}, convert bool) interface{}
 	if convert {
 		if _, ok := item.(AnyAccessor); !ok {
 			item = c.adapter.ConvertToSystem(item)
-		}
-	}
-
-	typeSpec := ModelTypeSpec(c.adapter, item)
-	if c.itemTypeSpec == nil {
-		c.itemTypeSpec = typeSpec
-	} else {
-		typeSpec = CommonBaseType(c.itemTypeSpec, typeSpec)
-		if typeSpec != nil {
-			c.itemTypeSpec = typeSpec
-		} else {
-			c.itemTypeSpec = UndefinedTypeSpec
 		}
 	}
 

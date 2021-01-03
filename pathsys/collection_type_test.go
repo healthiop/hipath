@@ -66,7 +66,24 @@ func TestNewCollection(t *testing.T) {
 	c := ctx.NewCollection()
 	assert.True(t, c.Empty(), "new collection must be empty")
 	assert.Equal(t, 0, c.Count())
-	assert.Same(t, UndefinedTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
+}
+
+func TestNewCollectionWithItemTypeSpec(t *testing.T) {
+	ctx := newTestContext(t)
+	c := NewCollectionWithItemTypeSpec(ctx.ModelAdapter(), StringTypeSpec)
+	assert.True(t, c.Empty(), "new collection must be empty")
+	assert.Equal(t, 0, c.Count())
+	assert.Same(t, StringTypeSpec, c.ItemTypeSpec())
+}
+
+func TestCollectionWithItemTypeSpec(t *testing.T) {
+	ctx := newTestContext(t)
+	c := NewCollectionWithItemTypeSpec(ctx.ModelAdapter(), StringTypeSpec)
+	c.Add(NewInteger(10))
+	assert.False(t, c.Empty(), "collection is not empty")
+	assert.Equal(t, 1, c.Count())
+	assert.Same(t, StringTypeSpec, c.ItemTypeSpec())
 }
 
 func TestNewCollectionGetEmpty(t *testing.T) {
@@ -86,7 +103,7 @@ func TestCollectionAddGet(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestNewCollectionWithItem(t *testing.T) {
@@ -96,21 +113,7 @@ func TestNewCollectionWithItem(t *testing.T) {
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
-}
-
-func TestCollectionAddBaseType(t *testing.T) {
-	ctx := newTestContext(t)
-	item1 := NewString("test1")
-	item2 := NewDecimalInt(10)
-	c := ctx.NewCollection()
-	c.Add(item1)
-	c.Add(item2)
-	assert.False(t, c.Empty(), "collection contains elements")
-	assert.Equal(t, 2, c.Count())
-	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, item2, c.Get(1))
-	assert.Same(t, anyTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddGetModel(t *testing.T) {
@@ -124,7 +127,7 @@ func TestCollectionAddGetModel(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
-	assert.Same(t, testTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestNewCollectionWithModemItem(t *testing.T) {
@@ -135,7 +138,7 @@ func TestNewCollectionWithModemItem(t *testing.T) {
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, testTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddGetConvertedModel(t *testing.T) {
@@ -153,7 +156,7 @@ func TestCollectionAddGetConvertedModel(t *testing.T) {
 	if assert.Implements(t, (*DecimalAccessor)(nil), c.Get(1)) {
 		assert.Equal(t, 12.1, c.Get(1).(DecimalAccessor).Float64())
 	}
-	assert.Same(t, DecimalTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddNil(t *testing.T) {
@@ -166,7 +169,7 @@ func TestCollectionAddNil(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Nil(t, c.Get(1))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueAll(t *testing.T) {
@@ -180,7 +183,7 @@ func TestCollectionAddUniqueAll(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueDupNil(t *testing.T) {
@@ -191,7 +194,7 @@ func TestCollectionAddUniqueDupNil(t *testing.T) {
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Nil(t, c.Get(0))
-	assert.Same(t, UndefinedTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueModel(t *testing.T) {
@@ -209,7 +212,7 @@ func TestCollectionAddUniqueModel(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
-	assert.Same(t, UndefinedTypeSpec, c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueConvertedModel(t *testing.T) {
@@ -222,7 +225,7 @@ func TestCollectionAddUniqueConvertedModel(t *testing.T) {
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueDiscard(t *testing.T) {
@@ -235,7 +238,7 @@ func TestCollectionAddUniqueDiscard(t *testing.T) {
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddUniqueExistingNil(t *testing.T) {
@@ -248,7 +251,7 @@ func TestCollectionAddUniqueExistingNil(t *testing.T) {
 	assert.Equal(t, 2, c.Count())
 	assert.Nil(t, c.Get(0))
 	assert.Same(t, item1, c.Get(1))
-	assert.Same(t, item1.TypeSpec(), c.ItemTypeSpec())
+	assert.Nil(t, c.ItemTypeSpec())
 }
 
 func TestCollectionAddAllUnique(t *testing.T) {
@@ -274,7 +277,6 @@ func TestCollectionAddAllUnique(t *testing.T) {
 		assert.Same(t, item5, c2.Get(1))
 		assert.Same(t, item1, c2.Get(2))
 		assert.Same(t, item3, c2.Get(3))
-		assert.Same(t, item1.TypeSpec(), c2.ItemTypeSpec())
 	}
 }
 
@@ -302,7 +304,6 @@ func TestCollectionAddAll(t *testing.T) {
 		assert.Same(t, item1, c2.Get(2))
 		assert.Same(t, item2, c2.Get(3))
 		assert.Same(t, item3, c2.Get(4))
-		assert.Same(t, item1.TypeSpec(), c2.ItemTypeSpec())
 	}
 }
 

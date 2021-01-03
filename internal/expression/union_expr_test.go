@@ -71,7 +71,6 @@ func TestUnionExpressionCollection(t *testing.T) {
 			assert.Equal(t, int32(14), pathsys.IntegerValue(col.Get(2)))
 			assert.Equal(t, 12.0, pathsys.DecimalValueFloat64(col.Get(3)))
 		}
-		assert.Equal(t, "System.Any", col.ItemTypeSpec().String())
 	}
 }
 
