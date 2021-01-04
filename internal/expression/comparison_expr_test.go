@@ -29,24 +29,24 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestComparisonExpressionLessOrEqualCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewString("test1"))
+	c1.Add(hipathsys.NewString("test1"))
 	c2 := ctx.NewCollection()
-	c2.Add(pathsys.NewString("test7"))
+	c2.Add(hipathsys.NewString("test7"))
 
 	e := NewComparisonExpression(newTestExpression(c1), LessOrEqualThanOp, newTestExpression(c2))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -56,8 +56,8 @@ func TestComparisonExpressionLessOrEqualLess(t *testing.T) {
 		LessOrEqualThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -67,8 +67,8 @@ func TestComparisonExpressionLessOrEqualEqual(t *testing.T) {
 		LessOrEqualThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -78,8 +78,8 @@ func TestComparisonExpressionLessOrEqualNot(t *testing.T) {
 		LessOrEqualThanOp, NewRawStringLiteral("test1"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -89,8 +89,8 @@ func TestComparisonExpressionLess(t *testing.T) {
 		LessThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -100,8 +100,8 @@ func TestComparisonExpressionLessNot(t *testing.T) {
 		LessThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -111,8 +111,8 @@ func TestComparisonExpressionGreater(t *testing.T) {
 		GreaterThanOp, NewRawStringLiteral("test1"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -122,8 +122,8 @@ func TestComparisonExpressionGreaterNot(t *testing.T) {
 		GreaterThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -133,8 +133,8 @@ func TestComparisonExpressionGreaterOrEqualLess(t *testing.T) {
 		GreaterOrEqualThanOp, NewRawStringLiteral("test1"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -144,8 +144,8 @@ func TestComparisonExpressionGreaterOrEqualEqual(t *testing.T) {
 		GreaterOrEqualThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -155,8 +155,8 @@ func TestComparisonExpressionGreaterOrEqualNot(t *testing.T) {
 		GreaterOrEqualThanOp, NewRawStringLiteral("test7"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-		assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+		assert.Equal(t, false, node.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -226,8 +226,8 @@ func TestComparisonExpressionInconvertible(t *testing.T) {
 func TestComparisonExpressionEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	e := NewComparisonExpression(
-		newTestExpression(pathsys.NewDateYMDWithPrecision(2020, 7, 1, pathsys.DayDatePrecision)),
-		GreaterOrEqualThanOp, newTestExpression(pathsys.NewDateYMDWithPrecision(2020, 7, 1, pathsys.MonthDatePrecision)))
+		newTestExpression(hipathsys.NewDateYMDWithPrecision(2020, 7, 1, hipathsys.DayDatePrecision)),
+		GreaterOrEqualThanOp, newTestExpression(hipathsys.NewDateYMDWithPrecision(2020, 7, 1, hipathsys.MonthDatePrecision)))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, node, "empty result expected")

@@ -29,21 +29,21 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"time"
 )
 
 type traceFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTraceFunction() *traceFunction {
 	return &traceFunction{
-		BaseFunction: pathsys.NewBaseFunction("trace", 1, 1, 2),
+		BaseFunction: hipathsys.NewBaseFunction("trace", 1, 1, 2),
 	}
 }
 
-func (f *traceFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *traceFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	tracer := ctx.Tracer()
 	if tracer == nil {
 		return node, nil
@@ -61,9 +61,9 @@ func (f *traceFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, a
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 
-	var traced pathsys.CollectionAccessor
+	var traced hipathsys.CollectionAccessor
 	if count == 0 {
-		traced = pathsys.EmptyCollection
+		traced = hipathsys.EmptyCollection
 	} else if loopEvaluator := loop.Evaluator(); loopEvaluator != nil {
 		projected := ctx.NewCollection()
 		for i := 0; i < count; i++ {
@@ -86,43 +86,43 @@ func (f *traceFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, a
 }
 
 type nowFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newNowFunction() *nowFunction {
 	return &nowFunction{
-		BaseFunction: pathsys.NewBaseFunction("now", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("now", -1, 0, 0),
 	}
 }
 
-func (f *nowFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
-	return pathsys.NewDateTime(time.Now()), nil
+func (f *nowFunction) Execute(_ hipathsys.ContextAccessor, _ interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
+	return hipathsys.NewDateTime(time.Now()), nil
 }
 
 type timeOfDayFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTimeOfDayFunction() *timeOfDayFunction {
 	return &timeOfDayFunction{
-		BaseFunction: pathsys.NewBaseFunction("timeOfDay", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("timeOfDay", -1, 0, 0),
 	}
 }
 
-func (f *timeOfDayFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
-	return pathsys.NewTime(time.Now()), nil
+func (f *timeOfDayFunction) Execute(_ hipathsys.ContextAccessor, _ interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
+	return hipathsys.NewTime(time.Now()), nil
 }
 
 type todayFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTodayFunction() *todayFunction {
 	return &todayFunction{
-		BaseFunction: pathsys.NewBaseFunction("today", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("today", -1, 0, 0),
 	}
 }
 
-func (f *todayFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
-	return pathsys.NewDate(time.Now()), nil
+func (f *todayFunction) Execute(_ hipathsys.ContextAccessor, _ interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
+	return hipathsys.NewDate(time.Now()), nil
 }

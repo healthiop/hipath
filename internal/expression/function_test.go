@@ -29,14 +29,14 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 var functionTests = []struct {
 	name           string
-	executor       pathsys.FunctionExecutor
+	executor       hipathsys.FunctionExecutor
 	evaluatorParam int
 	minParams      int
 	maxParams      int

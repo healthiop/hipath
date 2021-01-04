@@ -29,7 +29,7 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"strconv"
 	"strings"
 )
@@ -37,15 +37,15 @@ import (
 const stringDelimiterChar = '\''
 
 type StringLiteral struct {
-	node pathsys.StringAccessor
+	node hipathsys.StringAccessor
 }
 
-func NewRawStringLiteral(value string) pathsys.Evaluator {
-	return &StringLiteral{pathsys.NewString(value)}
+func NewRawStringLiteral(value string) hipathsys.Evaluator {
+	return &StringLiteral{hipathsys.NewString(value)}
 }
 
-func ParseStringLiteral(value string) pathsys.Evaluator {
-	return &StringLiteral{pathsys.NewString(parseStringLiteral(value, stringDelimiterChar))}
+func ParseStringLiteral(value string) hipathsys.Evaluator {
+	return &StringLiteral{hipathsys.NewString(parseStringLiteral(value, stringDelimiterChar))}
 }
 
 func parseStringLiteral(value string, delimiter byte) string {
@@ -105,6 +105,6 @@ func parseStringLiteral(value string, delimiter byte) string {
 	return b.String()
 }
 
-func (e *StringLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *StringLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

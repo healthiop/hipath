@@ -30,13 +30,13 @@ package gohipath
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal"
-	"github.com/volsch/gohipath/internal/parser"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal"
+	"github.com/healthiop/hipath/internal/parser"
 )
 
 type Path struct {
-	evaluator pathsys.Evaluator
+	evaluator hipathsys.Evaluator
 }
 
 func Compile(pathString string) (*Path, *internal.Error) {
@@ -61,5 +61,5 @@ func Compile(pathString string) (*Path, *internal.Error) {
 			"error when parsing path expression", errorItemCollection.Items())
 	}
 
-	return &Path{evaluator: res.(pathsys.Evaluator)}, nil
+	return &Path{evaluator: res.(hipathsys.Evaluator)}, nil
 }

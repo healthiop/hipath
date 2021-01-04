@@ -30,7 +30,7 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/parser"
+	"github.com/healthiop/hipath/internal/parser"
 )
 
 func testParse(pathString string) (res interface{}, errorItemCollection *ErrorItemCollection) {

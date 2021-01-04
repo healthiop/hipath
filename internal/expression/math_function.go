@@ -30,20 +30,20 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type absFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newAbsFunction() *absFunction {
 	return &absFunction{
-		BaseFunction: pathsys.NewBaseFunction("abs", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("abs", -1, 0, 0),
 	}
 }
 
-func (f *absFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *absFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	a, err := arithmeticNode(node)
 	if a == nil || err != nil {
 		return nil, err
@@ -53,16 +53,16 @@ func (f *absFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []i
 }
 
 type ceilingFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newCeilingFunction() *ceilingFunction {
 	return &ceilingFunction{
-		BaseFunction: pathsys.NewBaseFunction("ceiling", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("ceiling", -1, 0, 0),
 	}
 }
 
-func (f *ceilingFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *ceilingFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -72,16 +72,16 @@ func (f *ceilingFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _
 }
 
 type expFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newExpFunction() *expFunction {
 	return &expFunction{
-		BaseFunction: pathsys.NewBaseFunction("exp", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("exp", -1, 0, 0),
 	}
 }
 
-func (f *expFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *expFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -91,16 +91,16 @@ func (f *expFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []i
 }
 
 type floorFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newFloorFunction() *floorFunction {
 	return &floorFunction{
-		BaseFunction: pathsys.NewBaseFunction("floor", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("floor", -1, 0, 0),
 	}
 }
 
-func (f *floorFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *floorFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -110,16 +110,16 @@ func (f *floorFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ [
 }
 
 type lnFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newLnFunction() *lnFunction {
 	return &lnFunction{
-		BaseFunction: pathsys.NewBaseFunction("ln", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("ln", -1, 0, 0),
 	}
 }
 
-func (f *lnFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *lnFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -129,16 +129,16 @@ func (f *lnFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []in
 }
 
 type logFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newLogFunction() *logFunction {
 	return &logFunction{
-		BaseFunction: pathsys.NewBaseFunction("log", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("log", -1, 1, 1),
 	}
 }
 
-func (f *logFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *logFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -153,16 +153,16 @@ func (f *logFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args 
 }
 
 type powerFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newPowerFunction() *powerFunction {
 	return &powerFunction{
-		BaseFunction: pathsys.NewBaseFunction("power", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("power", -1, 1, 1),
 	}
 }
 
-func (f *powerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *powerFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -181,16 +181,16 @@ func (f *powerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, arg
 }
 
 type roundFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newRoundFunction() *roundFunction {
 	return &roundFunction{
-		BaseFunction: pathsys.NewBaseFunction("round", -1, 0, 1),
+		BaseFunction: hipathsys.NewBaseFunction("round", -1, 0, 1),
 	}
 }
 
-func (f *roundFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *roundFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -210,23 +210,23 @@ func (f *roundFunction) Execute(_ pathsys.ContextAccessor, node interface{}, arg
 		return nil, err
 	}
 
-	if i, ok := r.(pathsys.IntegerAccessor); ok {
-		return pathsys.NewDecimal(i.Decimal()), nil
+	if i, ok := r.(hipathsys.IntegerAccessor); ok {
+		return hipathsys.NewDecimal(i.Decimal()), nil
 	}
 	return r, nil
 }
 
 type sqrtFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newSqrtFunction() *sqrtFunction {
 	return &sqrtFunction{
-		BaseFunction: pathsys.NewBaseFunction("sqrt", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("sqrt", -1, 0, 0),
 	}
 }
 
-func (f *sqrtFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *sqrtFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
@@ -240,61 +240,61 @@ func (f *sqrtFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []
 }
 
 type truncateFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTruncateFunction() *truncateFunction {
 	return &truncateFunction{
-		BaseFunction: pathsys.NewBaseFunction("truncate", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("truncate", -1, 0, 0),
 	}
 }
 
-func (f *truncateFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *truncateFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	n, err := numberNode(node)
 	if n == nil || err != nil {
 		return nil, err
 	}
 
 	t := n.Truncate(0)
-	if i, ok := t.(pathsys.IntegerAccessor); ok {
+	if i, ok := t.(hipathsys.IntegerAccessor); ok {
 		return i, nil
 	}
-	return pathsys.NewInteger(t.Int()), nil
+	return hipathsys.NewInteger(t.Int()), nil
 }
 
-func arithmeticNode(node interface{}) (pathsys.ArithmeticApplier, error) {
+func arithmeticNode(node interface{}) (hipathsys.ArithmeticApplier, error) {
 	value := unwrapCollection(node)
 	if value == nil {
 		return nil, nil
 	}
 
-	if a, ok := value.(pathsys.ArithmeticApplier); !ok {
+	if a, ok := value.(hipathsys.ArithmeticApplier); !ok {
 		return nil, fmt.Errorf("arithmetic cannot be applied: %T", value)
 	} else {
 		return a, nil
 	}
 }
 
-func numberNode(node interface{}) (pathsys.NumberAccessor, error) {
+func numberNode(node interface{}) (hipathsys.NumberAccessor, error) {
 	value := unwrapCollection(node)
 	if value == nil {
 		return nil, nil
 	}
 
-	if a, ok := value.(pathsys.NumberAccessor); !ok {
+	if a, ok := value.(hipathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("not a number: %T", value)
 	} else {
 		return a, nil
 	}
 }
 
-func integerNode(node interface{}) (pathsys.IntegerAccessor, error) {
+func integerNode(node interface{}) (hipathsys.IntegerAccessor, error) {
 	value := unwrapCollection(node)
 	if value == nil {
 		return nil, nil
 	}
 
-	if a, ok := value.(pathsys.IntegerAccessor); !ok {
+	if a, ok := value.(hipathsys.IntegerAccessor); !ok {
 		return nil, fmt.Errorf("not an integer: %T", value)
 	} else {
 		return a, nil

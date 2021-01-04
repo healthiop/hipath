@@ -30,19 +30,19 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type IndexerExpression struct {
-	exprEvaluator  pathsys.Evaluator
-	indexEvaluator pathsys.Evaluator
+	exprEvaluator  hipathsys.Evaluator
+	indexEvaluator hipathsys.Evaluator
 }
 
-func NewIndexerExpression(exprEvaluator pathsys.Evaluator, indexEvaluator pathsys.Evaluator) *IndexerExpression {
+func NewIndexerExpression(exprEvaluator hipathsys.Evaluator, indexEvaluator hipathsys.Evaluator) *IndexerExpression {
 	return &IndexerExpression{exprEvaluator, indexEvaluator}
 }
 
-func (e *IndexerExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *IndexerExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	col, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (e *IndexerExpression) Evaluate(ctx pathsys.ContextAccessor, node interface
 	}
 
 	var indexValue int
-	if n, ok := index.(pathsys.NumberAccessor); !ok {
+	if n, ok := index.(hipathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("index is not a number: %T", index)
 	} else {
 		indexValue = int(n.Int())
@@ -67,7 +67,7 @@ func (e *IndexerExpression) Evaluate(ctx pathsys.ContextAccessor, node interface
 		return nil, nil
 	}
 
-	if c, ok := col.(pathsys.CollectionAccessor); ok {
+	if c, ok := col.(hipathsys.CollectionAccessor); ok {
 		if indexValue >= c.Count() {
 			return nil, nil
 		}

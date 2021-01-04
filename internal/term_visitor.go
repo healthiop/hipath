@@ -30,9 +30,9 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/parser"
 )
 
 func (v *Visitor) VisitParenthesizedTerm(ctx *parser.ParenthesizedTermContext) interface{} {
@@ -51,7 +51,7 @@ func (v *Visitor) VisitExternalConstant(ctx *parser.ExternalConstantContext) int
 	return v.visitTree(ctx, 2, visitExternalConstant)
 }
 
-func visitExternalConstant(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitExternalConstant(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 	name := args[1].(string)
 	return expression.ParseExtConstantTerm(expression.ExtractIdentifier(name)), nil
 }
@@ -60,7 +60,7 @@ func (v *Visitor) VisitInvocationTerm(ctx *parser.InvocationTermContext) interfa
 	return v.visitTree(ctx, 1, visitInvocationTerm)
 }
 
-func visitInvocationTerm(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	invocationEvaluator := args[0].(pathsys.Evaluator)
+func visitInvocationTerm(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
+	invocationEvaluator := args[0].(hipathsys.Evaluator)
 	return expression.NewInvocationTerm(invocationEvaluator), nil
 }

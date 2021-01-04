@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -41,8 +41,8 @@ func TestNegatorExpressionEvaluate(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, float64(-123.45), res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, float64(-123.45), res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 

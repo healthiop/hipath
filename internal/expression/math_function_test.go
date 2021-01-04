@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -48,7 +48,7 @@ func TestAbsFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -57,40 +57,40 @@ func TestAbsFuncIntegerPos(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestAbsFuncIntegerNegs(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(-10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(-10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestAbsFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(-10))
+	col.Add(hipathsys.NewInteger(-10))
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestAbsFuncDecimalPos(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, 10.21, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, 10.21, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -98,10 +98,10 @@ func TestAbsFuncDecimalNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(-10.21), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(-10.21), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, 10.21, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, 10.21, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -109,11 +109,11 @@ func TestAbsFuncQuanityPos(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewQuantity(pathsys.NewDecimalFloat64(10.21), pathsys.NewString("cm")), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewQuantity(hipathsys.NewDecimalFloat64(10.21), hipathsys.NewString("cm")), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-		assert.Equal(t, 10.21, res.(pathsys.QuantityAccessor).Value().Float64())
-		assert.Equal(t, pathsys.NewString("cm"), res.(pathsys.QuantityAccessor).Unit())
+	if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+		assert.Equal(t, 10.21, res.(hipathsys.QuantityAccessor).Value().Float64())
+		assert.Equal(t, hipathsys.NewString("cm"), res.(hipathsys.QuantityAccessor).Unit())
 	}
 }
 
@@ -121,11 +121,11 @@ func TestAbsFuncQuanityNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newAbsFunction()
-	res, err := f.Execute(ctx, pathsys.NewQuantity(pathsys.NewDecimalFloat64(-10.21), pathsys.NewString("cm")), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewQuantity(hipathsys.NewDecimalFloat64(-10.21), hipathsys.NewString("cm")), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-		assert.Equal(t, 10.21, res.(pathsys.QuantityAccessor).Value().Float64())
-		assert.Equal(t, pathsys.NewString("cm"), res.(pathsys.QuantityAccessor).Unit())
+	if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+		assert.Equal(t, 10.21, res.(hipathsys.QuantityAccessor).Value().Float64())
+		assert.Equal(t, hipathsys.NewString("cm"), res.(hipathsys.QuantityAccessor).Unit())
 	}
 }
 
@@ -142,7 +142,7 @@ func TestCeilingFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newCeilingFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -151,10 +151,10 @@ func TestCeilingFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newCeilingFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 10.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 10.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -162,22 +162,22 @@ func TestCeilingFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newCeilingFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestCeilingFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newCeilingFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 11.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 11.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -194,7 +194,7 @@ func TestFloorFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newFloorFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -203,10 +203,10 @@ func TestFloorFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newFloorFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 10.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 10.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -214,22 +214,22 @@ func TestFloorFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newFloorFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestFloorFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newFloorFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 10.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 10.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -246,7 +246,7 @@ func TestExpFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newExpFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -255,10 +255,10 @@ func TestExpFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newExpFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 22026.46579, res.(pathsys.DecimalAccessor).Float64(), .000005)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 22026.46579, res.(hipathsys.DecimalAccessor).Float64(), .000005)
 	}
 }
 
@@ -266,13 +266,13 @@ func TestExpFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newExpFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 22026.46579, res.(pathsys.DecimalAccessor).Float64(), .000005)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 22026.46579, res.(hipathsys.DecimalAccessor).Float64(), .000005)
 	}
 }
 
@@ -280,10 +280,10 @@ func TestExpFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newExpFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.21), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 27173.567589, res.(pathsys.DecimalAccessor).Float64(), .0000005)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 27173.567589, res.(hipathsys.DecimalAccessor).Float64(), .0000005)
 	}
 }
 
@@ -300,7 +300,7 @@ func TestLnFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLnFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -309,10 +309,10 @@ func TestLnFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLnFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 2.302585, res.(pathsys.DecimalAccessor).Float64(), .0000001)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 2.302585, res.(hipathsys.DecimalAccessor).Float64(), .0000001)
 	}
 }
 
@@ -320,13 +320,13 @@ func TestLnFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newLnFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 2.302585, res.(pathsys.DecimalAccessor).Float64(), .0000001)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 2.302585, res.(hipathsys.DecimalAccessor).Float64(), .0000001)
 	}
 }
 
@@ -334,10 +334,10 @@ func TestLnFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLnFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 2.38047, res.(pathsys.DecimalAccessor).Float64(), .000002)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 2.38047, res.(hipathsys.DecimalAccessor).Float64(), .000002)
 	}
 }
 
@@ -345,7 +345,7 @@ func TestLnFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLnFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(0), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(0), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "NaN expected")
 }
@@ -354,7 +354,7 @@ func TestLogFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewInteger(1)}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewInteger(1)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -363,7 +363,7 @@ func TestLogFuncBaseNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -372,7 +372,7 @@ func TestLogFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{pathsys.NewInteger(1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{hipathsys.NewInteger(1)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -381,7 +381,7 @@ func TestLogFuncBaseOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -390,10 +390,10 @@ func TestLogFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{pathsys.NewInteger(5)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{hipathsys.NewInteger(5)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 1.430676, res.(pathsys.DecimalAccessor).Float64(), .0000006)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 1.430676, res.(hipathsys.DecimalAccessor).Float64(), .0000006)
 	}
 }
 
@@ -401,13 +401,13 @@ func TestLogFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewInteger(5)}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(5)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 1.430676, res.(pathsys.DecimalAccessor).Float64(), .0000006)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 1.430676, res.(hipathsys.DecimalAccessor).Float64(), .0000006)
 	}
 }
 
@@ -415,13 +415,13 @@ func TestLogFuncIntegerBaseCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(5))
+	col.Add(hipathsys.NewInteger(5))
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{col}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 1.430676, res.(pathsys.DecimalAccessor).Float64(), .0000006)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 1.430676, res.(hipathsys.DecimalAccessor).Float64(), .0000006)
 	}
 }
 
@@ -429,10 +429,10 @@ func TestLogFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.81), []interface{}{pathsys.NewDecimalFloat64(5.12)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.81), []interface{}{hipathsys.NewDecimalFloat64(5.12)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 1.45759, res.(pathsys.DecimalAccessor).Float64(), .00002)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 1.45759, res.(hipathsys.DecimalAccessor).Float64(), .00002)
 	}
 }
 
@@ -440,7 +440,7 @@ func TestLogFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(0), []interface{}{pathsys.NewDecimalFloat64(2)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(0), []interface{}{hipathsys.NewDecimalFloat64(2)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "NaN expected")
 }
@@ -449,7 +449,7 @@ func TestLogFuncErrorBase(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLogFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10), []interface{}{pathsys.NewDecimalFloat64(0)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10), []interface{}{hipathsys.NewDecimalFloat64(0)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "NaN expected")
 }
@@ -458,7 +458,7 @@ func TestPowerFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewInteger(1)}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewInteger(1)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -467,7 +467,7 @@ func TestPowerFuncExpNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -476,7 +476,7 @@ func TestPowerFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{pathsys.NewInteger(1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{hipathsys.NewInteger(1)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -485,7 +485,7 @@ func TestPowerFuncExpOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -494,10 +494,10 @@ func TestPowerFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(4), []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(4), []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 64.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 64.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -505,13 +505,13 @@ func TestPowerFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(4))
+	col.Add(hipathsys.NewInteger(4))
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 64.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 64.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -519,13 +519,13 @@ func TestPowerFuncIntegerExpCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(3))
+	col.Add(hipathsys.NewInteger(3))
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(4), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(4), []interface{}{col}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, 64.0, res.(pathsys.IntegerAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, 64.0, res.(hipathsys.IntegerAccessor).Float64())
 	}
 }
 
@@ -533,10 +533,10 @@ func TestPowerFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(4.5), []interface{}{pathsys.NewDecimalFloat64(3.2)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(4.5), []interface{}{hipathsys.NewDecimalFloat64(3.2)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 123.10623, res.(pathsys.DecimalAccessor).Float64(), .000004)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 123.10623, res.(hipathsys.DecimalAccessor).Float64(), .000004)
 	}
 }
 
@@ -544,7 +544,7 @@ func TestPowerFuncEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newPowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(-1), []interface{}{pathsys.NewDecimalFloat64(0.5)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(-1), []interface{}{hipathsys.NewDecimalFloat64(0.5)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "NaN expected")
 }
@@ -562,7 +562,7 @@ func TestRoundFuncPewcisionNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -571,7 +571,7 @@ func TestRoundFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -580,7 +580,7 @@ func TestRoundFuncPrecisionOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(1), []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(1), []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -589,10 +589,10 @@ func TestRoundFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(4), []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(4), []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, 4.0, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, 4.0, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -600,13 +600,13 @@ func TestRoundFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(4))
+	col.Add(hipathsys.NewInteger(4))
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, 4.0, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, 4.0, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -614,13 +614,13 @@ func TestRoundFuncPrecisionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(2))
+	col.Add(hipathsys.NewInteger(2))
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(3.255), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(3.255), []interface{}{col}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, 3.26, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, 3.26, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -628,10 +628,10 @@ func TestRoundFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(3.255), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(3.255), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 3.0, res.(pathsys.DecimalAccessor).Float64(), .000004)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 3.0, res.(hipathsys.DecimalAccessor).Float64(), .000004)
 	}
 }
 
@@ -639,10 +639,10 @@ func TestRoundFuncDecimalPrecision(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(3.255), []interface{}{pathsys.NewInteger(2)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(3.255), []interface{}{hipathsys.NewInteger(2)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 3.26, res.(pathsys.DecimalAccessor).Float64(), .000004)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 3.26, res.(hipathsys.DecimalAccessor).Float64(), .000004)
 	}
 }
 
@@ -650,7 +650,7 @@ func TestRoundFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newRoundFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(-1), []interface{}{pathsys.NewInteger(-1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(-1), []interface{}{hipathsys.NewInteger(-1)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "NaN expected")
 }
@@ -668,7 +668,7 @@ func TestSqrtFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSqrtFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -677,10 +677,10 @@ func TestSqrtFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSqrtFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 3.16227, res.(pathsys.DecimalAccessor).Float64(), .000008)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 3.16227, res.(hipathsys.DecimalAccessor).Float64(), .000008)
 	}
 }
 
@@ -688,13 +688,13 @@ func TestSqrtFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newSqrtFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 3.16227, res.(pathsys.DecimalAccessor).Float64(), .000008)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 3.16227, res.(hipathsys.DecimalAccessor).Float64(), .000008)
 	}
 }
 
@@ -702,10 +702,10 @@ func TestSqrtFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSqrtFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.InDelta(t, 3.287856, res.(pathsys.DecimalAccessor).Float64(), .0000005)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.InDelta(t, 3.287856, res.(hipathsys.DecimalAccessor).Float64(), .0000005)
 	}
 }
 
@@ -713,7 +713,7 @@ func TestSqrtFuncNaN(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSqrtFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(-1), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(-1), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
 }
@@ -731,7 +731,7 @@ func TestTruncateFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newTruncateFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -740,10 +740,10 @@ func TestTruncateFuncInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newTruncateFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.InDelta(t, 10, res.(pathsys.IntegerAccessor).Float64(), .0000001)
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.InDelta(t, 10, res.(hipathsys.IntegerAccessor).Float64(), .0000001)
 	}
 }
 
@@ -751,13 +751,13 @@ func TestTruncateFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newTruncateFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.InDelta(t, 10, res.(pathsys.IntegerAccessor).Float64(), .0000001)
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.InDelta(t, 10, res.(hipathsys.IntegerAccessor).Float64(), .0000001)
 	}
 }
 
@@ -765,9 +765,9 @@ func TestTruncateFuncDecimal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newTruncateFunction()
-	res, err := f.Execute(ctx, pathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(10.81), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.InDelta(t, 10.0, res.(pathsys.IntegerAccessor).Float64(), .000002)
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.InDelta(t, 10.0, res.(hipathsys.IntegerAccessor).Float64(), .000002)
 	}
 }

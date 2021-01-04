@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -39,7 +39,7 @@ func TestIndexOfFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -48,7 +48,7 @@ func TestIndexOfFuncSubstringNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -57,7 +57,7 @@ func TestIndexOfFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, "test", []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, "test", []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -66,7 +66,7 @@ func TestIndexOfFuncSubstringOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{"test"}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{"test"}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -75,11 +75,11 @@ func TestIndexOfFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -88,11 +88,11 @@ func TestIndexOfFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -101,27 +101,27 @@ func TestIndexOfFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("xy")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(16), res)
+	assert.Equal(t, hipathsys.NewInteger(16), res)
 }
 
 func TestIndexOfFuncNotFound(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newIndexOfFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("xyz")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("xyz")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(-1), res)
+	assert.Equal(t, hipathsys.NewInteger(-1), res)
 }
 
 func TestSubstringFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -130,7 +130,7 @@ func TestSubstringFuncNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewInteger(10), []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -139,10 +139,10 @@ func TestSubstringFuncValidStart(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "defg", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "defg", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -150,13 +150,13 @@ func TestSubstringFuncColValidStart(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("abcdefg"))
+	col.Add(hipathsys.NewString("abcdefg"))
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "defg", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "defg", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -164,13 +164,13 @@ func TestSubstringFuncValidStartCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(3))
+	col.Add(hipathsys.NewInteger(3))
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{col}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "defg", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "defg", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -178,11 +178,11 @@ func TestSubstringFuncValidStartLenNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewInteger(3), nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewInteger(3), nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "defg", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "defg", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -190,8 +190,8 @@ func TestSubstringFuncStartNoInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewDecimalInt(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewDecimalInt(3)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -200,11 +200,11 @@ func TestSubstringFuncStartNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewInteger(-1), pathsys.NewInteger(3)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewInteger(-1), hipathsys.NewInteger(3)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "abc", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "abc", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -212,8 +212,8 @@ func TestSubstringFuncValidStartLenNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewInteger(2), pathsys.NewInteger(-1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewInteger(2), hipathsys.NewInteger(-1)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -222,8 +222,8 @@ func TestSubstringFuncValidStartLenNoInteger(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewInteger(2), pathsys.NewDecimalInt(-1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewInteger(2), hipathsys.NewDecimalInt(-1)}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -232,11 +232,11 @@ func TestSubstringFuncSpecialChars(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("áóúñçÁÓÚ"),
-		[]interface{}{pathsys.NewInteger(2), pathsys.NewInteger(4)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("áóúñçÁÓÚ"),
+		[]interface{}{hipathsys.NewInteger(2), hipathsys.NewInteger(4)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "úñçÁ", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "úñçÁ", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -244,11 +244,11 @@ func TestSubstringFuncValidStartLen(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{
-		pathsys.NewInteger(1), pathsys.NewInteger(2)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{
+		hipathsys.NewInteger(1), hipathsys.NewInteger(2)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "bc", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "bc", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -256,14 +256,14 @@ func TestSubstringFuncValidStartColLen(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(2))
+	col.Add(hipathsys.NewInteger(2))
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{
-		pathsys.NewInteger(1), col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{
+		hipathsys.NewInteger(1), col}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "bc", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "bc", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -271,11 +271,11 @@ func TestSubstringFuncValidStartExceededLen(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{
-		pathsys.NewInteger(6), pathsys.NewInteger(2)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{
+		hipathsys.NewInteger(6), hipathsys.NewInteger(2)}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, "g", res.(pathsys.StringAccessor).String())
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, "g", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -283,8 +283,8 @@ func TestSubstringFuncExceededStart(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newSubstringFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"), []interface{}{
-		pathsys.NewInteger(7), pathsys.NewInteger(1)}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{
+		hipathsys.NewInteger(7), hipathsys.NewInteger(1)}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -293,7 +293,7 @@ func TestStartsWithFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -302,7 +302,7 @@ func TestStartsWithFuncSubstringNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -311,16 +311,16 @@ func TestStartsWithFuncSubstringEmptyString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{pathsys.NewString("")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{hipathsys.NewString("")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestStartsWithFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, "test", []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, "test", []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -329,7 +329,7 @@ func TestStartsWithFuncSubstringOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{"test"}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{"test"}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -338,11 +338,11 @@ func TestStartsWithFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -351,11 +351,11 @@ func TestStartsWithFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -364,37 +364,37 @@ func TestStartsWithFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("This is a")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("This is a")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestStartsWithFuncNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("This is b")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("This is b")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestStartsWithFuncInside(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newStartsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("is a test")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("is a test")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestEndsWithFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -403,7 +403,7 @@ func TestEndsWithFuncSubstringNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -412,16 +412,16 @@ func TestEndsWithFuncSubstringEmptyString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{pathsys.NewString("")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{hipathsys.NewString("")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestEndsWithFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, "test", []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, "test", []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -430,7 +430,7 @@ func TestEndsWithFuncSubstringOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{"test"}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{"test"}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -439,11 +439,11 @@ func TestEndsWithFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -452,11 +452,11 @@ func TestEndsWithFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -465,37 +465,37 @@ func TestEndsWithFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("ABC xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("ABC xy")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestEndsWithFuncNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("aBC xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("aBC xy")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestEndsWithFuncInside(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newEndsWithFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"),
-		[]interface{}{pathsys.NewString("is a test")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"),
+		[]interface{}{hipathsys.NewString("is a test")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestContainsFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -504,7 +504,7 @@ func TestContainsFuncSubstringNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -513,16 +513,16 @@ func TestContainsFuncSubstringEmptyString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{pathsys.NewString("")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{hipathsys.NewString("")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestContainsFuncOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, "test", []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, "test", []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -531,7 +531,7 @@ func TestContainsFuncSubstringOther(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{"test"}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{"test"}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -540,11 +540,11 @@ func TestContainsFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -553,11 +553,11 @@ func TestContainsFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected expected")
 }
@@ -566,18 +566,18 @@ func TestContainsFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"), []interface{}{pathsys.NewString("xy ABC")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"), []interface{}{hipathsys.NewString("xy ABC")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestContainsFuncNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newContainsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"), []interface{}{pathsys.NewString("xz ABC")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"), []interface{}{hipathsys.NewString("xz ABC")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestUpperFuncNil(t *testing.T) {
@@ -602,8 +602,8 @@ func TestUpperFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newUpperFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -615,9 +615,9 @@ func TestUpperFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newUpperFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("THIS IS A TEST. XY ABC XY"), res)
+	assert.Equal(t, hipathsys.NewString("THIS IS A TEST. XY ABC XY"), res)
 }
 
 func TestLowerFuncNil(t *testing.T) {
@@ -642,8 +642,8 @@ func TestLowerFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newLowerFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -655,9 +655,9 @@ func TestLowerFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLowerFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is a test. xy ABC xy"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is a test. xy ABC xy"), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("this is a test. xy abc xy"), res)
+	assert.Equal(t, hipathsys.NewString("this is a test. xy abc xy"), res)
 }
 
 func TestReplaceFuncNil(t *testing.T) {
@@ -673,8 +673,8 @@ func TestReplaceFuncPatternNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{nil, pathsys.NewString("xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{nil, hipathsys.NewString("xy")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -683,8 +683,8 @@ func TestReplaceFuncSubstitutionNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{pathsys.NewString("cde"), nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{hipathsys.NewString("cde"), nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -693,38 +693,38 @@ func TestReplaceFuncAll(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{pathsys.NewString("cde"), pathsys.NewString("xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{hipathsys.NewString("cde"), hipathsys.NewString("xy")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("abxyfgxyf"), res)
+	assert.Equal(t, hipathsys.NewString("abxyfgxyf"), res)
 }
 
 func TestReplaceFuncRemove(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefg"),
-		[]interface{}{pathsys.NewString("cde"), pathsys.EmptyString}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"),
+		[]interface{}{hipathsys.NewString("cde"), hipathsys.EmptyString}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("abfg"), res)
+	assert.Equal(t, hipathsys.NewString("abfg"), res)
 }
 
 func TestReplaceFuncSurround(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abc"),
-		[]interface{}{pathsys.EmptyString, pathsys.NewString("x")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abc"),
+		[]interface{}{hipathsys.EmptyString, hipathsys.NewString("x")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("xaxbxcx"), res)
+	assert.Equal(t, hipathsys.NewString("xaxbxcx"), res)
 }
 
 func TestReplaceFuncInputNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.True,
-		[]interface{}{pathsys.NewString("x"), pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.True,
+		[]interface{}{hipathsys.NewString("x"), hipathsys.NewString("y")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -733,21 +733,21 @@ func TestReplaceFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("xyz"))
+	col.Add(hipathsys.NewString("xyz"))
 
 	f := newReplaceFunction()
 	res, err := f.Execute(ctx, col,
-		[]interface{}{pathsys.NewString("x"), pathsys.NewString("y")}, nil)
+		[]interface{}{hipathsys.NewString("x"), hipathsys.NewString("y")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestReplaceFuncPatternNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.True, pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.True, hipathsys.NewString("y")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -756,21 +756,21 @@ func TestReplaceFuncPatternCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("x"))
+	col.Add(hipathsys.NewString("x"))
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{col, pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{col, hipathsys.NewString("y")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestReplaceFuncSubstitutionNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.NewString("x"), pathsys.True}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.NewString("x"), hipathsys.True}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -779,20 +779,20 @@ func TestReplaceFuncSubstitutionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("y"))
+	col.Add(hipathsys.NewString("y"))
 
 	f := newReplaceFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.NewString("x"), col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.NewString("x"), col}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestMatchesFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -801,7 +801,7 @@ func TestMatchesFuncRegexNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("test"), []interface{}{nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -810,29 +810,29 @@ func TestMatchesFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("Atest123abcZ"),
-		[]interface{}{pathsys.NewString("[a-z]+\\d+[a-z]+")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("Atest123abcZ"),
+		[]interface{}{hipathsys.NewString("[a-z]+\\d+[a-z]+")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestMatchesFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("Atest123abc"))
+	col.Add(hipathsys.NewString("Atest123abc"))
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("[a-z]{3,4}\\d+[a-z]+")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("[a-z]{3,4}\\d+[a-z]+")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestMatchesFuncInputInvalid(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.True, []interface{}{pathsys.NewString("[a-z]+\\d+[a-z]+")}, nil)
+	res, err := f.Execute(ctx, hipathsys.True, []interface{}{hipathsys.NewString("[a-z]+\\d+[a-z]+")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -841,20 +841,20 @@ func TestMatchesFuncRegexCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("[a-z]+\\d+[a-z]+"))
+	col.Add(hipathsys.NewString("[a-z]+\\d+[a-z]+"))
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("Atest123abcZ"), []interface{}{col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("Atest123abcZ"), []interface{}{col}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.True, res)
+	assert.Equal(t, hipathsys.True, res)
 }
 
 func TestMatchesFuncRegexInvalid(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("Atest123abcZ"),
-		[]interface{}{pathsys.True}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("Atest123abcZ"),
+		[]interface{}{hipathsys.True}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -863,18 +863,18 @@ func TestMatchesFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("AtEst123abcZ"),
-		[]interface{}{pathsys.NewString("[a-z]{3,4}\\d+[a-z]+")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("AtEst123abcZ"),
+		[]interface{}{hipathsys.NewString("[a-z]{3,4}\\d+[a-z]+")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.False, res)
+	assert.Equal(t, hipathsys.False, res)
 }
 
 func TestMatchesFuncInvalidRegexSyntax(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("Atest123abcZ"),
-		[]interface{}{pathsys.NewString("[a-z]+\\d+[a-z+")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("Atest123abcZ"),
+		[]interface{}{hipathsys.NewString("[a-z]+\\d+[a-z+")}, nil)
 	if assert.Error(t, err, "error expected") {
 		assert.Contains(t, err.Error(), "regexp")
 	}
@@ -894,8 +894,8 @@ func TestReplaceMatchesFuncRegexNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{nil, pathsys.NewString("xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{nil, hipathsys.NewString("xy")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -904,8 +904,8 @@ func TestReplaceMatchesFuncSubstitutionNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{pathsys.NewString("cde"), nil}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{hipathsys.NewString("cde"), nil}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -914,29 +914,29 @@ func TestReplaceMatchesFuncAllLiteral(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("abcdefgcdef"),
-		[]interface{}{pathsys.NewString("cde"), pathsys.NewString("xy")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("abcdefgcdef"),
+		[]interface{}{hipathsys.NewString("cde"), hipathsys.NewString("xy")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("abxyfgxyf"), res)
+	assert.Equal(t, hipathsys.NewString("abxyfgxyf"), res)
 }
 
 func TestReplaceMatchesFuncAll(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("11/30/1972"),
-		[]interface{}{pathsys.NewString("\\b(?P<month>\\d{1,2})/(?P<day>\\d{1,2})/(?P<year>\\d{2,4})\\b"),
-			pathsys.NewString("${day}-${month}-${year}")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("11/30/1972"),
+		[]interface{}{hipathsys.NewString("\\b(?P<month>\\d{1,2})/(?P<day>\\d{1,2})/(?P<year>\\d{2,4})\\b"),
+			hipathsys.NewString("${day}-${month}-${year}")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("30-11-1972"), res)
+	assert.Equal(t, hipathsys.NewString("30-11-1972"), res)
 }
 
 func TestReplaceMatchesFuncInputNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.True,
-		[]interface{}{pathsys.NewString("x"), pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.True,
+		[]interface{}{hipathsys.NewString("x"), hipathsys.NewString("y")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -945,21 +945,21 @@ func TestReplaceMatchesFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("xyz"))
+	col.Add(hipathsys.NewString("xyz"))
 
 	f := newReplaceMatchesFunction()
 	res, err := f.Execute(ctx, col,
-		[]interface{}{pathsys.NewString("x"), pathsys.NewString("y")}, nil)
+		[]interface{}{hipathsys.NewString("x"), hipathsys.NewString("y")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestReplaceMatchesFuncRegexNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.True, pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.True, hipathsys.NewString("y")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -968,21 +968,21 @@ func TestReplaceMatchesFuncRegexCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("x"))
+	col.Add(hipathsys.NewString("x"))
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{col, pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{col, hipathsys.NewString("y")}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestReplaceMatchesFuncSubstitutionNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.NewString("x"), pathsys.True}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.NewString("x"), hipathsys.True}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty collection expected")
 }
@@ -991,21 +991,21 @@ func TestReplaceMatchesFuncSubstitutionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("y"))
+	col.Add(hipathsys.NewString("y"))
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.NewString("x"), col}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.NewString("x"), col}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("yyz"), res)
+	assert.Equal(t, hipathsys.NewString("yyz"), res)
 }
 
 func TestReplaceMatchesFuncInvalidRegexNoString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newReplaceMatchesFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("xyz"),
-		[]interface{}{pathsys.NewString("x("), pathsys.NewString("y")}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
+		[]interface{}{hipathsys.NewString("x("), hipathsys.NewString("y")}, nil)
 	if assert.Error(t, err, "error expected") {
 		assert.Contains(t, err.Error(), "regexp")
 	}
@@ -1034,8 +1034,8 @@ func TestLengthFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newLengthFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -1047,9 +1047,9 @@ func TestLengthFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newLengthFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("This is Á."), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("This is Á."), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewInteger(10), res)
+	assert.Equal(t, hipathsys.NewInteger(10), res)
 }
 
 func TestToCharsFuncNil(t *testing.T) {
@@ -1074,8 +1074,8 @@ func TestToCharsFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newToCharsFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -1087,17 +1087,17 @@ func TestToCharsFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newToCharsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString("T i Áz"), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString("T i Áz"), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 6, col.Count()) {
-			assert.Equal(t, pathsys.NewString("T"), col.Get(0))
-			assert.Equal(t, pathsys.NewString(" "), col.Get(1))
-			assert.Equal(t, pathsys.NewString("i"), col.Get(2))
-			assert.Equal(t, pathsys.NewString(" "), col.Get(3))
-			assert.Equal(t, pathsys.NewString("Á"), col.Get(4))
-			assert.Equal(t, pathsys.NewString("z"), col.Get(5))
+			assert.Equal(t, hipathsys.NewString("T"), col.Get(0))
+			assert.Equal(t, hipathsys.NewString(" "), col.Get(1))
+			assert.Equal(t, hipathsys.NewString("i"), col.Get(2))
+			assert.Equal(t, hipathsys.NewString(" "), col.Get(3))
+			assert.Equal(t, hipathsys.NewString("Á"), col.Get(4))
+			assert.Equal(t, hipathsys.NewString("z"), col.Get(5))
 		}
 	}
 }
@@ -1106,10 +1106,10 @@ func TestToCharsFuncEmptyString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	f := newToCharsFunction()
-	res, err := f.Execute(ctx, pathsys.NewString(""), []interface{}{}, nil)
+	res, err := f.Execute(ctx, hipathsys.NewString(""), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		assert.Equal(t, 0, col.Count())
 	}
 }

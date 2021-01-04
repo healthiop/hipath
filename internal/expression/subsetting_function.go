@@ -30,20 +30,20 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type singleFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newSingleFunction() *singleFunction {
 	return &singleFunction{
-		BaseFunction: pathsys.NewBaseFunction("single", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("single", -1, 0, 0),
 	}
 }
 
-func (f *singleFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *singleFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -56,16 +56,16 @@ func (f *singleFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 }
 
 type firstFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newFirstFunction() *firstFunction {
 	return &firstFunction{
-		BaseFunction: pathsys.NewBaseFunction("first", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("first", -1, 0, 0),
 	}
 }
 
-func (f *firstFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *firstFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	if col.Empty() {
 		return nil, nil
@@ -74,16 +74,16 @@ func (f *firstFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _
 }
 
 type lastFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newLastFunction() *lastFunction {
 	return &lastFunction{
-		BaseFunction: pathsys.NewBaseFunction("last", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("last", -1, 0, 0),
 	}
 }
 
-func (f *lastFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *lastFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -93,16 +93,16 @@ func (f *lastFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ 
 }
 
 type tailFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTailFunction() *tailFunction {
 	return &tailFunction{
-		BaseFunction: pathsys.NewBaseFunction("tail", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("tail", -1, 0, 0),
 	}
 }
 
-func (f *tailFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *tailFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count < 2 {
@@ -118,18 +118,18 @@ func (f *tailFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ 
 }
 
 type skipFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newSkipFunction() *skipFunction {
 	return &skipFunction{
-		BaseFunction: pathsys.NewBaseFunction("skip", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("skip", -1, 1, 1),
 	}
 }
 
-func (f *skipFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *skipFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	var num int
-	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
+	if n, ok := unwrapCollection(args[0]).(hipathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
 	} else {
 		num = int(n.Int())
@@ -153,18 +153,18 @@ func (f *skipFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, ar
 }
 
 type takeFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newTakeFunction() *takeFunction {
 	return &takeFunction{
-		BaseFunction: pathsys.NewBaseFunction("take", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("take", -1, 1, 1),
 	}
 }
 
-func (f *takeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *takeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	var num int
-	if n, ok := unwrapCollection(args[0]).(pathsys.NumberAccessor); !ok {
+	if n, ok := unwrapCollection(args[0]).(hipathsys.NumberAccessor); !ok {
 		return nil, fmt.Errorf("argument must be an integer: %T", args[0])
 	} else {
 		num = int(n.Int())
@@ -190,16 +190,16 @@ func (f *takeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, ar
 }
 
 type intersectFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newIntersectFunction() *intersectFunction {
 	return &intersectFunction{
-		BaseFunction: pathsys.NewBaseFunction("intersect", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("intersect", -1, 1, 1),
 	}
 }
 
-func (f *intersectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *intersectFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	other := wrapCollection(ctx, args[0])
 	if other.Empty() {
 		return nil, nil
@@ -228,16 +228,16 @@ func (f *intersectFunction) Execute(ctx pathsys.ContextAccessor, node interface{
 }
 
 type excludeFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newExcludeFunction() *excludeFunction {
 	return &excludeFunction{
-		BaseFunction: pathsys.NewBaseFunction("exclude", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("exclude", -1, 1, 1),
 	}
 }
 
-func (f *excludeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *excludeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	other := wrapCollection(ctx, args[0])
 	col := wrapCollection(ctx, node)
 	count := col.Count()

@@ -28,7 +28,7 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 const delimitedIdentifierChar = '`'
 
@@ -40,7 +40,7 @@ func ExtractIdentifier(value string) string {
 	return resultingValue
 }
 
-func uniteCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{}) pathsys.CollectionModifier {
+func uniteCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) hipathsys.CollectionModifier {
 	if n1 == nil && n2 == nil {
 		return nil
 	}
@@ -55,18 +55,18 @@ func uniteCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{
 	return c
 }
 
-func addUniqueCollectionItems(collection pathsys.CollectionModifier, node interface{}) {
+func addUniqueCollectionItems(collection hipathsys.CollectionModifier, node interface{}) {
 	if node == nil {
 		return
 	}
-	if c, ok := node.(pathsys.CollectionAccessor); ok {
+	if c, ok := node.(hipathsys.CollectionAccessor); ok {
 		collection.AddAllUnique(c)
 	} else {
 		collection.AddUnique(node)
 	}
 }
 
-func combineCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interface{}) pathsys.CollectionModifier {
+func combineCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) hipathsys.CollectionModifier {
 	if n1 == nil && n2 == nil {
 		return nil
 	}
@@ -81,11 +81,11 @@ func combineCollections(ctx pathsys.ContextAccessor, n1 interface{}, n2 interfac
 	return c
 }
 
-func addCollectionItems(collection pathsys.CollectionModifier, node interface{}) {
+func addCollectionItems(collection hipathsys.CollectionModifier, node interface{}) {
 	if node == nil {
 		return
 	}
-	if c, ok := node.(pathsys.CollectionAccessor); ok {
+	if c, ok := node.(hipathsys.CollectionAccessor); ok {
 		collection.AddAll(c)
 	} else {
 		collection.Add(node)
@@ -96,7 +96,7 @@ func unwrapCollection(node interface{}) interface{} {
 	if node == nil {
 		return nil
 	}
-	if c, ok := node.(pathsys.CollectionAccessor); !ok {
+	if c, ok := node.(hipathsys.CollectionAccessor); !ok {
 		return node
 	} else {
 		count := c.Count()
@@ -110,12 +110,12 @@ func unwrapCollection(node interface{}) interface{} {
 	}
 }
 
-func wrapCollection(ctx pathsys.ContextAccessor, node interface{}) pathsys.CollectionAccessor {
+func wrapCollection(ctx hipathsys.ContextAccessor, node interface{}) hipathsys.CollectionAccessor {
 	if node == nil {
-		return pathsys.EmptyCollection
+		return hipathsys.EmptyCollection
 	}
 
-	if col, ok := node.(pathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.CollectionAccessor); ok {
 		return col
 	}
 
@@ -126,7 +126,7 @@ func emptyCollection(node interface{}) bool {
 	if node == nil {
 		return true
 	}
-	if col, ok := node.(pathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.CollectionAccessor); ok {
 		return col.Empty()
 	}
 	return false

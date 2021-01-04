@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -42,8 +42,8 @@ func TestNewBooleanLiteral(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-			assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -57,8 +57,8 @@ func TestBooleanLiteralTrue(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-			assert.Equal(t, true, node.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, true, node.(hipathsys.BooleanAccessor).Bool())
 		}
 	}
 }
@@ -72,8 +72,8 @@ func TestBooleanLiteralFalse(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), node) {
-			assert.Equal(t, false, node.(pathsys.BooleanAccessor).Bool())
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), node) {
+			assert.Equal(t, false, node.(hipathsys.BooleanAccessor).Bool())
 		}
 	}
 }

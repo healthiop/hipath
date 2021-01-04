@@ -30,8 +30,8 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/parser"
 	"strings"
 )
 

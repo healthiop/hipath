@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type ThisInvocation struct {
@@ -42,7 +42,7 @@ func NewThisInvocation() *ThisInvocation {
 	return thisInvocation
 }
 
-func (t *ThisInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *ThisInvocation) Evaluate(_ hipathsys.ContextAccessor, _ interface{}, loop hipathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("this invocation can only be used inside a loop")
 	}
@@ -58,11 +58,11 @@ func NewIndexInvocation() *IndexInvocation {
 	return indexInvocation
 }
 
-func (t *IndexInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *IndexInvocation) Evaluate(_ hipathsys.ContextAccessor, _ interface{}, loop hipathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("index invocation can only be used inside a loop")
 	}
-	return pathsys.NewInteger(int32(loop.Index())), nil
+	return hipathsys.NewInteger(int32(loop.Index())), nil
 }
 
 type TotalInvocation struct {
@@ -74,7 +74,7 @@ func NewTotalInvocation() *TotalInvocation {
 	return totalInvocation
 }
 
-func (t *TotalInvocation) Evaluate(_ pathsys.ContextAccessor, _ interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *TotalInvocation) Evaluate(_ hipathsys.ContextAccessor, _ interface{}, loop hipathsys.Looper) (interface{}, error) {
 	if loop == nil {
 		return nil, fmt.Errorf("index invocation can only be used inside a loop")
 	}

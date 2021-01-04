@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -41,8 +41,8 @@ func TestNewRawStringLiteral(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-			assert.Equal(t, "'Test\\n'", res.(pathsys.StringAccessor).String())
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, "'Test\\n'", res.(hipathsys.StringAccessor).String())
 		}
 	}
 }
@@ -55,9 +55,9 @@ func TestStringLiteral(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
 			assert.Equal(t, "x\ra\nb\tc\fd\\e'f\"g`hvi⏚jpk",
-				res.(pathsys.StringAccessor).String())
+				res.(hipathsys.StringAccessor).String())
 		}
 	}
 }

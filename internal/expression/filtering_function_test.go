@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -47,21 +47,21 @@ func TestWherePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(0))
-	col.Add(pathsys.NewInteger(7))
-	col.Add(pathsys.NewInteger(2))
+	col.Add(hipathsys.NewInteger(0))
+	col.Add(hipathsys.NewInteger(7))
+	col.Add(hipathsys.NewInteger(2))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
 
 	f := newWhereFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, col.Count()) {
-			assert.Equal(t, pathsys.NewInteger(0), col.Get(0))
-			assert.Equal(t, pathsys.NewInteger(2), col.Get(1))
+			assert.Equal(t, hipathsys.NewInteger(0), col.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(2), col.Get(1))
 		}
 	}
 }
@@ -70,15 +70,15 @@ func TestWherePathFuncNoMatch(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(2))
-	col.Add(pathsys.NewInteger(7))
-	col.Add(pathsys.NewInteger(0))
+	col.Add(hipathsys.NewInteger(2))
+	col.Add(hipathsys.NewInteger(7))
+	col.Add(hipathsys.NewInteger(0))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
 
 	f := newWhereFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
 }
@@ -87,12 +87,12 @@ func TestWherePathFuncEvalNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(2))
-	col.Add(pathsys.NewInteger(7))
-	col.Add(pathsys.NewInteger(0))
+	col.Add(hipathsys.NewInteger(2))
+	col.Add(hipathsys.NewInteger(7))
+	col.Add(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(newTestExpression(nil)))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestExpression(nil)))
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
 }
@@ -101,10 +101,10 @@ func TestWherePathFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(0))
+	col.Add(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(newTestErrorExpression()))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestErrorExpression()))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -113,10 +113,10 @@ func TestWherePathFuncTypeError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(0))
+	col.Add(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(NewRawStringLiteral("")))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(NewRawStringLiteral("")))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -133,21 +133,21 @@ func TestSelectPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(5))
-	col.Add(pathsys.NewInteger(7))
+	col.Add(hipathsys.NewInteger(5))
+	col.Add(hipathsys.NewInteger(7))
 
 	loopEval := NewUnionExpression(NewThisInvocation(), NewIndexInvocation())
 
 	f := newSelectFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 4, col.Count()) {
-			assert.Equal(t, pathsys.NewInteger(5), col.Get(0))
-			assert.Equal(t, pathsys.NewInteger(0), col.Get(1))
-			assert.Equal(t, pathsys.NewInteger(7), col.Get(2))
-			assert.Equal(t, pathsys.NewInteger(1), col.Get(3))
+			assert.Equal(t, hipathsys.NewInteger(5), col.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(0), col.Get(1))
+			assert.Equal(t, hipathsys.NewInteger(7), col.Get(2))
+			assert.Equal(t, hipathsys.NewInteger(1), col.Get(3))
 		}
 	}
 }
@@ -156,17 +156,17 @@ func TestSelectPathFuncSingleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(5))
-	col.Add(pathsys.NewInteger(7))
+	col.Add(hipathsys.NewInteger(5))
+	col.Add(hipathsys.NewInteger(7))
 
 	f := newSelectFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(NewIndexInvocation()))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(NewIndexInvocation()))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, col.Count()) {
-			assert.Equal(t, pathsys.NewInteger(0), col.Get(0))
-			assert.Equal(t, pathsys.NewInteger(1), col.Get(1))
+			assert.Equal(t, hipathsys.NewInteger(0), col.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(1), col.Get(1))
 		}
 	}
 }
@@ -175,10 +175,10 @@ func TestSelectPathFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(5))
+	col.Add(hipathsys.NewInteger(5))
 
 	f := newSelectFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(newTestErrorExpression()))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestErrorExpression()))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -187,10 +187,10 @@ func TestSelectPathFuncEvalNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewInteger(5))
+	col.Add(hipathsys.NewInteger(5))
 
 	f := newSelectFunction()
-	res, err := f.Execute(ctx, col, nil, pathsys.NewLoop(newTestExpression(nil)))
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestExpression(nil)))
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
 }
@@ -221,10 +221,10 @@ func TestRepeatPathFunc(t *testing.T) {
 	loopEval := NewMemberInvocation("item")
 
 	f := repeatFunc
-	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, node1, nil, hipathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, col.Count()) {
 			assert.Equal(t, node11, col.Get(0))
 			assert.Equal(t, node111, col.Get(1))
@@ -245,7 +245,7 @@ func TestRepeatPathFuncErr(t *testing.T) {
 	loopEval := NewMemberInvocation("item")
 
 	f := repeatFunc
-	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, node1, nil, hipathsys.NewLoop(loopEval))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -280,10 +280,10 @@ func TestRepeatPathFuncColInCol(t *testing.T) {
 	loopEval := NewMemberInvocation("items")
 
 	f := repeatFunc
-	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, node1, nil, hipathsys.NewLoop(loopEval))
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 6, col.Count()) {
 			assert.Equal(t, node11, col.Get(0))
 			assert.Equal(t, node111, col.Get(1))
@@ -309,7 +309,7 @@ func TestRepeatPathFuncColInColError(t *testing.T) {
 	loopEval := NewMemberInvocation("items")
 
 	f := repeatFunc
-	res, err := f.Execute(ctx, node1, nil, pathsys.NewLoop(loopEval))
+	res, err := f.Execute(ctx, node1, nil, hipathsys.NewLoop(loopEval))
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -317,14 +317,14 @@ func TestRepeatPathFuncColInColError(t *testing.T) {
 func createRepeatTestColData(id string) map[string]interface{} {
 	node := make(map[string]interface{})
 	node["id"] = id
-	node["items"] = pathsys.EmptyCollection
+	node["items"] = hipathsys.EmptyCollection
 	return node
 }
 
 func TestOfTypePathFuncNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newOfTypeFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("System.String")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("System.String")}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty result expected")
 }
@@ -340,7 +340,7 @@ func TestOfTypePathFuncInvalidTypeSpecType(t *testing.T) {
 func TestOfTypePathFuncInvalidTypeName(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newOfTypeFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("System.String.Any")}, nil)
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("System.String.Any")}, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
 }
@@ -349,18 +349,18 @@ func TestOfTypePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewInteger(10))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewString("test2"))
 
 	f := newOfTypeFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("System.String")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("System.String")}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, col.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), col.Get(0))
-			assert.Equal(t, pathsys.NewString("test2"), col.Get(1))
+			assert.Equal(t, hipathsys.NewString("test1"), col.Get(0))
+			assert.Equal(t, hipathsys.NewString("test2"), col.Get(1))
 		}
 	}
 }
@@ -369,19 +369,19 @@ func TestOfTypePathFuncBaseType(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewInteger(10))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewString("test2"))
 
 	f := newOfTypeFunction()
-	res, err := f.Execute(ctx, col, []interface{}{pathsys.NewString("System.Any")}, nil)
+	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("System.Any")}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 3, col.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), col.Get(0))
-			assert.Equal(t, pathsys.NewInteger(10), col.Get(1))
-			assert.Equal(t, pathsys.NewString("test2"), col.Get(2))
+			assert.Equal(t, hipathsys.NewString("test1"), col.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(10), col.Get(1))
+			assert.Equal(t, hipathsys.NewString("test2"), col.Get(2))
 		}
 	}
 }

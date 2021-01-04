@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -48,7 +48,7 @@ func TestChildrenFuncNoTracer(t *testing.T) {
 func TestChildrenFuncNoChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
+	n1 := hipathsys.NewString("test1")
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -61,8 +61,8 @@ func TestChildrenFuncColNoChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n1 := ctx.NewCollection()
-	n1.Add(pathsys.NewString("test1"))
-	n1.Add(pathsys.NewString("test2"))
+	n1.Add(hipathsys.NewString("test1"))
+	n1.Add(hipathsys.NewString("test2"))
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -74,9 +74,9 @@ func TestChildrenFuncColNoChildren(t *testing.T) {
 func TestChildrenFuncChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
-	n2 := pathsys.NewInteger(12)
-	n3 := pathsys.NewString("test3")
+	n1 := hipathsys.NewString("test1")
+	n2 := hipathsys.NewInteger(12)
+	n3 := hipathsys.NewString("test3")
 
 	l1c := map[string]interface{}{}
 	l1c["x"] = n3
@@ -91,8 +91,8 @@ func TestChildrenFuncChildren(t *testing.T) {
 	res, err := f.Execute(ctx, l1, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 3, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -104,10 +104,10 @@ func TestChildrenFuncChildren(t *testing.T) {
 func TestChildrenFuncColChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
-	n2 := pathsys.NewInteger(12)
-	n3 := pathsys.NewString("test3")
-	n4 := pathsys.NewString("test4")
+	n1 := hipathsys.NewString("test1")
+	n2 := hipathsys.NewInteger(12)
+	n3 := hipathsys.NewString("test3")
+	n4 := hipathsys.NewString("test4")
 
 	l1c := map[string]interface{}{}
 	l1c["x"] = n3
@@ -129,8 +129,8 @@ func TestChildrenFuncColChildren(t *testing.T) {
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 4, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -154,7 +154,7 @@ func TestChildrenFuncColChildrenError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n := ctx.NewCollection()
-	n.Add(pathsys.NewString("test1"))
+	n.Add(hipathsys.NewString("test1"))
 	n.Add(test.NewTestModelNode(0, false))
 
 	f := childrenFunc
@@ -177,7 +177,7 @@ func TestDescendantsFuncNoTracer(t *testing.T) {
 func TestDescendantsFuncNoDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
+	n1 := hipathsys.NewString("test1")
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -190,8 +190,8 @@ func TestDescendantsFuncColNoDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n1 := ctx.NewCollection()
-	n1.Add(pathsys.NewString("test1"))
-	n1.Add(pathsys.NewString("test2"))
+	n1.Add(hipathsys.NewString("test1"))
+	n1.Add(hipathsys.NewString("test2"))
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -203,10 +203,10 @@ func TestDescendantsFuncColNoDescendants(t *testing.T) {
 func TestDescendantsFuncDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
-	n2 := pathsys.NewInteger(12)
-	n3 := pathsys.NewString("test3")
-	n4 := pathsys.NewString("test4")
+	n1 := hipathsys.NewString("test1")
+	n2 := hipathsys.NewInteger(12)
+	n3 := hipathsys.NewString("test3")
+	n4 := hipathsys.NewString("test4")
 
 	l1cy := map[string]interface{}{}
 	l1cy["x"] = n4
@@ -225,8 +225,8 @@ func TestDescendantsFuncDescendants(t *testing.T) {
 	res, err := f.Execute(ctx, l1, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 6, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -241,10 +241,10 @@ func TestDescendantsFuncDescendants(t *testing.T) {
 func TestDescendantsFuncColDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := pathsys.NewString("test1")
-	n2 := pathsys.NewInteger(12)
-	n3 := pathsys.NewString("test3")
-	n4 := pathsys.NewString("test4")
+	n1 := hipathsys.NewString("test1")
+	n2 := hipathsys.NewInteger(12)
+	n3 := hipathsys.NewString("test3")
+	n4 := hipathsys.NewString("test4")
 
 	l1c := map[string]interface{}{}
 	l1c["x"] = n3
@@ -266,8 +266,8 @@ func TestDescendantsFuncColDescendants(t *testing.T) {
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 5, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -292,7 +292,7 @@ func TestDescendantsFuncColDescendantsError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n := ctx.NewCollection()
-	n.Add(pathsys.NewString("test1"))
+	n.Add(hipathsys.NewString("test1"))
 	n.Add(test.NewTestModelNode(0, false))
 
 	f := newDescendantsFunction()

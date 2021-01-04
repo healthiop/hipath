@@ -29,22 +29,22 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type aggregateFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newAggregateFunction() *aggregateFunction {
 	return &aggregateFunction{
-		BaseFunction: pathsys.NewBaseFunction("aggregate", 0, 1, 2),
+		BaseFunction: hipathsys.NewBaseFunction("aggregate", 0, 1, 2),
 	}
 }
 
-func (f *aggregateFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *aggregateFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	if node == nil {
-		return pathsys.False, nil
+		return hipathsys.False, nil
 	}
 
 	if len(args) > 1 {

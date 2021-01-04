@@ -29,53 +29,53 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 var booleanTests = []struct {
 	name      string
 	op        BooleanOp
-	leftEval  pathsys.Evaluator
-	rightEval pathsys.Evaluator
-	result    pathsys.AnyAccessor
+	leftEval  hipathsys.Evaluator
+	rightEval hipathsys.Evaluator
+	result    hipathsys.AnyAccessor
 	error     bool
 }{
-	{"andFalseFalse", AndOp, NewBooleanLiteral(false), NewBooleanLiteral(false), pathsys.False, false},
-	{"andFalseTrue", AndOp, NewBooleanLiteral(false), NewBooleanLiteral(true), pathsys.False, false},
-	{"andTrueFalse", AndOp, NewBooleanLiteral(true), NewBooleanLiteral(false), pathsys.False, false},
-	{"andTrueTrue", AndOp, NewBooleanLiteral(true), NewBooleanLiteral(true), pathsys.True, false},
+	{"andFalseFalse", AndOp, NewBooleanLiteral(false), NewBooleanLiteral(false), hipathsys.False, false},
+	{"andFalseTrue", AndOp, NewBooleanLiteral(false), NewBooleanLiteral(true), hipathsys.False, false},
+	{"andTrueFalse", AndOp, NewBooleanLiteral(true), NewBooleanLiteral(false), hipathsys.False, false},
+	{"andTrueTrue", AndOp, NewBooleanLiteral(true), NewBooleanLiteral(true), hipathsys.True, false},
 	{"andEmptyEmpty", AndOp, NewEmptyLiteral(), NewEmptyLiteral(), nil, false},
 	{"andEmptyTrue", AndOp, NewEmptyLiteral(), NewBooleanLiteral(true), nil, false},
 	{"andTrueEmpty", AndOp, NewBooleanLiteral(true), NewEmptyLiteral(), nil, false},
 
-	{"orFalseFalse", OrOp, NewBooleanLiteral(false), NewBooleanLiteral(false), pathsys.False, false},
-	{"orFalseTrue", OrOp, NewBooleanLiteral(false), NewBooleanLiteral(true), pathsys.True, false},
-	{"orTrueFalse", OrOp, NewBooleanLiteral(true), NewBooleanLiteral(false), pathsys.True, false},
-	{"orTrueTrue", OrOp, NewBooleanLiteral(true), NewBooleanLiteral(true), pathsys.True, false},
+	{"orFalseFalse", OrOp, NewBooleanLiteral(false), NewBooleanLiteral(false), hipathsys.False, false},
+	{"orFalseTrue", OrOp, NewBooleanLiteral(false), NewBooleanLiteral(true), hipathsys.True, false},
+	{"orTrueFalse", OrOp, NewBooleanLiteral(true), NewBooleanLiteral(false), hipathsys.True, false},
+	{"orTrueTrue", OrOp, NewBooleanLiteral(true), NewBooleanLiteral(true), hipathsys.True, false},
 	{"orEmptyEmpty", OrOp, NewEmptyLiteral(), NewEmptyLiteral(), nil, false},
 	{"orEmptyTrue", OrOp, NewEmptyLiteral(), NewBooleanLiteral(true), nil, false},
 	{"orTrueEmpty", OrOp, NewBooleanLiteral(true), NewEmptyLiteral(), nil, false},
 
-	{"xorFalseFalse", XOrOp, NewBooleanLiteral(false), NewBooleanLiteral(false), pathsys.False, false},
-	{"xorFalseTrue", XOrOp, NewBooleanLiteral(false), NewBooleanLiteral(true), pathsys.True, false},
-	{"xorTrueFalse", XOrOp, NewBooleanLiteral(true), NewBooleanLiteral(false), pathsys.True, false},
-	{"xorTrueTrue", XOrOp, NewBooleanLiteral(true), NewBooleanLiteral(true), pathsys.False, false},
+	{"xorFalseFalse", XOrOp, NewBooleanLiteral(false), NewBooleanLiteral(false), hipathsys.False, false},
+	{"xorFalseTrue", XOrOp, NewBooleanLiteral(false), NewBooleanLiteral(true), hipathsys.True, false},
+	{"xorTrueFalse", XOrOp, NewBooleanLiteral(true), NewBooleanLiteral(false), hipathsys.True, false},
+	{"xorTrueTrue", XOrOp, NewBooleanLiteral(true), NewBooleanLiteral(true), hipathsys.False, false},
 	{"xorEmptyEmpty", XOrOp, NewEmptyLiteral(), NewEmptyLiteral(), nil, false},
 	{"xorEmptyTrue", XOrOp, NewEmptyLiteral(), NewBooleanLiteral(true), nil, false},
 	{"xorTrueEmpty", XOrOp, NewBooleanLiteral(true), NewEmptyLiteral(), nil, false},
 
-	{"impliesFalseFalse", ImpliesOp, NewBooleanLiteral(false), NewBooleanLiteral(false), pathsys.True, false},
-	{"impliesFalseTrue", ImpliesOp, NewBooleanLiteral(false), NewBooleanLiteral(true), pathsys.True, false},
-	{"impliesTrueFalse", ImpliesOp, NewBooleanLiteral(true), NewBooleanLiteral(false), pathsys.False, false},
-	{"impliesTrueTrue", ImpliesOp, NewBooleanLiteral(true), NewBooleanLiteral(true), pathsys.True, false},
+	{"impliesFalseFalse", ImpliesOp, NewBooleanLiteral(false), NewBooleanLiteral(false), hipathsys.True, false},
+	{"impliesFalseTrue", ImpliesOp, NewBooleanLiteral(false), NewBooleanLiteral(true), hipathsys.True, false},
+	{"impliesTrueFalse", ImpliesOp, NewBooleanLiteral(true), NewBooleanLiteral(false), hipathsys.False, false},
+	{"impliesTrueTrue", ImpliesOp, NewBooleanLiteral(true), NewBooleanLiteral(true), hipathsys.True, false},
 	{"impliesEmptyEmpty", ImpliesOp, NewEmptyLiteral(), NewEmptyLiteral(), nil, false},
-	{"impliesEmptyTrue", ImpliesOp, NewEmptyLiteral(), NewBooleanLiteral(true), pathsys.True, false},
+	{"impliesEmptyTrue", ImpliesOp, NewEmptyLiteral(), NewBooleanLiteral(true), hipathsys.True, false},
 	{"impliesEmptyFalse", ImpliesOp, NewEmptyLiteral(), NewBooleanLiteral(false), nil, false},
 	{"impliesTrueEmpty", ImpliesOp, NewBooleanLiteral(true), NewEmptyLiteral(), nil, false},
-	{"impliesFalseEmpty", ImpliesOp, NewBooleanLiteral(false), NewEmptyLiteral(), pathsys.True, false},
+	{"impliesFalseEmpty", ImpliesOp, NewBooleanLiteral(false), NewEmptyLiteral(), hipathsys.True, false},
 
 	{"leftError", AndOp, newTestErrorExpression(), NewBooleanLiteral(false), nil, true},
 	{"rightError", AndOp, NewBooleanLiteral(false), newTestErrorExpression(), nil, true},
@@ -116,8 +116,8 @@ func TestBooleanExpressionInvalidOp(t *testing.T) {
 func TestBooleanExpressionMultiColLeft(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(pathsys.True)
-	operand.Add(pathsys.True)
+	operand.Add(hipathsys.True)
+	operand.Add(hipathsys.True)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -130,8 +130,8 @@ func TestBooleanExpressionMultiColLeft(t *testing.T) {
 func TestBooleanExpressionMultiColRight(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(pathsys.True)
-	operand.Add(pathsys.True)
+	operand.Add(hipathsys.True)
+	operand.Add(hipathsys.True)
 
 	evaluator := NewBooleanExpression(NewBooleanLiteral(true), AndOp, newTestExpression(operand))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -155,26 +155,26 @@ func TestBooleanExpressionNoBoolean(t *testing.T) {
 func TestBooleanExpressionSingleColString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(pathsys.NewString("test"))
+	operand.Add(hipathsys.NewString("test"))
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
 		res, err := evaluator.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.Equal(t, pathsys.True, res)
+		assert.Equal(t, hipathsys.True, res)
 	}
 }
 
 func TestBooleanExpressionSingleColBoolean(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(pathsys.False)
+	operand.Add(hipathsys.False)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
 		res, err := evaluator.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.Equal(t, pathsys.False, res)
+		assert.Equal(t, hipathsys.False, res)
 	}
 }
 

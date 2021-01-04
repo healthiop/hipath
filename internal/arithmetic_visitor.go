@@ -31,9 +31,9 @@ package internal
 import (
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/parser"
 )
 
 func (v *Visitor) VisitAdditiveExpression(ctx *parser.AdditiveExpressionContext) interface{} {
@@ -44,25 +44,25 @@ func (v *Visitor) VisitMultiplicativeExpression(ctx *parser.MultiplicativeExpres
 	return v.visitTree(ctx, 3, visitArithmeticExpression)
 }
 
-func visitArithmeticExpression(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
-	leftEvaluator := args[0].(pathsys.Evaluator)
+func visitArithmeticExpression(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
+	leftEvaluator := args[0].(hipathsys.Evaluator)
 	stringOp := args[1].(string)
-	rightEvaluator := args[2].(pathsys.Evaluator)
+	rightEvaluator := args[2].(hipathsys.Evaluator)
 
-	var op pathsys.ArithmeticOps
+	var op hipathsys.ArithmeticOps
 	switch stringOp {
 	case "+":
-		op = pathsys.AdditionOp
+		op = hipathsys.AdditionOp
 	case "-":
-		op = pathsys.SubtractionOp
+		op = hipathsys.SubtractionOp
 	case "*":
-		op = pathsys.MultiplicationOp
+		op = hipathsys.MultiplicationOp
 	case "/":
-		op = pathsys.DivisionOp
+		op = hipathsys.DivisionOp
 	case "div":
-		op = pathsys.DivOp
+		op = hipathsys.DivOp
 	case "mod":
-		op = pathsys.ModOp
+		op = hipathsys.ModOp
 	case "&":
 		return expression.NewStringConcatExpression(leftEvaluator, rightEvaluator), nil
 	default:

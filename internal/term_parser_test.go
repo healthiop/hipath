@@ -29,10 +29,10 @@
 package internal
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -43,8 +43,8 @@ func TestParseParenthesizedBooleanLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), res) {
-		b, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, false, b.(pathsys.BooleanAccessor).Bool())
+		b, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, false, b.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -56,9 +56,9 @@ func TestParseExtConstant(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, s)
+		assert.Equal(t, hipathsys.UCUMSystemURI, s)
 	}
 }
 
@@ -70,9 +70,9 @@ func TestParseExtConstantDelimited(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		assert.Equal(t, pathsys.UCUMSystemURI, s)
+		assert.Equal(t, hipathsys.UCUMSystemURI, s)
 	}
 }
 
@@ -84,7 +84,7 @@ func TestParseExtConstantNotDefined(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ExtConstantTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		s, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		s, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.Error(t, err, "evaluation error expected")
 		assert.Nil(t, s, "no res expected due to error")
 	}
@@ -99,12 +99,12 @@ func TestParseInvocationTermEmptyCollection(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		col := ctx.NewCollection()
-		col.Add(pathsys.NewString("test"))
+		col.Add(hipathsys.NewString("test"))
 
-		b, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
+		b, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
-			assert.Equal(t, pathsys.False, b)
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), b) {
+			assert.Equal(t, hipathsys.False, b)
 		}
 	}
 }
@@ -119,10 +119,10 @@ func TestParseInvocationTermEmptyCollectionEmpty(t *testing.T) {
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		ctx = test.NewTestContextWithNode(t, ctx.NewCollection())
 
-		b, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		b, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), b) {
-			assert.Equal(t, pathsys.True, b)
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), b) {
+			assert.Equal(t, hipathsys.True, b)
 		}
 	}
 }
@@ -136,18 +136,18 @@ func TestParseInvocationTermUnion(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		col := ctx.NewCollection()
-		col.Add(pathsys.NewInteger(18))
-		col.Add(pathsys.NewInteger(19))
+		col.Add(hipathsys.NewInteger(18))
+		col.Add(hipathsys.NewInteger(19))
 
-		e, err := res.(pathsys.Evaluator).Evaluate(ctx, col, nil)
+		e, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), e) {
-			c := e.(pathsys.CollectionAccessor)
+		if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), e) {
+			c := e.(hipathsys.CollectionAccessor)
 			if assert.Equal(t, 4, c.Count()) {
-				assert.Equal(t, pathsys.NewInteger(18), c.Get(0))
-				assert.Equal(t, pathsys.NewInteger(19), c.Get(1))
-				assert.Equal(t, pathsys.NewInteger(12), c.Get(2))
-				assert.Equal(t, pathsys.NewInteger(14), c.Get(3))
+				assert.Equal(t, hipathsys.NewInteger(18), c.Get(0))
+				assert.Equal(t, hipathsys.NewInteger(19), c.Get(1))
+				assert.Equal(t, hipathsys.NewInteger(12), c.Get(2))
+				assert.Equal(t, hipathsys.NewInteger(14), c.Get(3))
 			}
 		}
 	}

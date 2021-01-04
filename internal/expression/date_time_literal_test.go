@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
@@ -44,9 +44,9 @@ func TestFullDateTimeLiteral(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), node) {
+		if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), node) {
 			expected := time.Date(2014, 3, 25, 14, 30, 15, 559000000, time.UTC)
-			actual := node.(pathsys.DateTimeAccessor).Time()
+			actual := node.(hipathsys.DateTimeAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}
@@ -62,9 +62,9 @@ func TestFluentDateTimeLiteral(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), node) {
+		if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), node) {
 			expected := time.Date(2014, 3, 25, 0, 0, 0, 0, time.Local)
-			actual := node.(pathsys.DateTimeAccessor).Time()
+			actual := node.(hipathsys.DateTimeAccessor).Time()
 			assert.True(t, expected.Equal(actual), "expected %d, got %d",
 				expected.UnixNano(), actual.UnixNano())
 		}

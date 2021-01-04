@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -43,8 +43,8 @@ func TestFullTimeLiteral(t *testing.T) {
 		node, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, node, "res expected")
-		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), node) {
-			ta := node.(pathsys.TimeAccessor)
+		if assert.Implements(t, (*hipathsys.TimeAccessor)(nil), node) {
+			ta := node.(hipathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
 			assert.Equal(t, 30, ta.Minute())
 			assert.Equal(t, 15, ta.Second())
@@ -62,8 +62,8 @@ func TestFluentTimeLiteral(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.TimeAccessor)(nil), res) {
-			ta := res.(pathsys.TimeAccessor)
+		if assert.Implements(t, (*hipathsys.TimeAccessor)(nil), res) {
+			ta := res.(hipathsys.TimeAccessor)
 			assert.Equal(t, 14, ta.Hour())
 			assert.Equal(t, 30, ta.Minute())
 			assert.Equal(t, 0, ta.Second())

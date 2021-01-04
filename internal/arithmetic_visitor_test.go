@@ -29,8 +29,8 @@
 package internal
 
 import (
+	"github.com/healthiop/hipath/internal/expression"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
 	"testing"
 )
 

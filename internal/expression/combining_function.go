@@ -28,32 +28,32 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 type unionFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newUnionFunction() *unionFunction {
 	return &unionFunction{
-		BaseFunction: pathsys.NewBaseFunction("union", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("union", -1, 1, 1),
 	}
 }
 
-func (f *unionFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *unionFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	return uniteCollections(ctx, node, args[0]), nil
 }
 
 type combineFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newCombineFunction() *combineFunction {
 	return &combineFunction{
-		BaseFunction: pathsys.NewBaseFunction("combine", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("combine", -1, 1, 1),
 	}
 }
 
-func (f *combineFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *combineFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	return combineCollections(ctx, node, args[0]), nil
 }

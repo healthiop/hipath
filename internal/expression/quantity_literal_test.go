@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -42,8 +42,8 @@ func TestQuantityLiteralUCUM(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-			quantityAccessor := res.(pathsys.QuantityAccessor)
+		if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(hipathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -62,8 +62,8 @@ func TestQuantityLiteralNoUCUM(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-			quantityAccessor := res.(pathsys.QuantityAccessor)
+		if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(hipathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -82,8 +82,8 @@ func TestQuantityLiteralUnitEmpty(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-			quantityAccessor := res.(pathsys.QuantityAccessor)
+		if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(hipathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}
@@ -100,8 +100,8 @@ func TestQuantityLiteralUnitEmptyStringLiteral(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.QuantityAccessor)(nil), res) {
-			quantityAccessor := res.(pathsys.QuantityAccessor)
+		if assert.Implements(t, (*hipathsys.QuantityAccessor)(nil), res) {
+			quantityAccessor := res.(hipathsys.QuantityAccessor)
 			if assert.NotNil(t, quantityAccessor.Value()) {
 				assert.Equal(t, -17.4, quantityAccessor.Value().Float64())
 			}

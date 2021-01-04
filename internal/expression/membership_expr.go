@@ -30,20 +30,20 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type ContainsExpression struct {
-	evalLeft  pathsys.Evaluator
-	evalRight pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
+	evalRight hipathsys.Evaluator
 	inverse   bool
 }
 
-func NewContainsExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator, inverse bool) *ContainsExpression {
+func NewContainsExpression(evalLeft hipathsys.Evaluator, evalRight hipathsys.Evaluator, inverse bool) *ContainsExpression {
 	return &ContainsExpression{evalLeft, evalRight, inverse}
 }
 
-func (e *ContainsExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *ContainsExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -61,14 +61,14 @@ func (e *ContainsExpression) Evaluate(ctx pathsys.ContextAccessor, node interfac
 
 	col, val := wrapCollection(ctx, left), unwrapCollection(right)
 	if col == nil || col.Empty() {
-		return pathsys.False, nil
+		return hipathsys.False, nil
 	}
 	if val == nil {
 		return nil, nil
 	}
-	if pathsys.IsCollection(val) {
+	if hipathsys.IsCollection(val) {
 		return nil, fmt.Errorf("collection membership cannot be checked with value: %T", val)
 	}
 
-	return pathsys.BooleanOf(col.Contains(val)), nil
+	return hipathsys.BooleanOf(col.Contains(val)), nil
 }

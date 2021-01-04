@@ -29,25 +29,25 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type BooleanLiteral struct {
-	node pathsys.BooleanAccessor
+	node hipathsys.BooleanAccessor
 }
 
-func NewBooleanLiteral(value bool) pathsys.Evaluator {
-	return &BooleanLiteral{pathsys.BooleanOf(value)}
+func NewBooleanLiteral(value bool) hipathsys.Evaluator {
+	return &BooleanLiteral{hipathsys.BooleanOf(value)}
 }
 
-func ParseBooleanLiteral(value string) (pathsys.Evaluator, error) {
-	if node, err := pathsys.ParseBoolean(value); err != nil {
+func ParseBooleanLiteral(value string) (hipathsys.Evaluator, error) {
+	if node, err := hipathsys.ParseBoolean(value); err != nil {
 		return nil, err
 	} else {
 		return &BooleanLiteral{node}, nil
 	}
 }
 
-func (e *BooleanLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *BooleanLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

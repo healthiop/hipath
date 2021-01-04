@@ -30,10 +30,10 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
-var functions = []pathsys.FunctionExecutor{
+var functions = []hipathsys.FunctionExecutor{
 	// existence
 	newEmptyFunction(),
 	newExistsFunction(),
@@ -123,11 +123,11 @@ var functionsByName = createFunctionsByName(functions)
 var emptyFunctionArgs = []interface{}{}
 
 type FunctionInvocation struct {
-	executor        pathsys.FunctionExecutor
-	paramEvaluators []pathsys.Evaluator
+	executor        hipathsys.FunctionExecutor
+	paramEvaluators []hipathsys.Evaluator
 }
 
-func LookupFunctionInvocation(name string, paramEvaluators []pathsys.Evaluator) (*FunctionInvocation, error) {
+func LookupFunctionInvocation(name string, paramEvaluators []hipathsys.Evaluator) (*FunctionInvocation, error) {
 	executor, found := functionsByName[name]
 	if !found {
 		return nil, fmt.Errorf("executor has not been defined: %s", name)
@@ -143,11 +143,11 @@ func LookupFunctionInvocation(name string, paramEvaluators []pathsys.Evaluator) 
 	return newFunctionInvocation(executor, paramEvaluators), nil
 }
 
-func newFunctionInvocation(executor pathsys.FunctionExecutor, argEvaluators []pathsys.Evaluator) *FunctionInvocation {
+func newFunctionInvocation(executor hipathsys.FunctionExecutor, argEvaluators []hipathsys.Evaluator) *FunctionInvocation {
 	return &FunctionInvocation{executor, argEvaluators}
 }
 
-func (f *FunctionInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *FunctionInvocation) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	var args []interface{}
 	ac := len(f.paramEvaluators)
 	if ac == 0 {
@@ -156,7 +156,7 @@ func (f *FunctionInvocation) Evaluate(ctx pathsys.ContextAccessor, node interfac
 		evaluatorParam := f.executor.EvaluatorParam()
 		args = make([]interface{}, len(f.paramEvaluators))
 
-		var loopEvaluator pathsys.Evaluator
+		var loopEvaluator hipathsys.Evaluator
 		for pos, argEvaluator := range f.paramEvaluators {
 			if evaluatorParam == pos {
 				loopEvaluator = argEvaluator
@@ -173,15 +173,15 @@ func (f *FunctionInvocation) Evaluate(ctx pathsys.ContextAccessor, node interfac
 		}
 
 		if evaluatorParam >= 0 {
-			loop = pathsys.NewLoop(loopEvaluator)
+			loop = hipathsys.NewLoop(loopEvaluator)
 		}
 	}
 
 	return f.executor.Execute(ctx, node, args, loop)
 }
 
-func createFunctionsByName(functions []pathsys.FunctionExecutor) map[string]pathsys.FunctionExecutor {
-	functionsByName := make(map[string]pathsys.FunctionExecutor)
+func createFunctionsByName(functions []hipathsys.FunctionExecutor) map[string]hipathsys.FunctionExecutor {
+	functionsByName := make(map[string]hipathsys.FunctionExecutor)
 	for _, f := range functions {
 		functionsByName[f.Name()] = f
 	}

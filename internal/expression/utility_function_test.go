@@ -29,20 +29,20 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
 
 func TestTraceFuncNoTracer(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	node := pathsys.NewString("value")
+	node := hipathsys.NewString("value")
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, node, []interface{}{pathsys.NewString("test-tracer")},
-		pathsys.NewLoop(newTestErrorExpression()))
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(newTestErrorExpression()))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Same(t, node, res, "unchanged node expected")
@@ -50,12 +50,12 @@ func TestTraceFuncNoTracer(t *testing.T) {
 
 func TestTraceFuncNameNil(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
-	node := pathsys.NewString("value")
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
+	node := hipathsys.NewString("value")
 
 	f := newTraceFunction()
 	res, err := f.Execute(ctx, node, []interface{}{nil},
-		pathsys.NewLoop(newTestErrorExpression()))
+		hipathsys.NewLoop(newTestErrorExpression()))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Same(t, res, node, "unchanged node expected")
@@ -64,11 +64,11 @@ func TestTraceFuncNameNil(t *testing.T) {
 
 func TestTraceFuncEmptyInput(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, nil, []interface{}{pathsys.NewString("test-tracer")},
-		pathsys.NewLoop(newTestErrorExpression()))
+	res, err := f.Execute(ctx, nil, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(newTestErrorExpression()))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "unchanged node expected")
@@ -81,15 +81,15 @@ func TestTraceFuncEmptyInput(t *testing.T) {
 
 func TestTraceFunc(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(pathsys.NewString("value1"))
-	node.Add(pathsys.NewString("value2"))
+	node.Add(hipathsys.NewString("value1"))
+	node.Add(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, node, []interface{}{pathsys.NewString("test-tracer")},
-		pathsys.NewLoop(nil))
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(nil))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Same(t, node, res, "unchanged node expected")
@@ -100,15 +100,15 @@ func TestTraceFunc(t *testing.T) {
 
 func TestTraceFuncDisabled(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(pathsys.NewString("value1"))
-	node.Add(pathsys.NewString("value2"))
+	node.Add(hipathsys.NewString("value1"))
+	node.Add(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, node, []interface{}{pathsys.NewString("other-tracer")},
-		pathsys.NewLoop(nil))
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("other-tracer")},
+		hipathsys.NewLoop(nil))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Same(t, node, res, "unchanged node expected")
@@ -117,23 +117,23 @@ func TestTraceFuncDisabled(t *testing.T) {
 
 func TestTraceFuncProjection(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	nodeN := make(map[string]interface{})
 	nodeN["id"] = nil
 	nodeN["item"] = "testN"
 
-	id1 := ctx.NewCollectionWithItem(pathsys.NewString("1"))
+	id1 := ctx.NewCollectionWithItem(hipathsys.NewString("1"))
 	node1 := make(map[string]interface{})
 	node1["id"] = id1
 	node1["item"] = "test1"
 
 	node7 := make(map[string]interface{})
-	node7["id"] = pathsys.NewString("7")
+	node7["id"] = hipathsys.NewString("7")
 	node7["item"] = "test7"
 
 	node9 := make(map[string]interface{})
-	node9["id"] = pathsys.NewString("9")
+	node9["id"] = hipathsys.NewString("9")
 	node9["item"] = "test9"
 
 	node := ctx.NewCollection()
@@ -143,8 +143,8 @@ func TestTraceFuncProjection(t *testing.T) {
 	node.Add(node7)
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, node, []interface{}{pathsys.NewString("test-tracer")},
-		pathsys.NewLoop(NewMemberInvocation("id")))
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(NewMemberInvocation("id")))
 
 	assert.NoError(t, err, "no error expected")
 	assert.Same(t, node, res, "unchanged node expected")
@@ -153,24 +153,24 @@ func TestTraceFuncProjection(t *testing.T) {
 	if assert.NotNil(t, tracer.col, "traced collection expected") {
 		if assert.Equal(t, 4, tracer.col.Count()) {
 			assert.Same(t, id1, tracer.col.Get(0))
-			assert.Equal(t, pathsys.NewString("9"), tracer.col.Get(1))
+			assert.Equal(t, hipathsys.NewString("9"), tracer.col.Get(1))
 			assert.Nil(t, tracer.col.Get(2))
-			assert.Equal(t, pathsys.NewString("7"), tracer.col.Get(3))
+			assert.Equal(t, hipathsys.NewString("7"), tracer.col.Get(3))
 		}
 	}
 }
 
 func TestTraceFuncProjectionError(t *testing.T) {
 	tracer := newTestingTracer()
-	ctx := test.NewTestContextWithNodeAndTracer(t, pathsys.NewString("test"), tracer)
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(pathsys.NewString("value1"))
-	node.Add(pathsys.NewString("value2"))
+	node.Add(hipathsys.NewString("value1"))
+	node.Add(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
-	res, err := f.Execute(ctx, node, []interface{}{pathsys.NewString("test-tracer")},
-		pathsys.NewLoop(newTestErrorExpression()))
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(newTestErrorExpression()))
 
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
@@ -186,9 +186,9 @@ func TestNowFunc(t *testing.T) {
 	e := time.Now()
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
-		assert.False(t, res.(pathsys.DateTimeAccessor).Time().Before(b))
-		assert.False(t, res.(pathsys.DateTimeAccessor).Time().After(e))
+	if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), res) {
+		assert.False(t, res.(hipathsys.DateTimeAccessor).Time().Before(b))
+		assert.False(t, res.(hipathsys.DateTimeAccessor).Time().After(e))
 	}
 }
 
@@ -199,7 +199,7 @@ func TestTimeOfDayFunc(t *testing.T) {
 	res, err := f.Execute(ctx, nil, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	assert.Implements(t, (*pathsys.TimeAccessor)(nil), res)
+	assert.Implements(t, (*hipathsys.TimeAccessor)(nil), res)
 }
 
 func TestTodayFunc(t *testing.T) {
@@ -209,13 +209,13 @@ func TestTodayFunc(t *testing.T) {
 	res, err := f.Execute(ctx, nil, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	assert.Implements(t, (*pathsys.DateAccessor)(nil), res)
+	assert.Implements(t, (*hipathsys.DateAccessor)(nil), res)
 }
 
 type testingTracer struct {
 	count int
 	name  string
-	col   pathsys.CollectionAccessor
+	col   hipathsys.CollectionAccessor
 }
 
 func newTestingTracer() *testingTracer {
@@ -226,7 +226,7 @@ func (t *testingTracer) Enabled(name string) bool {
 	return name == "test-tracer"
 }
 
-func (t *testingTracer) Trace(name string, col pathsys.CollectionAccessor) {
+func (t *testingTracer) Trace(name string, col hipathsys.CollectionAccessor) {
 	t.count++
 	t.name = name
 	t.col = col

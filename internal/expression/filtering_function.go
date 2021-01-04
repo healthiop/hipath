@@ -30,27 +30,27 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type whereFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newWhereFunction() *whereFunction {
 	return &whereFunction{
-		BaseFunction: pathsys.NewBaseFunction("where", 0, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("where", 0, 1, 1),
 	}
 }
 
-func (f *whereFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *whereFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
 	}
 
-	var filtered pathsys.CollectionModifier
+	var filtered hipathsys.CollectionModifier
 	loopEvaluator := loop.Evaluator()
 	for i := 0; i < count; i++ {
 		this := col.Get(i)
@@ -61,7 +61,7 @@ func (f *whereFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _
 			return nil, err
 		}
 		if res != nil {
-			if b, ok := res.(pathsys.BooleanAccessor); !ok {
+			if b, ok := res.(hipathsys.BooleanAccessor); !ok {
 				return nil, fmt.Errorf("filter expression must return boolean, but returned %T", res)
 			} else if b.Bool() {
 				if filtered == nil {
@@ -76,23 +76,23 @@ func (f *whereFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _
 }
 
 type selectFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newSelectFunction() *selectFunction {
 	return &selectFunction{
-		BaseFunction: pathsys.NewBaseFunction("select", 0, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("select", 0, 1, 1),
 	}
 }
 
-func (f *selectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *selectFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
 	}
 
-	var projected pathsys.CollectionModifier
+	var projected hipathsys.CollectionModifier
 	loopEvaluator := loop.Evaluator()
 	for i := 0; i < count; i++ {
 		this := col.Get(i)
@@ -107,7 +107,7 @@ func (f *selectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 				projected = ctx.NewCollection()
 			}
 
-			if c, ok := res.(pathsys.CollectionAccessor); ok {
+			if c, ok := res.(hipathsys.CollectionAccessor); ok {
 				projected.AddAll(c)
 			} else {
 				projected.Add(res)
@@ -119,14 +119,14 @@ func (f *selectFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 }
 
 type repeatFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var repeatFunc = &repeatFunction{
-	BaseFunction: pathsys.NewBaseFunction("repeat", 0, 1, 1),
+	BaseFunction: hipathsys.NewBaseFunction("repeat", 0, 1, 1),
 }
 
-func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *repeatFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	projected := ctx.NewCollection()
 	err := repeat(ctx, node, loop, projected)
 
@@ -137,7 +137,7 @@ func (f *repeatFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 	return projected, err
 }
 
-func repeat(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
+func repeat(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper, projected hipathsys.CollectionModifier) error {
 	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
@@ -164,13 +164,13 @@ func repeat(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, 
 	return nil
 }
 
-func repeatRecursively(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper, projected pathsys.CollectionModifier) error {
-	if col, ok := node.(pathsys.CollectionAccessor); ok {
+func repeatRecursively(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper, projected hipathsys.CollectionModifier) error {
+	if col, ok := node.(hipathsys.CollectionAccessor); ok {
 		count := col.Count()
 		for i := 0; i < count; i++ {
 			n := col.Get(i)
 			if n != nil && projected.AddUnique(n) {
-				err := repeat(ctx, n, pathsys.NewLoopWithIndex(
+				err := repeat(ctx, n, hipathsys.NewLoopWithIndex(
 					loop.Evaluator(), i), projected)
 				if err != nil {
 					return err
@@ -178,7 +178,7 @@ func repeatRecursively(ctx pathsys.ContextAccessor, node interface{}, loop paths
 			}
 		}
 	} else if projected.AddUnique(node) {
-		err := repeat(ctx, node, pathsys.NewLoop(
+		err := repeat(ctx, node, hipathsys.NewLoop(
 			loop.Evaluator()), projected)
 		if err != nil {
 			return err
@@ -188,25 +188,25 @@ func repeatRecursively(ctx pathsys.ContextAccessor, node interface{}, loop paths
 }
 
 type ofTypeFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newOfTypeFunction() *ofTypeFunction {
 	return &ofTypeFunction{
-		BaseFunction: pathsys.NewBaseFunction("ofType", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("ofType", -1, 1, 1),
 	}
 }
 
-func (f *ofTypeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
-	var typeSpec pathsys.StringAccessor
+func (f *ofTypeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
+	var typeSpec hipathsys.StringAccessor
 	var ok bool
-	if typeSpec, ok = unwrapCollection(args[0]).(pathsys.StringAccessor); !ok {
+	if typeSpec, ok = unwrapCollection(args[0]).(hipathsys.StringAccessor); !ok {
 		return nil, fmt.Errorf("not a valid type specifier: %T", args[0])
 	}
 
-	var typeName pathsys.FQTypeNameAccessor
+	var typeName hipathsys.FQTypeNameAccessor
 	var err error
-	if typeName, err = pathsys.ParseFQTypeName(typeSpec.String()); err != nil {
+	if typeName, err = hipathsys.ParseFQTypeName(typeSpec.String()); err != nil {
 		return nil, fmt.Errorf("not a valid type specifier: %s", typeSpec)
 	}
 
@@ -216,11 +216,11 @@ func (f *ofTypeFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, 
 		return nil, nil
 	}
 
-	var filtered pathsys.CollectionModifier
+	var filtered hipathsys.CollectionModifier
 	adapter := ctx.ModelAdapter()
 	for i := 0; i < count; i++ {
 		n := col.Get(i)
-		if pathsys.HasModelType(adapter, n, typeName) {
+		if hipathsys.HasModelType(adapter, n, typeName) {
 			if filtered == nil {
 				filtered = ctx.NewCollection()
 			}

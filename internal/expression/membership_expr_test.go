@@ -29,51 +29,51 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestContainsExpression(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), NewNumberLiteralInt(11), false)
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, true, res.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestContainsInverseExpression(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(NewNumberLiteralInt(11), newTestExpression(c1), true)
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, true, res.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestContainsExpressionNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), NewNumberLiteralInt(12), false)
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, false, res.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -89,8 +89,8 @@ func TestContainsExpressionColError(t *testing.T) {
 func TestContainsExpressionValError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), newTestErrorExpression(), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -104,15 +104,15 @@ func TestContainsExpressionNilCol(t *testing.T) {
 	e := NewContainsExpression(newTestExpression(nil), NewNumberLiteralInt(11), false)
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, false, res.(pathsys.BooleanAccessor).Bool())
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, false, res.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
 func TestContainsExpressionNilVal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(10))
 
 	e := NewContainsExpression(newTestExpression(c1), NewEmptyLiteral(), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -123,10 +123,10 @@ func TestContainsExpressionNilVal(t *testing.T) {
 func TestContainsExpressionValCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(10))
 	v := ctx.NewCollection()
-	v.Add(pathsys.NewInteger(10))
-	v.Add(pathsys.NewInteger(11))
+	v.Add(hipathsys.NewInteger(10))
+	v.Add(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), newTestExpression(v), false)
 	res, err := e.Evaluate(ctx, nil, nil)

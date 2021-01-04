@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -54,7 +54,7 @@ func TestUnwrapCollectionZero(t *testing.T) {
 
 func TestUnwrapCollectionOne(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	i := pathsys.NewString("test")
+	i := hipathsys.NewString("test")
 	c := ctx.NewCollection()
 	c.Add(i)
 
@@ -64,8 +64,8 @@ func TestUnwrapCollectionOne(t *testing.T) {
 func TestUnwrapCollectionMore(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
-	c.Add(pathsys.NewString("test2"))
+	c.Add(hipathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test2"))
 
 	assert.Same(t, c, unwrapCollection(c))
 }
@@ -86,10 +86,10 @@ func TestWrapCollectionCollection(t *testing.T) {
 
 func TestWrapCollectionNoCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	item := pathsys.NewString("test")
+	item := hipathsys.NewString("test")
 	res := wrapCollection(ctx, item)
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		col := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, col.Count()) {
 			assert.Same(t, item, col.Get(0))
 		}
@@ -109,10 +109,10 @@ func TestEmptyCollectionEmpty(t *testing.T) {
 func TestEmptyCollectionNotEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 	assert.False(t, emptyCollection(col))
 }
 
 func TestEmptyCollectionOther(t *testing.T) {
-	assert.False(t, emptyCollection(pathsys.NewString("test")))
+	assert.False(t, emptyCollection(hipathsys.NewString("test")))
 }

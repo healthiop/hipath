@@ -26,12 +26,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohipath
+module github.com/healthiop/hipath
 
-go 1.14
+go 1.15
 
 require (
-	github.com/antlr/antlr4 v0.0.0-20201124204520-1364da5ed347
+	github.com/antlr/antlr4 v0.0.0-20210103211933-547fd7cc5eb0
 	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.6.1
 	gopkg.in/yaml.v2 v2.2.2 // indirect

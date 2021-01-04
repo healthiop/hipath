@@ -29,80 +29,80 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestUnionPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
-	c1.Add(pathsys.NewInteger(14))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(14))
 
 	c2 := ctx.NewCollection()
-	c2.Add(pathsys.NewDecimalInt(11))
-	c2.Add(pathsys.NewDecimalInt(12))
+	c2.Add(hipathsys.NewDecimalInt(11))
+	c2.Add(hipathsys.NewDecimalInt(12))
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 4, c.Count()) {
-			assert.Equal(t, int32(10), pathsys.IntegerValue(c.Get(0)))
-			assert.Equal(t, int32(11), pathsys.IntegerValue(c.Get(1)))
-			assert.Equal(t, int32(14), pathsys.IntegerValue(c.Get(2)))
-			assert.Equal(t, 12.0, pathsys.DecimalValueFloat64(c.Get(3)))
+			assert.Equal(t, int32(10), hipathsys.IntegerValue(c.Get(0)))
+			assert.Equal(t, int32(11), hipathsys.IntegerValue(c.Get(1)))
+			assert.Equal(t, int32(14), hipathsys.IntegerValue(c.Get(2)))
+			assert.Equal(t, 12.0, hipathsys.DecimalValueFloat64(c.Get(3)))
 		}
 	}
 }
 
 func TestUnionPathFuncNoCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
-	c2 := pathsys.NewString("test2")
+	c1 := hipathsys.NewString("test1")
+	c2 := hipathsys.NewString("test2")
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
-			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test2"), c.Get(1))
 		}
 	}
 }
 
 func TestUnionPathFuncArgNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
+	c1 := hipathsys.NewString("test1")
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
 	}
 }
 
 func TestUnionPathFuncObjNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
+	c1 := hipathsys.NewString("test1")
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
 	}
 }
@@ -125,28 +125,28 @@ func TestUnionPathFuncBothEmpty(t *testing.T) {
 func TestCombinePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(pathsys.NewInteger(10))
-	c1.Add(pathsys.NewInteger(11))
-	c1.Add(pathsys.NewInteger(14))
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(14))
 
 	c2 := ctx.NewCollection()
-	c2.Add(pathsys.NewDecimalInt(11))
-	c2.Add(pathsys.NewDecimalInt(12))
+	c2.Add(hipathsys.NewDecimalInt(11))
+	c2.Add(hipathsys.NewDecimalInt(12))
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 5, c.Count()) {
-			assert.Equal(t, pathsys.NewInteger(10), c.Get(0))
-			assert.Equal(t, pathsys.NewInteger(11), c.Get(1))
-			assert.Equal(t, pathsys.NewInteger(14), c.Get(2))
+			assert.Equal(t, hipathsys.NewInteger(10), c.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(11), c.Get(1))
+			assert.Equal(t, hipathsys.NewInteger(14), c.Get(2))
 			assert.Condition(t, func() bool {
-				return pathsys.NewDecimalInt(11).Equal(c.Get(3))
+				return hipathsys.NewDecimalInt(11).Equal(c.Get(3))
 			})
 			assert.Condition(t, func() bool {
-				return pathsys.NewDecimalInt(12).Equal(c.Get(4))
+				return hipathsys.NewDecimalInt(12).Equal(c.Get(4))
 			})
 		}
 	}
@@ -154,47 +154,47 @@ func TestCombinePathFunc(t *testing.T) {
 
 func TestCombinePathFuncNoCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
-	c2 := pathsys.NewString("test2")
+	c1 := hipathsys.NewString("test1")
+	c2 := hipathsys.NewString("test2")
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 2, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
-			assert.Equal(t, pathsys.NewString("test2"), c.Get(1))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test2"), c.Get(1))
 		}
 	}
 }
 
 func TestCombinePathFuncArgNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
+	c1 := hipathsys.NewString("test1")
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
 	}
 }
 
 func TestCombinePathFuncObjNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := pathsys.NewString("test1")
+	c1 := hipathsys.NewString("test1")
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
 	}
 }

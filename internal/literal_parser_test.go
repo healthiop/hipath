@@ -29,9 +29,9 @@
 package internal
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
@@ -52,8 +52,8 @@ func TestParseBooleanLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.BooleanLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, true, res.(pathsys.BooleanAccessor).Bool())
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, true, res.(hipathsys.BooleanAccessor).Bool())
 	}
 }
 
@@ -64,8 +64,8 @@ func TestParseStringLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.StringLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, "Test \nValue", res.(pathsys.StringAccessor).String())
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, "Test \nValue", res.(hipathsys.StringAccessor).String())
 	}
 }
 
@@ -76,8 +76,8 @@ func TestParseNumberLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.NumberLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		assert.Equal(t, 183.2889, res.(pathsys.NumberAccessor).Float64())
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		assert.Equal(t, 183.2889, res.(hipathsys.NumberAccessor).Float64())
 	}
 }
 
@@ -88,9 +88,9 @@ func TestParseDateTimeLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.DateTimeLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 14, 30, 14, 559000000, time.UTC),
-			res.(pathsys.DateTimeAccessor).Time())
+			res.(hipathsys.DateTimeAccessor).Time())
 	}
 }
 
@@ -101,9 +101,9 @@ func TestParseDateLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.DateLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
 		assert.Equal(t, time.Date(2014, 5, 25, 0, 0, 0, 0, time.Local),
-			res.(pathsys.DateAccessor).Time())
+			res.(hipathsys.DateAccessor).Time())
 	}
 }
 
@@ -114,8 +114,8 @@ func TestParseTimeLiteral(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.TimeLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		timeRes := res.(pathsys.TimeAccessor)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		timeRes := res.(hipathsys.TimeAccessor)
 		assert.Equal(t, 14, timeRes.Hour())
 		assert.Equal(t, 30, timeRes.Minute())
 		assert.Equal(t, 17, timeRes.Second())
@@ -130,8 +130,8 @@ func TestParseQuantityLiteralPlural(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		q := res.(pathsys.QuantityAccessor)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		q := res.(hipathsys.QuantityAccessor)
 		if assert.NotNil(t, q.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, q.Value().Float64())
 		}
@@ -148,8 +148,8 @@ func TestParseQuantityLiteralSingular(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		q := res.(pathsys.QuantityAccessor)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		q := res.(hipathsys.QuantityAccessor)
 		if assert.NotNil(t, q.Value(), "quantity value expected") {
 			assert.Equal(t, 1.0, q.Value().Float64())
 		}
@@ -166,8 +166,8 @@ func TestParseQuantityLiteralUCUM(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.QuantityLiteral)(nil), res) {
-		res, _ := res.(pathsys.Evaluator).Evaluate(nil, nil, nil)
-		q := res.(pathsys.QuantityAccessor)
+		res, _ := res.(hipathsys.Evaluator).Evaluate(nil, nil, nil)
+		q := res.(hipathsys.QuantityAccessor)
 		if assert.NotNil(t, q.Value(), "quantity value expected") {
 			assert.Equal(t, 736.2321, q.Value().Float64())
 		}

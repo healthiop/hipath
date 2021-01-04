@@ -30,9 +30,9 @@ package internal
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/parser"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/parser"
 )
 
 func (v *Visitor) VisitFunctionInvocation(ctx *parser.FunctionInvocationContext) interface{} {
@@ -43,19 +43,19 @@ func (v *Visitor) VisitFunction(ctx *parser.FunctionContext) interface{} {
 	return v.visitTree(ctx, 3, visitFunction)
 }
 
-func visitFunction(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitFunction(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 	name := args[0].(string)
 
-	var paramEvaluators []pathsys.Evaluator
+	var paramEvaluators []hipathsys.Evaluator
 	if len(args) < 4 {
-		paramEvaluators = []pathsys.Evaluator{}
+		paramEvaluators = []hipathsys.Evaluator{}
 	} else {
 		paramList := args[2].([]interface{})
 		// commas need to removed from argument list
-		paramEvaluators = make([]pathsys.Evaluator, (len(paramList)+1)/2)
+		paramEvaluators = make([]hipathsys.Evaluator, (len(paramList)+1)/2)
 		for pos, param := range paramList {
 			if pos%2 == 0 {
-				paramEvaluators[pos/2] = param.(pathsys.Evaluator)
+				paramEvaluators[pos/2] = param.(hipathsys.Evaluator)
 			}
 		}
 	}
@@ -83,7 +83,7 @@ func (v *Visitor) VisitMemberInvocation(ctx *parser.MemberInvocationContext) int
 	return v.visitTree(ctx, 1, visitMemberInvocation)
 }
 
-func visitMemberInvocation(_ antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+func visitMemberInvocation(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 	name := args[0].(string)
 	return expression.NewMemberInvocation(expression.ExtractIdentifier(name)), nil
 }

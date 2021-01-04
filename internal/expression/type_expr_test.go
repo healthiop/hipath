@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -41,8 +41,8 @@ func TestAsTypeExpression(t *testing.T) {
 	if assert.NoError(t, err, "no error expected") {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-			s := res.(pathsys.StringAccessor)
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			s := res.(hipathsys.StringAccessor)
 			assert.Equal(t, "test1", s.String())
 		}
 	}
@@ -58,7 +58,7 @@ func TestAsTypeExpressionColSingleItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test1"))
 
 	expr, err := NewAsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
@@ -102,8 +102,8 @@ func TestAsTypeExpressionColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test2"))
 
 	expr, err := NewAsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
@@ -119,8 +119,8 @@ func TestIsTypeExpression(t *testing.T) {
 	if assert.NoError(t, err, "no error expected") {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-			b := res.(pathsys.BooleanAccessor)
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+			b := res.(hipathsys.BooleanAccessor)
 			assert.Equal(t, true, b.Bool())
 		}
 	}
@@ -136,14 +136,14 @@ func TestIsTypeExpressionColSingleItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test1"))
 
 	expr, err := NewIsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-			b := res.(pathsys.BooleanAccessor)
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+			b := res.(hipathsys.BooleanAccessor)
 			assert.Equal(t, true, b.Bool())
 		}
 	}
@@ -155,8 +155,8 @@ func TestIsTypeExpressionTypeDiffers(t *testing.T) {
 	if assert.NoError(t, err, "no error expected") {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-			b := res.(pathsys.BooleanAccessor)
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+			b := res.(hipathsys.BooleanAccessor)
 			assert.Equal(t, false, b.Bool())
 		}
 	}
@@ -186,8 +186,8 @@ func TestIsTypeExpressionColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test2"))
 
 	expr, err := NewIsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {

@@ -28,18 +28,18 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 type InvocationExpression struct {
-	exprEvaluator       pathsys.Evaluator
-	invocationEvaluator pathsys.Evaluator
+	exprEvaluator       hipathsys.Evaluator
+	invocationEvaluator hipathsys.Evaluator
 }
 
-func NewInvocationExpression(exprEvaluator pathsys.Evaluator, invocationEvaluator pathsys.Evaluator) *InvocationExpression {
+func NewInvocationExpression(exprEvaluator hipathsys.Evaluator, invocationEvaluator hipathsys.Evaluator) *InvocationExpression {
 	return &InvocationExpression{exprEvaluator, invocationEvaluator}
 }
 
-func (e *InvocationExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *InvocationExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	exprNode, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err

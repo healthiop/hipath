@@ -30,26 +30,26 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"regexp"
 	"strings"
 )
 
 type iifFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newIIfFunction() *iifFunction {
 	return &iifFunction{
-		BaseFunction: pathsys.NewBaseFunction("iif", -1, 2, 3),
+		BaseFunction: hipathsys.NewBaseFunction("iif", -1, 2, 3),
 	}
 }
 
-func (f *iifFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *iifFunction) Execute(_ hipathsys.ContextAccessor, _ interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	criterion := unwrapCollection(args[0])
 	var criterionValue bool
 	if criterion != nil {
-		if b, ok := criterion.(pathsys.BooleanAccessor); !ok {
+		if b, ok := criterion.(hipathsys.BooleanAccessor); !ok {
 			return nil, fmt.Errorf("criterion must be a boolean: %T", criterion)
 		} else {
 			criterionValue = b.Bool()
@@ -67,37 +67,37 @@ func (f *iifFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, args []i
 }
 
 type toBooleanFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toBooleanFunc = &toBooleanFunction{
-	BaseFunction: pathsys.NewBaseFunction("toBoolean", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toBoolean", -1, 0, 0),
 }
 
-func (f *toBooleanFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toBooleanFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	if b, ok := any.(pathsys.BooleanAccessor); ok {
+	if b, ok := any.(hipathsys.BooleanAccessor); ok {
 		return b, nil
 	}
-	if n, ok := any.(pathsys.NumberAccessor); ok {
+	if n, ok := any.(hipathsys.NumberAccessor); ok {
 		f := n.Float64()
 		if f == 1.0 {
-			return pathsys.True, nil
+			return hipathsys.True, nil
 		}
 		if f == 0.0 {
-			return pathsys.False, nil
+			return hipathsys.False, nil
 		}
-	} else if s, ok := any.(pathsys.StringAccessor); ok {
+	} else if s, ok := any.(hipathsys.StringAccessor); ok {
 		s := strings.ToLower(s.String())
 		switch s {
 		case "true", "t", "yes", "y", "1", "1.0":
-			return pathsys.True, nil
+			return hipathsys.True, nil
 		case "false", "f", "no", "n", "0", "0.0":
-			return pathsys.False, nil
+			return hipathsys.False, nil
 		}
 	}
 
@@ -111,36 +111,36 @@ type convertsToBooleanFunction struct {
 func newConvertsToBooleanFunction() *convertsToBooleanFunction {
 	return &convertsToBooleanFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToBoolean", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToBoolean", -1, 0, 0),
 			converter:    toBooleanFunc,
 		},
 	}
 }
 
 type toIntegerFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toIntegerFunc = &toIntegerFunction{
-	BaseFunction: pathsys.NewBaseFunction("toInteger", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toInteger", -1, 0, 0),
 }
 
-func (f *toIntegerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toIntegerFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
 	switch any.DataType() {
-	case pathsys.IntegerDataType:
+	case hipathsys.IntegerDataType:
 		return any, nil
-	case pathsys.BooleanDataType:
-		if any.(pathsys.BooleanAccessor).Bool() {
-			return pathsys.NewInteger(1), nil
+	case hipathsys.BooleanDataType:
+		if any.(hipathsys.BooleanAccessor).Bool() {
+			return hipathsys.NewInteger(1), nil
 		}
-		return pathsys.NewInteger(0), nil
-	case pathsys.StringDataType:
-		i, err := pathsys.ParseInteger(any.(pathsys.StringAccessor).String())
+		return hipathsys.NewInteger(0), nil
+	case hipathsys.StringDataType:
+		i, err := hipathsys.ParseInteger(any.(hipathsys.StringAccessor).String())
 		if err == nil {
 			return i, nil
 		}
@@ -156,38 +156,38 @@ type convertsToIntegerFunction struct {
 func newConvertsToIntegerFunction() *convertsToIntegerFunction {
 	return &convertsToIntegerFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToInteger", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToInteger", -1, 0, 0),
 			converter:    toIntegerFunc,
 		},
 	}
 }
 
 type toDecimalFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toDecimalFunc = &toDecimalFunction{
-	BaseFunction: pathsys.NewBaseFunction("toDecimal", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toDecimal", -1, 0, 0),
 }
 
-func (f *toDecimalFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toDecimalFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	if n, ok := any.(pathsys.NumberAccessor); ok {
+	if n, ok := any.(hipathsys.NumberAccessor); ok {
 		return n.Value(), nil
 	}
 
 	switch any.DataType() {
-	case pathsys.BooleanDataType:
-		if any.(pathsys.BooleanAccessor).Bool() {
-			return pathsys.NewDecimalInt(1), nil
+	case hipathsys.BooleanDataType:
+		if any.(hipathsys.BooleanAccessor).Bool() {
+			return hipathsys.NewDecimalInt(1), nil
 		}
-		return pathsys.NewDecimalInt(0), nil
-	case pathsys.StringDataType:
-		d, err := pathsys.ParseDecimal(any.(pathsys.StringAccessor).String())
+		return hipathsys.NewDecimalInt(0), nil
+	case hipathsys.StringDataType:
+		d, err := hipathsys.ParseDecimal(any.(hipathsys.StringAccessor).String())
 		if err == nil {
 			return d, nil
 		}
@@ -203,32 +203,32 @@ type convertsToDecimalFunction struct {
 func newConvertsToDecimalFunction() *convertsToDecimalFunction {
 	return &convertsToDecimalFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToDecimal", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToDecimal", -1, 0, 0),
 			converter:    toDecimalFunc,
 		},
 	}
 }
 
 type toDateFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toDateFunc = &toDateFunction{
-	BaseFunction: pathsys.NewBaseFunction("toDate", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toDate", -1, 0, 0),
 }
 
-func (f *toDateFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toDateFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	var d pathsys.DateAccessor
-	if t, ok := any.(pathsys.DateTemporalAccessor); ok {
+	var d hipathsys.DateAccessor
+	if t, ok := any.(hipathsys.DateTemporalAccessor); ok {
 		d = t.Date()
-	} else if s, ok := any.(pathsys.StringAccessor); ok {
+	} else if s, ok := any.(hipathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseDate(s.String())
+		d, err = hipathsys.ParseDate(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -244,32 +244,32 @@ type convertsToDateFunction struct {
 func newConvertsToDateFunction() *convertsToDateFunction {
 	return &convertsToDateFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToDate", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToDate", -1, 0, 0),
 			converter:    toDateFunc,
 		},
 	}
 }
 
 type toDateTimeFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toDateTimeFunc = &toDateTimeFunction{
-	BaseFunction: pathsys.NewBaseFunction("toDateTime", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toDateTime", -1, 0, 0),
 }
 
-func (f *toDateTimeFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toDateTimeFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	var d pathsys.DateTimeAccessor
-	if t, ok := any.(pathsys.DateTemporalAccessor); ok {
+	var d hipathsys.DateTimeAccessor
+	if t, ok := any.(hipathsys.DateTemporalAccessor); ok {
 		d = t.DateTime()
-	} else if s, ok := any.(pathsys.StringAccessor); ok {
+	} else if s, ok := any.(hipathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseDateTime(s.String())
+		d, err = hipathsys.ParseDateTime(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -285,58 +285,58 @@ type convertsToDateTimeFunction struct {
 func newConvertsToDateTimeFunction() *convertsToDateTimeFunction {
 	return &convertsToDateTimeFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToDateTime", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToDateTime", -1, 0, 0),
 			converter:    toDateTimeFunc,
 		},
 	}
 }
 
 type toQuantityFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toQuantityFunc = &toQuantityFunction{
-	BaseFunction: pathsys.NewBaseFunction("toQuantity", -1, 0, 1),
+	BaseFunction: hipathsys.NewBaseFunction("toQuantity", -1, 0, 1),
 }
 
 var quantityStringPattern = regexp.MustCompile("^([+\\-]?\\d+(?:\\.\\d+)?)\\s*('(?:[^']+)'|(?:[a-zA-Z]+))?$")
 
-func (f *toQuantityFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toQuantityFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	var q pathsys.QuantityAccessor
-	if o, ok := any.(pathsys.QuantityAccessor); ok {
+	var q hipathsys.QuantityAccessor
+	if o, ok := any.(hipathsys.QuantityAccessor); ok {
 		q = o
-	} else if n, ok := any.(pathsys.NumberAccessor); ok {
+	} else if n, ok := any.(hipathsys.NumberAccessor); ok {
 		v := n.Value()
-		q = pathsys.NewQuantity(v, pathsys.DefaultQuantityUnit.Name(v))
-	} else if b, ok := any.(pathsys.BooleanAccessor); ok {
-		var v pathsys.DecimalAccessor
+		q = hipathsys.NewQuantity(v, hipathsys.DefaultQuantityUnit.Name(v))
+	} else if b, ok := any.(hipathsys.BooleanAccessor); ok {
+		var v hipathsys.DecimalAccessor
 		if b.Bool() {
-			v = pathsys.DecimalOne
+			v = hipathsys.DecimalOne
 		} else {
-			v = pathsys.DecimalZero
+			v = hipathsys.DecimalZero
 		}
-		q = pathsys.NewQuantity(v, pathsys.DefaultQuantityUnit.Name(v))
-	} else if s, ok := any.(pathsys.StringAccessor); ok {
+		q = hipathsys.NewQuantity(v, hipathsys.DefaultQuantityUnit.Name(v))
+	} else if s, ok := any.(hipathsys.StringAccessor); ok {
 		m := quantityStringPattern.FindStringSubmatch(s.String())
 		if m == nil {
 			return nil, nil
 		}
-		v, _ := pathsys.ParseDecimal(m[1])
-		u, exp := pathsys.QuantityUnitWithName(parseStringLiteral(m[2], stringDelimiterChar))
+		v, _ := hipathsys.ParseDecimal(m[1])
+		u, exp := hipathsys.QuantityUnitWithName(parseStringLiteral(m[2], stringDelimiterChar))
 		if u == nil {
-			q = pathsys.NewQuantity(v, nil)
+			q = hipathsys.NewQuantity(v, nil)
 		} else {
-			q = pathsys.NewQuantity(v, u.NameWithExp(v, exp))
+			q = hipathsys.NewQuantity(v, u.NameWithExp(v, exp))
 		}
 	}
 
 	if q != nil && len(args) > 0 {
-		if s, ok := args[0].(pathsys.StringAccessor); !ok {
+		if s, ok := args[0].(hipathsys.StringAccessor); !ok {
 			return nil, fmt.Errorf("conversion unit is no string: %T", args[0])
 		} else {
 			q = q.ToUnit(s)
@@ -353,27 +353,27 @@ type convertsToQuantityFunction struct {
 func newConvertsToQuantityFunction() *convertsToQuantityFunction {
 	return &convertsToQuantityFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToQuantity", -1, 0, 1),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToQuantity", -1, 0, 1),
 			converter:    toQuantityFunc,
 		},
 	}
 }
 
 type toStringFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toStringFunc = &toStringFunction{
-	BaseFunction: pathsys.NewBaseFunction("toString", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toString", -1, 0, 0),
 }
 
-func (f *toStringFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toStringFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	return pathsys.NewString(any.(pathsys.Stringifier).String()), nil
+	return hipathsys.NewString(any.(hipathsys.Stringifier).String()), nil
 }
 
 type convertsToStringFunction struct {
@@ -383,32 +383,32 @@ type convertsToStringFunction struct {
 func newConvertsToStringFunction() *convertsToStringFunction {
 	return &convertsToStringFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToString", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToString", -1, 0, 0),
 			converter:    toStringFunc,
 		},
 	}
 }
 
 type toTimeFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var toTimeFunc = &toTimeFunction{
-	BaseFunction: pathsys.NewBaseFunction("toTime", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("toTime", -1, 0, 0),
 }
 
-func (f *toTimeFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toTimeFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	any, err := convertibleAny(node)
 	if any == nil || err != nil {
 		return nil, err
 	}
 
-	var d pathsys.TimeAccessor
-	if t, ok := any.(pathsys.TimeAccessor); ok {
+	var d hipathsys.TimeAccessor
+	if t, ok := any.(hipathsys.TimeAccessor); ok {
 		d = t
-	} else if s, ok := any.(pathsys.StringAccessor); ok {
+	} else if s, ok := any.(hipathsys.StringAccessor); ok {
 		var err error
-		d, err = pathsys.ParseTime(s.String())
+		d, err = hipathsys.ParseTime(s.String())
 		if err != nil {
 			return nil, nil
 		}
@@ -424,20 +424,20 @@ type convertsToTimeFunction struct {
 func newConvertsToTimeFunction() *convertsToTimeFunction {
 	return &convertsToTimeFunction{
 		convertsToFunction: convertsToFunction{
-			BaseFunction: pathsys.NewBaseFunction("convertsToTime", -1, 0, 0),
+			BaseFunction: hipathsys.NewBaseFunction("convertsToTime", -1, 0, 0),
 			converter:    toTimeFunc,
 		},
 	}
 }
 
 type convertsToFunction struct {
-	pathsys.BaseFunction
-	converter pathsys.FunctionExecutor
+	hipathsys.BaseFunction
+	converter hipathsys.FunctionExecutor
 }
 
-func (f *convertsToFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *convertsToFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	if emptyCollection(node) {
-		return pathsys.False, nil
+		return hipathsys.False, nil
 	}
 
 	res, err := f.converter.Execute(ctx, node, args, loop)
@@ -446,21 +446,21 @@ func (f *convertsToFunction) Execute(ctx pathsys.ContextAccessor, node interface
 	}
 
 	if res != nil {
-		return pathsys.True, nil
+		return hipathsys.True, nil
 	}
-	return pathsys.False, nil
+	return hipathsys.False, nil
 }
 
-func convertibleAny(node interface{}) (pathsys.AnyAccessor, error) {
+func convertibleAny(node interface{}) (hipathsys.AnyAccessor, error) {
 	value := unwrapCollection(node)
 	if value == nil {
 		return nil, nil
 	}
 
-	if any, ok := value.(pathsys.AnyAccessor); !ok {
+	if any, ok := value.(hipathsys.AnyAccessor); !ok {
 		return nil, nil
 	} else {
-		if _, ok := any.(pathsys.CollectionAccessor); ok {
+		if _, ok := any.(hipathsys.CollectionAccessor); ok {
 			return nil, fmt.Errorf("collection with multiple items cannot be converted")
 		}
 		return any, nil

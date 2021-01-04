@@ -31,9 +31,9 @@ package internal
 import (
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -139,7 +139,7 @@ func TestVisitorVisit(t *testing.T) {
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (hipathsys.Evaluator, error) {
 		return res, nil
 	})
 
@@ -151,7 +151,7 @@ func TestVisitorVisitError(t *testing.T) {
 	ctx := newRuleContext(81, 32)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (pathsys.Evaluator, error) {
+	r := v.visit(ctx, func(ctx antlr.ParserRuleContext) (hipathsys.Evaluator, error) {
 		return nil, fmt.Errorf("test error")
 	})
 
@@ -173,7 +173,7 @@ func TestVisitorTree(t *testing.T) {
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 		if assert.Len(t, args, 2) {
 			assert.Equal(t, "first", args[0])
 			assert.Equal(t, "second", args[1])
@@ -193,7 +193,7 @@ func TestVisitorTreeMissingArgs(t *testing.T) {
 	ctx := newRuleContextWithChildren(81, 32, children)
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	r := v.visitTree(ctx, 2, func(ctx antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
 		return res, nil
 	})
@@ -207,7 +207,7 @@ func TestVisitorTreeErrorChild(t *testing.T) {
 	ctx := newRuleContextWithErrorChild(81, 32, newTokenMock(87, 32, "test"))
 	c := NewErrorItemCollection()
 	v := NewVisitor(c)
-	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (pathsys.Evaluator, error) {
+	r := v.visitTree(ctx, 1, func(ctx antlr.ParserRuleContext, args []interface{}) (hipathsys.Evaluator, error) {
 		assert.Fail(t, "function must not be invoked")
 		return res, nil
 	})

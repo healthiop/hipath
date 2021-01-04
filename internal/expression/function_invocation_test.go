@@ -30,30 +30,30 @@ package expression
 
 import (
 	"fmt"
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
-var testLoop = pathsys.NewLoop(nil)
+var testLoop = hipathsys.NewLoop(nil)
 
 func TestFunctionInvocationNoArgs(t *testing.T) {
 	function := &testInvocationArgsFunction{
 		t:            t,
-		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("test", -1, 0, 0),
 	}
 
 	ctx := test.NewTestContext(t)
-	e := newFunctionInvocation(function, []pathsys.Evaluator{})
+	e := newFunctionInvocation(function, []hipathsys.Evaluator{})
 
 	tt := newTestingType(t)
 	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, c.Count()) {
-			assert.Equal(t, pathsys.NewInteger(0), c.Get(0))
+			assert.Equal(t, hipathsys.NewInteger(0), c.Get(0))
 		}
 	}
 }
@@ -61,24 +61,24 @@ func TestFunctionInvocationNoArgs(t *testing.T) {
 func TestFunctionInvocationArgs(t *testing.T) {
 	function := &testInvocationArgsFunction{
 		t:            t,
-		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+		BaseFunction: hipathsys.NewBaseFunction("test", -1, 0, 100),
 	}
 
-	testExpression := newTestExpression(pathsys.NewString("test1"))
+	testExpression := newTestExpression(hipathsys.NewString("test1"))
 	ctx := test.NewTestContext(t)
-	e := newFunctionInvocation(function, []pathsys.Evaluator{
+	e := newFunctionInvocation(function, []hipathsys.Evaluator{
 		testExpression, nil, ParseStringLiteral("test2")})
 
 	tt := newTestingType(t)
 	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.CollectionAccessor)(nil), res) {
-		c := res.(pathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
+		c := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 4, c.Count()) {
-			assert.Equal(t, pathsys.NewInteger(3), c.Get(0))
-			assert.Equal(t, pathsys.NewString("test1"), c.Get(1))
+			assert.Equal(t, hipathsys.NewInteger(3), c.Get(0))
+			assert.Equal(t, hipathsys.NewString("test1"), c.Get(1))
 			assert.Nil(t, c.Get(2))
-			assert.Equal(t, pathsys.NewString("test2"), c.Get(3))
+			assert.Equal(t, hipathsys.NewString("test2"), c.Get(3))
 		}
 	}
 	assert.Equal(t, 1, testExpression.invocationCount)
@@ -89,17 +89,17 @@ func TestFunctionInvocationArgs(t *testing.T) {
 func TestFunctionInvocationLoop(t *testing.T) {
 	function := &testInvocationLoopFunction{
 		t:            t,
-		BaseFunction: pathsys.NewBaseFunction("test", 0, 0, 100),
+		BaseFunction: hipathsys.NewBaseFunction("test", 0, 0, 100),
 	}
 
-	loopExpression := newTestExpression(pathsys.NewString("testLoop"))
+	loopExpression := newTestExpression(hipathsys.NewString("testLoop"))
 	ctx := test.NewTestContext(t)
-	e := newFunctionInvocation(function, []pathsys.Evaluator{loopExpression})
+	e := newFunctionInvocation(function, []hipathsys.Evaluator{loopExpression})
 
 	tt := newTestingType(t)
 	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.NewString("testLoop"), res)
+	assert.Equal(t, hipathsys.NewString("testLoop"), res)
 
 	assert.Equal(t, 1, loopExpression.invocationCount)
 	assert.NotSame(t, testLoop, loopExpression.loop)
@@ -108,11 +108,11 @@ func TestFunctionInvocationLoop(t *testing.T) {
 func TestFunctionInvocationArgsError(t *testing.T) {
 	function := &testInvocationArgsFunction{
 		t:            t,
-		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+		BaseFunction: hipathsys.NewBaseFunction("test", -1, 0, 100),
 	}
 
 	ctx := test.NewTestContext(t)
-	e := newFunctionInvocation(function, []pathsys.Evaluator{
+	e := newFunctionInvocation(function, []hipathsys.Evaluator{
 		ParseStringLiteral("test1"), ParseExtConstantTerm("xxx"), ParseStringLiteral("test2")})
 
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -122,11 +122,11 @@ func TestFunctionInvocationArgsError(t *testing.T) {
 
 func TestFunctionInvocationError(t *testing.T) {
 	function := &testInvocationErrFunction{
-		BaseFunction: pathsys.NewBaseFunction("test", -1, 0, 100),
+		BaseFunction: hipathsys.NewBaseFunction("test", -1, 0, 100),
 	}
 
 	ctx := test.NewTestContext(t)
-	e := newFunctionInvocation(function, []pathsys.Evaluator{})
+	e := newFunctionInvocation(function, []hipathsys.Evaluator{})
 
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.Error(t, err, "error expected")
@@ -134,34 +134,34 @@ func TestFunctionInvocationError(t *testing.T) {
 }
 
 func TestLookupFunctionInvocationNotFound(t *testing.T) {
-	fi, err := LookupFunctionInvocation("test", make([]pathsys.Evaluator, 0))
+	fi, err := LookupFunctionInvocation("test", make([]hipathsys.Evaluator, 0))
 	assert.EqualError(t, err, "executor has not been defined: test", "error expected")
 	assert.Nil(t, fi, "no executor invocation expected")
 }
 
 func TestLookupFunctionInvocationTooLessArgs(t *testing.T) {
-	fi, err := LookupFunctionInvocation("union", make([]pathsys.Evaluator, 0))
+	fi, err := LookupFunctionInvocation("union", make([]hipathsys.Evaluator, 0))
 	assert.EqualError(t, err, "executor union requires at least 1 parameters", "error expected")
 	assert.Nil(t, fi, "no executor invocation expected")
 }
 
 func TestLookupFunctionInvocationTooManyArgs(t *testing.T) {
-	fi, err := LookupFunctionInvocation("union", make([]pathsys.Evaluator, 2))
+	fi, err := LookupFunctionInvocation("union", make([]hipathsys.Evaluator, 2))
 	assert.EqualError(t, err, "executor union accepts at most 1 parameters", "error expected")
 	assert.Nil(t, fi, "no executor invocation expected")
 }
 
 type testInvocationArgsFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 	t *testing.T
 }
 
-func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, _ interface{}, args []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *testInvocationArgsFunction) Execute(ctx hipathsys.ContextAccessor, _ interface{}, args []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	t := f.t
 	assert.Same(t, testLoop, loop)
 
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewInteger(int32(len(args))))
+	c.Add(hipathsys.NewInteger(int32(len(args))))
 	for _, a := range args {
 		c.Add(a)
 	}
@@ -169,11 +169,11 @@ func (f *testInvocationArgsFunction) Execute(ctx pathsys.ContextAccessor, _ inte
 }
 
 type testInvocationLoopFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 	t *testing.T
 }
 
-func (f *testInvocationLoopFunction) Execute(_ pathsys.ContextAccessor, _ interface{}, _ []interface{}, loop pathsys.Looper) (interface{}, error) {
+func (f *testInvocationLoopFunction) Execute(_ hipathsys.ContextAccessor, _ interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	t := f.t
 	if assert.NotNil(t, loop) && assert.NotNil(t, loop.Evaluator()) {
 		res, err := loop.Evaluator().Evaluate(nil, nil, nil)
@@ -183,9 +183,9 @@ func (f *testInvocationLoopFunction) Execute(_ pathsys.ContextAccessor, _ interf
 }
 
 type testInvocationErrFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
-func (f *testInvocationErrFunction) Execute(pathsys.ContextAccessor, interface{}, []interface{}, pathsys.Looper) (interface{}, error) {
+func (f *testInvocationErrFunction) Execute(hipathsys.ContextAccessor, interface{}, []interface{}, hipathsys.Looper) (interface{}, error) {
 	return nil, fmt.Errorf("an error occurred")
 }

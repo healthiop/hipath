@@ -30,23 +30,23 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"regexp"
 	"strings"
 	"unicode/utf8"
 )
 
 type indexOfFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newIndexOfFunction() *indexOfFunction {
 	return &indexOfFunction{
-		BaseFunction: pathsys.NewBaseFunction("indexOf", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("indexOf", -1, 1, 1),
 	}
 }
 
-func (f *indexOfFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *indexOfFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -58,20 +58,20 @@ func (f *indexOfFunction) Execute(_ pathsys.ContextAccessor, node interface{}, a
 	}
 
 	i := strings.Index(s.String(), ss.String())
-	return pathsys.NewInteger(int32(i)), nil
+	return hipathsys.NewInteger(int32(i)), nil
 }
 
 type substringFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newSubstringFunction() *substringFunction {
 	return &substringFunction{
-		BaseFunction: pathsys.NewBaseFunction("substring", -1, 1, 2),
+		BaseFunction: hipathsys.NewBaseFunction("substring", -1, 1, 2),
 	}
 }
 
-func (f *substringFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *substringFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (f *substringFunction) Execute(_ pathsys.ContextAccessor, node interface{},
 		startVal = 0
 	}
 
-	var l pathsys.IntegerAccessor = nil
+	var l hipathsys.IntegerAccessor = nil
 	if len(args) > 1 {
 		l, err = integerNode(args[1])
 		if err != nil {
@@ -115,20 +115,20 @@ func (f *substringFunction) Execute(_ pathsys.ContextAccessor, node interface{},
 		lVal = srLen - startVal
 	}
 
-	return pathsys.StringOf(string(sr[startVal : startVal+lVal])), nil
+	return hipathsys.StringOf(string(sr[startVal : startVal+lVal])), nil
 }
 
 type startsWithFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newStartsWithFunction() *startsWithFunction {
 	return &startsWithFunction{
-		BaseFunction: pathsys.NewBaseFunction("startsWith", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("startsWith", -1, 1, 1),
 	}
 }
 
-func (f *startsWithFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *startsWithFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -139,20 +139,20 @@ func (f *startsWithFunction) Execute(_ pathsys.ContextAccessor, node interface{}
 		return nil, err
 	}
 
-	return pathsys.BooleanOf(strings.HasPrefix(s.String(), ss.String())), nil
+	return hipathsys.BooleanOf(strings.HasPrefix(s.String(), ss.String())), nil
 }
 
 type endsWithFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newEndsWithFunction() *endsWithFunction {
 	return &endsWithFunction{
-		BaseFunction: pathsys.NewBaseFunction("endsWith", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("endsWith", -1, 1, 1),
 	}
 }
 
-func (f *endsWithFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *endsWithFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -163,20 +163,20 @@ func (f *endsWithFunction) Execute(_ pathsys.ContextAccessor, node interface{}, 
 		return nil, err
 	}
 
-	return pathsys.BooleanOf(strings.HasSuffix(s.String(), ss.String())), nil
+	return hipathsys.BooleanOf(strings.HasSuffix(s.String(), ss.String())), nil
 }
 
 type containsFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newContainsFunction() *containsFunction {
 	return &containsFunction{
-		BaseFunction: pathsys.NewBaseFunction("contains", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("contains", -1, 1, 1),
 	}
 }
 
-func (f *containsFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *containsFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -187,58 +187,58 @@ func (f *containsFunction) Execute(_ pathsys.ContextAccessor, node interface{}, 
 		return nil, err
 	}
 
-	return pathsys.BooleanOf(strings.Contains(s.String(), ss.String())), nil
+	return hipathsys.BooleanOf(strings.Contains(s.String(), ss.String())), nil
 }
 
 type upperFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newUpperFunction() *upperFunction {
 	return &upperFunction{
-		BaseFunction: pathsys.NewBaseFunction("upper", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("upper", -1, 0, 0),
 	}
 }
 
-func (f *upperFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *upperFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
 	}
 
-	return pathsys.NewString(strings.ToUpper(s.String())), nil
+	return hipathsys.NewString(strings.ToUpper(s.String())), nil
 }
 
 type lowerFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newLowerFunction() *lowerFunction {
 	return &lowerFunction{
-		BaseFunction: pathsys.NewBaseFunction("lower", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("lower", -1, 0, 0),
 	}
 }
 
-func (f *lowerFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *lowerFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
 	}
 
-	return pathsys.NewString(strings.ToLower(s.String())), nil
+	return hipathsys.NewString(strings.ToLower(s.String())), nil
 }
 
 type replaceFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newReplaceFunction() *replaceFunction {
 	return &replaceFunction{
-		BaseFunction: pathsys.NewBaseFunction("replace", -1, 2, 2),
+		BaseFunction: hipathsys.NewBaseFunction("replace", -1, 2, 2),
 	}
 }
 
-func (f *replaceFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *replaceFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -255,20 +255,20 @@ func (f *replaceFunction) Execute(_ pathsys.ContextAccessor, node interface{}, a
 	}
 
 	res := strings.ReplaceAll(s.String(), pattern.String(), substitution.String())
-	return pathsys.StringOf(res), nil
+	return hipathsys.StringOf(res), nil
 }
 
 type matchesFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newMatchesFunction() *matchesFunction {
 	return &matchesFunction{
-		BaseFunction: pathsys.NewBaseFunction("matches", -1, 1, 1),
+		BaseFunction: hipathsys.NewBaseFunction("matches", -1, 1, 1),
 	}
 }
 
-func (f *matchesFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *matchesFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -283,20 +283,20 @@ func (f *matchesFunction) Execute(_ pathsys.ContextAccessor, node interface{}, a
 	if err != nil {
 		return nil, err
 	}
-	return pathsys.BooleanOf(b), nil
+	return hipathsys.BooleanOf(b), nil
 }
 
 type replaceMatchesFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newReplaceMatchesFunction() *replaceMatchesFunction {
 	return &replaceMatchesFunction{
-		BaseFunction: pathsys.NewBaseFunction("replaceMatches", -1, 2, 2),
+		BaseFunction: hipathsys.NewBaseFunction("replaceMatches", -1, 2, 2),
 	}
 }
 
-func (f *replaceMatchesFunction) Execute(_ pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *replaceMatchesFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
@@ -317,64 +317,64 @@ func (f *replaceMatchesFunction) Execute(_ pathsys.ContextAccessor, node interfa
 		return nil, err
 	}
 
-	return pathsys.StringOf(re.ReplaceAllString(s.String(), substitution.String())), nil
+	return hipathsys.StringOf(re.ReplaceAllString(s.String(), substitution.String())), nil
 }
 
 type lengthFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newLengthFunction() *lengthFunction {
 	return &lengthFunction{
-		BaseFunction: pathsys.NewBaseFunction("length", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("length", -1, 0, 0),
 	}
 }
 
-func (f *lengthFunction) Execute(_ pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *lengthFunction) Execute(_ hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
 	}
 
-	return pathsys.NewInteger(int32(utf8.RuneCountInString(s.String()))), nil
+	return hipathsys.NewInteger(int32(utf8.RuneCountInString(s.String()))), nil
 }
 
 type toCharsFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newToCharsFunction() *toCharsFunction {
 	return &toCharsFunction{
-		BaseFunction: pathsys.NewBaseFunction("toChars", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("toChars", -1, 0, 0),
 	}
 }
 
-func (f *toCharsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *toCharsFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	s, err := stringNode(node)
 	if s == nil || err != nil {
 		return nil, err
 	}
 
 	if s.Length() == 0 {
-		return pathsys.NewEmptyCollection(), nil
+		return hipathsys.NewEmptyCollection(), nil
 	}
 
-	col := pathsys.NewCollection(ctx.ModelAdapter())
+	col := hipathsys.NewCollection(ctx.ModelAdapter())
 	sr := []rune(s.String())
 	for _, c := range sr {
-		col.Add(pathsys.StringOf(string(c)))
+		col.Add(hipathsys.StringOf(string(c)))
 	}
 
 	return col, nil
 }
 
-func stringNode(node interface{}) (pathsys.StringAccessor, error) {
+func stringNode(node interface{}) (hipathsys.StringAccessor, error) {
 	value := unwrapCollection(node)
 	if value == nil {
 		return nil, nil
 	}
 
-	if s, ok := value.(pathsys.StringAccessor); !ok {
+	if s, ok := value.(hipathsys.StringAccessor); !ok {
 		return nil, fmt.Errorf("not a string: %T", value)
 	} else {
 		return s, nil

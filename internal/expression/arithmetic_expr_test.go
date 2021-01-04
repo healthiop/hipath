@@ -29,27 +29,27 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
 
 func TestArithmeticExpression(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralInt(87),
-		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
+		hipathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), node) {
-		res := node.(pathsys.DecimalAccessor)
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), node) {
+		res := node.(hipathsys.DecimalAccessor)
 		assert.Equal(t, 99.43, res.Float64())
 	}
 }
 
 func TestArithmeticExpressionLeftError(t *testing.T) {
 	e := NewArithmeticExpression(newTestErrorExpression(),
-		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
+		hipathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
@@ -57,7 +57,7 @@ func TestArithmeticExpressionLeftError(t *testing.T) {
 
 func TestArithmeticExpressionRightError(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
-		pathsys.AdditionOp, newTestErrorExpression())
+		hipathsys.AdditionOp, newTestErrorExpression())
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
@@ -65,7 +65,7 @@ func TestArithmeticExpressionRightError(t *testing.T) {
 
 func TestArithmeticExpressionLeftNil(t *testing.T) {
 	e := NewArithmeticExpression(newTestExpression(nil),
-		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
+		hipathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, node, "empty res expected")
@@ -73,7 +73,7 @@ func TestArithmeticExpressionLeftNil(t *testing.T) {
 
 func TestArithmeticExpressionRightNil(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
-		pathsys.AdditionOp, newTestExpression(nil))
+		hipathsys.AdditionOp, newTestExpression(nil))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, node, "empty res expected")
@@ -81,7 +81,7 @@ func TestArithmeticExpressionRightNil(t *testing.T) {
 
 func TestArithmeticExpressionLeftInvalidType(t *testing.T) {
 	e := NewArithmeticExpression(newTestExpression(test.NewTestModelNode(10, false)),
-		pathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
+		hipathsys.AdditionOp, NewNumberLiteralFloat64(12.43))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
@@ -89,7 +89,7 @@ func TestArithmeticExpressionLeftInvalidType(t *testing.T) {
 
 func TestArithmeticExpressionRightInvalidType(t *testing.T) {
 	e := NewArithmeticExpression(NewNumberLiteralFloat64(12.43),
-		pathsys.AdditionOp, newTestExpression(test.NewTestModelNode(10, false)))
+		hipathsys.AdditionOp, newTestExpression(test.NewTestModelNode(10, false)))
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, node, "no res expected")
@@ -97,31 +97,31 @@ func TestArithmeticExpressionRightInvalidType(t *testing.T) {
 
 func TestArithmeticExpressionTemporalAddition(t *testing.T) {
 	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
-	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.AdditionOp,
-		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("day"))))
+	e := NewArithmeticExpression(newTestExpression(hipathsys.NewDateTime(date)), hipathsys.AdditionOp,
+		newTestExpression(hipathsys.NewQuantity(hipathsys.NewDecimalInt(12), hipathsys.NewString("day"))))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+	if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), res) {
 		assert.Equal(t, date.Add(12*24*time.Hour).UnixNano(),
-			res.(pathsys.DateTimeAccessor).Time().UnixNano())
+			res.(hipathsys.DateTimeAccessor).Time().UnixNano())
 	}
 }
 
 func TestArithmeticExpressionTemporalSubtraction(t *testing.T) {
 	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
-	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
-		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("day"))))
+	e := NewArithmeticExpression(newTestExpression(hipathsys.NewDateTime(date)), hipathsys.SubtractionOp,
+		newTestExpression(hipathsys.NewQuantity(hipathsys.NewDecimalInt(12), hipathsys.NewString("day"))))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+	if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), res) {
 		assert.Equal(t, date.Add(-12*24*time.Hour).UnixNano(),
-			res.(pathsys.DateTimeAccessor).Time().UnixNano())
+			res.(hipathsys.DateTimeAccessor).Time().UnixNano())
 	}
 }
 
 func TestArithmeticExpressionTemporalWithString(t *testing.T) {
 	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
-	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
+	e := NewArithmeticExpression(newTestExpression(hipathsys.NewDateTime(date)), hipathsys.SubtractionOp,
 		NewRawStringLiteral("10"))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
@@ -130,8 +130,8 @@ func TestArithmeticExpressionTemporalWithString(t *testing.T) {
 
 func TestArithmeticExpressionTemporalInvalidUnit(t *testing.T) {
 	date := time.Date(2019, 8, 21, 14, 38, 49, 827362627, time.Local)
-	e := NewArithmeticExpression(newTestExpression(pathsys.NewDateTime(date)), pathsys.SubtractionOp,
-		newTestExpression(pathsys.NewQuantity(pathsys.NewDecimalInt(12), pathsys.NewString("x"))))
+	e := NewArithmeticExpression(newTestExpression(hipathsys.NewDateTime(date)), hipathsys.SubtractionOp,
+		newTestExpression(hipathsys.NewQuantity(hipathsys.NewDecimalInt(12), hipathsys.NewString("x"))))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no result expected")
@@ -139,17 +139,17 @@ func TestArithmeticExpressionTemporalInvalidUnit(t *testing.T) {
 
 func TestArithmeticExpressionBothString(t *testing.T) {
 	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
-		pathsys.AdditionOp, NewRawStringLiteral("Test2"))
+		hipathsys.AdditionOp, NewRawStringLiteral("Test2"))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test1Test2"), res)
 	}
 }
 
 func TestArithmeticExpressionBothStringSubtraction(t *testing.T) {
 	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
-		pathsys.SubtractionOp, NewRawStringLiteral("Test2"))
+		hipathsys.SubtractionOp, NewRawStringLiteral("Test2"))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "no res expected")
@@ -157,10 +157,10 @@ func TestArithmeticExpressionBothStringSubtraction(t *testing.T) {
 
 func TestArithmeticExpressionStringNil(t *testing.T) {
 	e := NewArithmeticExpression(NewRawStringLiteral("Test1"),
-		pathsys.AdditionOp, NewRawStringLiteral("Test2"))
+		hipathsys.AdditionOp, NewRawStringLiteral("Test2"))
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test1Test2"), res)
 	}
 }

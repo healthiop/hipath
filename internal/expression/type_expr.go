@@ -30,16 +30,16 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type AsTypeExpression struct {
-	exprEvaluator pathsys.Evaluator
-	fqName        pathsys.FQTypeNameAccessor
+	exprEvaluator hipathsys.Evaluator
+	fqName        hipathsys.FQTypeNameAccessor
 }
 
-func NewAsTypeExpression(exprEvaluator pathsys.Evaluator, name string) (*AsTypeExpression, error) {
-	fqName, err := pathsys.ParseFQTypeName(name)
+func NewAsTypeExpression(exprEvaluator hipathsys.Evaluator, name string) (*AsTypeExpression, error) {
+	fqName, err := hipathsys.ParseFQTypeName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func NewAsTypeExpression(exprEvaluator pathsys.Evaluator, name string) (*AsTypeE
 	return &AsTypeExpression{exprEvaluator, fqName}, nil
 }
 
-func (e *AsTypeExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *AsTypeExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	value, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -58,23 +58,23 @@ func (e *AsTypeExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{
 	}
 
 	item := unwrapCollection(value)
-	if _, ok := item.(pathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.CollectionAccessor); ok {
 		return nil, fmt.Errorf("as operator cannot be applied on a collection")
 	}
 
-	if pathsys.HasModelType(ctx.ModelAdapter(), item, e.fqName) {
+	if hipathsys.HasModelType(ctx.ModelAdapter(), item, e.fqName) {
 		return value, nil
 	}
 	return nil, nil
 }
 
 type IsTypeExpression struct {
-	exprEvaluator pathsys.Evaluator
-	fqName        pathsys.FQTypeNameAccessor
+	exprEvaluator hipathsys.Evaluator
+	fqName        hipathsys.FQTypeNameAccessor
 }
 
-func NewIsTypeExpression(exprEvaluator pathsys.Evaluator, name string) (*IsTypeExpression, error) {
-	fqName, err := pathsys.ParseFQTypeName(name)
+func NewIsTypeExpression(exprEvaluator hipathsys.Evaluator, name string) (*IsTypeExpression, error) {
+	fqName, err := hipathsys.ParseFQTypeName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func NewIsTypeExpression(exprEvaluator pathsys.Evaluator, name string) (*IsTypeE
 	return &IsTypeExpression{exprEvaluator, fqName}, nil
 }
 
-func (e *IsTypeExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *IsTypeExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	value, err := e.exprEvaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -93,9 +93,9 @@ func (e *IsTypeExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{
 	}
 
 	item := unwrapCollection(value)
-	if _, ok := item.(pathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.CollectionAccessor); ok {
 		return nil, fmt.Errorf("is operator cannot be applied on a collection")
 	}
 
-	return pathsys.BooleanOf(pathsys.HasModelType(ctx.ModelAdapter(), item, e.fqName)), nil
+	return hipathsys.BooleanOf(hipathsys.HasModelType(ctx.ModelAdapter(), item, e.fqName)), nil
 }

@@ -30,19 +30,19 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type StringConcatExpression struct {
-	evalLeft  pathsys.Evaluator
-	evalRight pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
+	evalRight hipathsys.Evaluator
 }
 
-func NewStringConcatExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *StringConcatExpression {
+func NewStringConcatExpression(evalLeft hipathsys.Evaluator, evalRight hipathsys.Evaluator) *StringConcatExpression {
 	return &StringConcatExpression{evalLeft, evalRight}
 }
 
-func (e *StringConcatExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *StringConcatExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -54,18 +54,18 @@ func (e *StringConcatExpression) Evaluate(ctx pathsys.ContextAccessor, node inte
 
 	left, right = unwrapCollection(left), unwrapCollection(right)
 	if left == nil && right == nil {
-		return pathsys.EmptyString, nil
+		return hipathsys.EmptyString, nil
 	}
 
 	var ok bool
-	var leftString, rightString pathsys.Stringifier
+	var leftString, rightString hipathsys.Stringifier
 	if left != nil {
-		if leftString, ok = left.(pathsys.Stringifier); !ok {
+		if leftString, ok = left.(hipathsys.Stringifier); !ok {
 			return nil, fmt.Errorf("left operand is not string: %T", left)
 		}
 	}
 	if right != nil {
-		if rightString, ok = right.(pathsys.Stringifier); !ok {
+		if rightString, ok = right.(hipathsys.Stringifier); !ok {
 			return nil, fmt.Errorf("right operand is not string: %T", right)
 		}
 	}
@@ -76,5 +76,5 @@ func (e *StringConcatExpression) Evaluate(ctx pathsys.ContextAccessor, node inte
 	if rightString == nil {
 		return leftString, nil
 	}
-	return pathsys.NewString(leftString.String() + rightString.String()), nil
+	return hipathsys.NewString(leftString.String() + rightString.String()), nil
 }

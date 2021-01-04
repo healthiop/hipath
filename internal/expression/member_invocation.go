@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type MemberInvocation struct {
@@ -41,7 +41,7 @@ func NewMemberInvocation(name string) *MemberInvocation {
 	return &MemberInvocation{name}
 }
 
-func (i *MemberInvocation) Evaluate(ctx pathsys.ContextAccessor, node interface{}, _ pathsys.Looper) (interface{}, error) {
+func (i *MemberInvocation) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, _ hipathsys.Looper) (interface{}, error) {
 	if node == nil {
 		return nil, fmt.Errorf("cannot extract path from empty: %s", i.name)
 	}

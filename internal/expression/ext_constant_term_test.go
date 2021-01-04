@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -40,7 +40,7 @@ func TestExtConstantTerm(t *testing.T) {
 	evaluator := ParseExtConstantTerm("ucum")
 	res, err := evaluator.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, pathsys.UCUMSystemURI, res)
+	assert.Equal(t, hipathsys.UCUMSystemURI, res)
 }
 
 func TestExtConstantTermNotDefined(t *testing.T) {

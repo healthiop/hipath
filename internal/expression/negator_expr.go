@@ -30,18 +30,18 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type NegatorExpression struct {
-	evaluator pathsys.Evaluator
+	evaluator hipathsys.Evaluator
 }
 
-func NewNegatorExpression(evaluator pathsys.Evaluator) *NegatorExpression {
+func NewNegatorExpression(evaluator hipathsys.Evaluator) *NegatorExpression {
 	return &NegatorExpression{evaluator}
 }
 
-func (e *NegatorExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *NegatorExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	data, err := e.evaluator.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (e *NegatorExpression) Evaluate(ctx pathsys.ContextAccessor, node interface
 		return nil, nil
 	}
 
-	negator, ok := data.(pathsys.Negator)
+	negator, ok := data.(hipathsys.Negator)
 	if !ok {
 		return nil, fmt.Errorf("cannot negate value of type: %T", data)
 	}

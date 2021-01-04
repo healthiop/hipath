@@ -29,10 +29,10 @@
 package internal
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 	"time"
 )
@@ -45,10 +45,10 @@ func TestParseAdditionExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, int32(24), res.(pathsys.IntegerAccessor).Int())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(24), res.(hipathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -61,10 +61,10 @@ func TestParseSubtractionExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, int32(6), res.(pathsys.IntegerAccessor).Int())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(6), res.(hipathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -77,10 +77,10 @@ func TestParseMultiplicationExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, int32(112), res.(pathsys.IntegerAccessor).Int())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(112), res.(hipathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -93,10 +93,10 @@ func TestParseDivisionExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-			assert.Equal(t, 1.75, res.(pathsys.DecimalAccessor).Float64())
+		if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+			assert.Equal(t, 1.75, res.(hipathsys.DecimalAccessor).Float64())
 		}
 	}
 }
@@ -109,10 +109,10 @@ func TestParseDivExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, int32(2), res.(pathsys.IntegerAccessor).Int())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(2), res.(hipathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -125,10 +125,10 @@ func TestParseModExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, 3.0, res.(pathsys.IntegerAccessor).Float64())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, 3.0, res.(hipathsys.IntegerAccessor).Float64())
 		}
 	}
 }
@@ -141,10 +141,10 @@ func TestParseStringAdditionExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-			assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, hipathsys.NewString("Test1Test2"), res)
 		}
 	}
 }
@@ -157,7 +157,7 @@ func TestParseStringAdditionExpressionEmpty(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
 		assert.Nil(t, res, "empty result expected")
 	}
@@ -171,11 +171,11 @@ func TestParseDateTimeAdditionExpressionEmpty(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.ArithmeticExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.DateTimeAccessor)(nil), res) {
+		if assert.Implements(t, (*hipathsys.DateTimeAccessor)(nil), res) {
 			e := time.Date(2015, 2, 5, 2, 34, 28, 0, time.UTC)
-			assert.Equal(t, e.UnixNano(), res.(pathsys.DateTimeAccessor).Time().UnixNano())
+			assert.Equal(t, e.UnixNano(), res.(hipathsys.DateTimeAccessor).Time().UnixNano())
 		}
 	}
 }
@@ -188,10 +188,10 @@ func TestParseStringConcatExpression(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.StringConcatExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-			assert.Equal(t, pathsys.NewString("Test1Test2"), res)
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, hipathsys.NewString("Test1Test2"), res)
 		}
 	}
 }

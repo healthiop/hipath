@@ -30,14 +30,14 @@ package test
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"sort"
 	"testing"
 )
 
-var testBaseTypeSpec = pathsys.NewTypeSpec(pathsys.NewFQTypeName("base", "TEST"))
-var testTypeSpec = pathsys.NewTypeSpecWithBase(pathsys.NewFQTypeName("type1", "TEST"), testBaseTypeSpec)
-var testElementTypeSpec = pathsys.NewTypeSpecWithBase(pathsys.NewFQTypeName("Element", "TEST"), testBaseTypeSpec)
+var testBaseTypeSpec = hipathsys.NewTypeSpec(hipathsys.NewFQTypeName("base", "TEST"))
+var testTypeSpec = hipathsys.NewTypeSpecWithBase(hipathsys.NewFQTypeName("type1", "TEST"), testBaseTypeSpec)
+var testElementTypeSpec = hipathsys.NewTypeSpecWithBase(hipathsys.NewFQTypeName("Element", "TEST"), testBaseTypeSpec)
 
 type testModelNode struct {
 	value float64
@@ -65,7 +65,7 @@ type testModel struct {
 	t *testing.T
 }
 
-func newTestModel(t *testing.T) pathsys.ModelAdapter {
+func newTestModel(t *testing.T) hipathsys.ModelAdapter {
 	return &testModel{t}
 }
 
@@ -79,22 +79,22 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 		return nil
 	} else {
 		if n.testSys() {
-			return pathsys.NewDecimalFloat64(n.testValue())
+			return hipathsys.NewDecimalFloat64(n.testValue())
 		}
 		return n
 	}
 }
 
-func (a *testModel) TypeSpec(node interface{}) pathsys.TypeSpecAccessor {
+func (a *testModel) TypeSpec(node interface{}) hipathsys.TypeSpecAccessor {
 	if _, ok := node.(map[string]interface{}); ok {
 		return testElementTypeSpec
 	}
 
 	if n, ok := node.(testModelNodeAccessor); !ok {
-		if _, ok := node.(pathsys.StringAccessor); !ok {
+		if _, ok := node.(hipathsys.StringAccessor); !ok {
 			a.t.Errorf("not a test model node: %T", node)
 		}
-		return pathsys.UndefinedTypeSpec
+		return hipathsys.UndefinedTypeSpec
 	} else {
 		if n.testSys() {
 			a.t.Errorf("type of system node must not be requested")
@@ -157,8 +157,8 @@ func (a *testModel) Navigate(node interface{}, name string) (interface{}, error)
 	return result, nil
 }
 
-func (a *testModel) Children(node interface{}) (pathsys.CollectionAccessor, error) {
-	if _, ok := node.(pathsys.AnyAccessor); ok {
+func (a *testModel) Children(node interface{}) (hipathsys.CollectionAccessor, error) {
+	if _, ok := node.(hipathsys.AnyAccessor); ok {
 		return nil, nil
 	}
 
@@ -167,7 +167,7 @@ func (a *testModel) Children(node interface{}) (pathsys.CollectionAccessor, erro
 		return nil, fmt.Errorf("cannot be cast to map: %T", node)
 	}
 
-	res := pathsys.NewCollection(a)
+	res := hipathsys.NewCollection(a)
 	keys := make([]string, 0)
 	for k := range model {
 		keys = append(keys, k)
@@ -183,20 +183,20 @@ func (a *testModel) Children(node interface{}) (pathsys.CollectionAccessor, erro
 }
 
 type testContext struct {
-	modelAdapter pathsys.ModelAdapter
-	tracer       pathsys.Tracer
+	modelAdapter hipathsys.ModelAdapter
+	tracer       hipathsys.Tracer
 	node         interface{}
 }
 
-func NewTestContext(t *testing.T) pathsys.ContextAccessor {
+func NewTestContext(t *testing.T) hipathsys.ContextAccessor {
 	return &testContext{modelAdapter: newTestModel(t)}
 }
 
-func NewTestContextWithNode(t *testing.T, node interface{}) pathsys.ContextAccessor {
+func NewTestContextWithNode(t *testing.T, node interface{}) hipathsys.ContextAccessor {
 	return &testContext{modelAdapter: newTestModel(t), node: node}
 }
 
-func NewTestContextWithNodeAndTracer(t *testing.T, node interface{}, tracer pathsys.Tracer) pathsys.ContextAccessor {
+func NewTestContextWithNodeAndTracer(t *testing.T, node interface{}, tracer hipathsys.Tracer) hipathsys.ContextAccessor {
 	return &testContext{
 		modelAdapter: newTestModel(t),
 		tracer:       tracer,
@@ -206,27 +206,27 @@ func NewTestContextWithNodeAndTracer(t *testing.T, node interface{}, tracer path
 
 func (t *testContext) EnvVar(name string) (interface{}, bool) {
 	if name == "ucum" {
-		return pathsys.UCUMSystemURI, true
+		return hipathsys.UCUMSystemURI, true
 	}
 	return nil, false
 }
 
-func (t *testContext) ModelAdapter() pathsys.ModelAdapter {
+func (t *testContext) ModelAdapter() hipathsys.ModelAdapter {
 	return t.modelAdapter
 }
 
-func (t *testContext) NewCollection() pathsys.CollectionModifier {
-	return pathsys.NewCollection(t.modelAdapter)
+func (t *testContext) NewCollection() hipathsys.CollectionModifier {
+	return hipathsys.NewCollection(t.modelAdapter)
 }
 
-func (t *testContext) NewCollectionWithItem(item interface{}) pathsys.CollectionModifier {
-	return pathsys.NewCollectionWithItem(t.modelAdapter, item)
+func (t *testContext) NewCollectionWithItem(item interface{}) hipathsys.CollectionModifier {
+	return hipathsys.NewCollectionWithItem(t.modelAdapter, item)
 }
 
 func (t *testContext) ContextNode() interface{} {
 	return t.node
 }
 
-func (t *testContext) Tracer() pathsys.Tracer {
+func (t *testContext) Tracer() hipathsys.Tracer {
 	return t.tracer
 }

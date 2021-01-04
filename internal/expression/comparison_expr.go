@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type ComparisonOp int
@@ -43,16 +43,16 @@ const (
 )
 
 type ComparisonExpression struct {
-	evalLeft  pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
 	op        ComparisonOp
-	evalRight pathsys.Evaluator
+	evalRight hipathsys.Evaluator
 }
 
-func NewComparisonExpression(evalLeft pathsys.Evaluator, op ComparisonOp, evalRight pathsys.Evaluator) *ComparisonExpression {
+func NewComparisonExpression(evalLeft hipathsys.Evaluator, op ComparisonOp, evalRight hipathsys.Evaluator) *ComparisonExpression {
 	return &ComparisonExpression{evalLeft, op, evalRight}
 }
 
-func (e *ComparisonExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *ComparisonExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -68,19 +68,19 @@ func (e *ComparisonExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 	}
 
 	var ok bool
-	var leftCmp, rightCmp pathsys.Comparator
-	if leftCmp, ok = left.(pathsys.Comparator); !ok {
+	var leftCmp, rightCmp hipathsys.Comparator
+	if leftCmp, ok = left.(hipathsys.Comparator); !ok {
 		return nil, fmt.Errorf("operand cannot be used for comparison: %T", left)
 	}
-	if rightCmp, ok = right.(pathsys.Comparator); !ok {
+	if rightCmp, ok = right.(hipathsys.Comparator); !ok {
 		return nil, fmt.Errorf("operand cannot be used for comparison: %T", right)
 	}
 
 	res, status := leftCmp.Compare(rightCmp)
-	if status == pathsys.Empty {
+	if status == hipathsys.Empty {
 		return nil, nil
 	}
-	if status != pathsys.Evaluated {
+	if status != hipathsys.Evaluated {
 		return nil, fmt.Errorf("operands cannot be compared: %T <> %T", leftCmp, rightCmp)
 	}
 
@@ -97,5 +97,5 @@ func (e *ComparisonExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 	default:
 		panic(fmt.Sprintf("unhandled comparison operator: %d", e.op))
 	}
-	return pathsys.BooleanOf(b), nil
+	return hipathsys.BooleanOf(b), nil
 }

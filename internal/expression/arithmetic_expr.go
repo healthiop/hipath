@@ -30,20 +30,20 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type ArithmeticExpression struct {
-	evalLeft  pathsys.Evaluator
-	op        pathsys.ArithmeticOps
-	evalRight pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
+	op        hipathsys.ArithmeticOps
+	evalRight hipathsys.Evaluator
 }
 
-func NewArithmeticExpression(evalLeft pathsys.Evaluator, op pathsys.ArithmeticOps, evalRight pathsys.Evaluator) *ArithmeticExpression {
+func NewArithmeticExpression(evalLeft hipathsys.Evaluator, op hipathsys.ArithmeticOps, evalRight hipathsys.Evaluator) *ArithmeticExpression {
 	return &ArithmeticExpression{evalLeft, op, evalRight}
 }
 
-func (e *ArithmeticExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *ArithmeticExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -58,11 +58,11 @@ func (e *ArithmeticExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 		return nil, nil
 	}
 
-	leftOperand, ok := left.(pathsys.ArithmeticApplier)
+	leftOperand, ok := left.(hipathsys.ArithmeticApplier)
 	if !ok {
 		return applyNonNumberArithmetic(left, e.op, right)
 	}
-	rightOperand, ok := right.(pathsys.DecimalValueAccessor)
+	rightOperand, ok := right.(hipathsys.DecimalValueAccessor)
 	if !ok {
 		return applyNonNumberArithmetic(left, e.op, right)
 	}
@@ -70,10 +70,10 @@ func (e *ArithmeticExpression) Evaluate(ctx pathsys.ContextAccessor, node interf
 	return leftOperand.Calc(rightOperand, e.op)
 }
 
-func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right interface{}) (pathsys.AnyAccessor, error) {
-	if op == pathsys.AdditionOp || op == pathsys.SubtractionOp {
+func applyNonNumberArithmetic(left interface{}, op hipathsys.ArithmeticOps, right interface{}) (hipathsys.AnyAccessor, error) {
+	if op == hipathsys.AdditionOp || op == hipathsys.SubtractionOp {
 		t, err := applyTemporalArithmetic(left, right,
-			op == pathsys.SubtractionOp)
+			op == hipathsys.SubtractionOp)
 		if err != nil {
 			return nil, err
 		}
@@ -82,7 +82,7 @@ func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right 
 		}
 	}
 
-	if op == pathsys.AdditionOp {
+	if op == hipathsys.AdditionOp {
 		if s := applyStringArithmetic(left, right); s != nil {
 			return s, nil
 		}
@@ -91,32 +91,32 @@ func applyNonNumberArithmetic(left interface{}, op pathsys.ArithmeticOps, right 
 	return nil, fmt.Errorf("operands %T and %T do not support arithmetic operation %c", left, op, right)
 }
 
-func applyStringArithmetic(left, right interface{}) pathsys.StringAccessor {
+func applyStringArithmetic(left, right interface{}) hipathsys.StringAccessor {
 	var ok bool
-	var leftString, rightString pathsys.Stringifier
-	if leftString, ok = left.(pathsys.Stringifier); !ok {
+	var leftString, rightString hipathsys.Stringifier
+	if leftString, ok = left.(hipathsys.Stringifier); !ok {
 		return nil
 	}
-	if rightString, ok = right.(pathsys.Stringifier); !ok {
+	if rightString, ok = right.(hipathsys.Stringifier); !ok {
 		return nil
 	}
 
-	return pathsys.NewString(leftString.String() + rightString.String())
+	return hipathsys.NewString(leftString.String() + rightString.String())
 }
 
-func applyTemporalArithmetic(left, right interface{}, negate bool) (pathsys.TemporalAccessor, error) {
+func applyTemporalArithmetic(left, right interface{}, negate bool) (hipathsys.TemporalAccessor, error) {
 	var ok bool
-	var temporal pathsys.TemporalAccessor
-	var quantity pathsys.QuantityAccessor
-	if temporal, ok = left.(pathsys.TemporalAccessor); !ok {
+	var temporal hipathsys.TemporalAccessor
+	var quantity hipathsys.QuantityAccessor
+	if temporal, ok = left.(hipathsys.TemporalAccessor); !ok {
 		return nil, nil
 	}
-	if quantity, ok = right.(pathsys.QuantityAccessor); !ok {
+	if quantity, ok = right.(hipathsys.QuantityAccessor); !ok {
 		return nil, fmt.Errorf("only a quantity may be added to a temporal value: %T", right)
 	}
 
 	if negate {
-		quantity = quantity.Negate().(pathsys.QuantityAccessor)
+		quantity = quantity.Negate().(hipathsys.QuantityAccessor)
 	}
 	return temporal.Add(quantity)
 }

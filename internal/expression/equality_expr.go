@@ -29,21 +29,21 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type EqualityExpression struct {
 	not        bool
 	equivalent bool
-	evalLeft   pathsys.Evaluator
-	evalRight  pathsys.Evaluator
+	evalLeft   hipathsys.Evaluator
+	evalRight  hipathsys.Evaluator
 }
 
-func NewEqualityExpression(not bool, equivalent bool, evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *EqualityExpression {
+func NewEqualityExpression(not bool, equivalent bool, evalLeft hipathsys.Evaluator, evalRight hipathsys.Evaluator) *EqualityExpression {
 	return &EqualityExpression{not, equivalent, evalLeft, evalRight}
 }
 
-func (e *EqualityExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *EqualityExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	res, err := e.evaluateInternally(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -53,12 +53,12 @@ func (e *EqualityExpression) Evaluate(ctx pathsys.ContextAccessor, node interfac
 		return nil, nil
 	}
 	if e.not {
-		return res.(pathsys.BooleanAccessor).Negate(), nil
+		return res.(hipathsys.BooleanAccessor).Negate(), nil
 	}
 	return res, nil
 }
 
-func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *EqualityExpression) evaluateInternally(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, nod
 	left, right = unwrapCollection(left), unwrapCollection(right)
 	if left == nil || right == nil {
 		if e.equivalent {
-			return pathsys.BooleanOf(pathsys.ModelEquivalent(
+			return hipathsys.BooleanOf(hipathsys.ModelEquivalent(
 				ctx.ModelAdapter(), left, right)), nil
 		} else {
 			return nil, nil
@@ -80,37 +80,37 @@ func (e *EqualityExpression) evaluateInternally(ctx pathsys.ContextAccessor, nod
 
 	r, match := e.stringsEqual(left, right)
 	if match {
-		return pathsys.BooleanOf(r), nil
+		return hipathsys.BooleanOf(r), nil
 	}
 
 	if e.equivalent {
-		r = pathsys.ModelEquivalent(ctx.ModelAdapter(), left, right)
+		r = hipathsys.ModelEquivalent(ctx.ModelAdapter(), left, right)
 	} else {
-		r = pathsys.ModelEqual(ctx.ModelAdapter(), left, right)
+		r = hipathsys.ModelEqual(ctx.ModelAdapter(), left, right)
 		if !r && temporalPrecisionNotEqual(left, right) {
 			return nil, nil
 		}
 	}
-	return pathsys.BooleanOf(r), nil
+	return hipathsys.BooleanOf(r), nil
 }
 
 func (e *EqualityExpression) stringsEqual(n1 interface{}, n2 interface{}) (equal bool, match bool) {
 	var ok bool
-	var s1, s2 pathsys.Stringifier
-	if s1, ok = n1.(pathsys.Stringifier); !ok {
+	var s1, s2 hipathsys.Stringifier
+	if s1, ok = n1.(hipathsys.Stringifier); !ok {
 		return
 	}
-	if s2, ok = n2.(pathsys.Stringifier); !ok {
+	if s2, ok = n2.(hipathsys.Stringifier); !ok {
 		return
 	}
 
-	if s1.DataType() != pathsys.StringDataType && s2.DataType() != pathsys.StringDataType {
+	if s1.DataType() != hipathsys.StringDataType && s2.DataType() != hipathsys.StringDataType {
 		return
 	}
 
 	match = true
 	if e.equivalent {
-		equal = pathsys.NormalizedStringEqual(s1.String(), s2.String())
+		equal = hipathsys.NormalizedStringEqual(s1.String(), s2.String())
 	} else {
 		equal = s1.String() == s2.String()
 	}
@@ -119,12 +119,12 @@ func (e *EqualityExpression) stringsEqual(n1 interface{}, n2 interface{}) (equal
 
 func temporalPrecisionNotEqual(n1 interface{}, n2 interface{}) bool {
 	var ok bool
-	var t1, t2 pathsys.TemporalAccessor
-	if t1, ok = n1.(pathsys.TemporalAccessor); !ok {
+	var t1, t2 hipathsys.TemporalAccessor
+	if t1, ok = n1.(hipathsys.TemporalAccessor); !ok {
 		return false
 	}
-	if t2, ok = n2.(pathsys.TemporalAccessor); !ok {
+	if t2, ok = n2.(hipathsys.TemporalAccessor); !ok {
 		return false
 	}
-	return !pathsys.TemporalPrecisionEqual(t1, t2)
+	return !hipathsys.TemporalPrecisionEqual(t1, t2)
 }

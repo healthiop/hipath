@@ -29,30 +29,30 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"strings"
 )
 
 type NumberLiteral struct {
-	node pathsys.NumberAccessor
+	node hipathsys.NumberAccessor
 }
 
-func NewNumberLiteralInt(value int32) pathsys.Evaluator {
-	return &NumberLiteral{pathsys.NewInteger(value)}
+func NewNumberLiteralInt(value int32) hipathsys.Evaluator {
+	return &NumberLiteral{hipathsys.NewInteger(value)}
 }
 
-func NewNumberLiteralFloat64(value float64) pathsys.Evaluator {
-	return &NumberLiteral{pathsys.NewDecimalFloat64(value)}
+func NewNumberLiteralFloat64(value float64) hipathsys.Evaluator {
+	return &NumberLiteral{hipathsys.NewDecimalFloat64(value)}
 }
 
-func ParseNumberLiteral(value string) (pathsys.Evaluator, error) {
-	var node pathsys.NumberAccessor
+func ParseNumberLiteral(value string) (hipathsys.Evaluator, error) {
+	var node hipathsys.NumberAccessor
 	var err error
 
 	if strings.ContainsRune(value, '.') {
-		node, err = pathsys.ParseDecimal(value)
+		node, err = hipathsys.ParseDecimal(value)
 	} else {
-		node, err = pathsys.ParseInteger(value)
+		node, err = hipathsys.ParseInteger(value)
 	}
 
 	if err != nil {
@@ -62,6 +62,6 @@ func ParseNumberLiteral(value string) (pathsys.Evaluator, error) {
 	}
 }
 
-func (e *NumberLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *NumberLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

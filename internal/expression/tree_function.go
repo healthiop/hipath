@@ -29,28 +29,28 @@
 package expression
 
 import (
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type childrenFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 var childrenFunc = &childrenFunction{
-	BaseFunction: pathsys.NewBaseFunction("children", -1, 0, 0),
+	BaseFunction: hipathsys.NewBaseFunction("children", -1, 0, 0),
 }
 
-var childrenFuncInvocation = newFunctionInvocation(childrenFunc, []pathsys.Evaluator{})
+var childrenFuncInvocation = newFunctionInvocation(childrenFunc, []hipathsys.Evaluator{})
 
-func (f *childrenFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, _ []interface{}, _ pathsys.Looper) (interface{}, error) {
+func (f *childrenFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
 	if node == nil {
 		return nil, nil
 	}
 
-	if col, ok := node.(pathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.CollectionAccessor); ok {
 		count := col.Count()
 		adapter := ctx.ModelAdapter()
-		var children pathsys.CollectionModifier
+		var children hipathsys.CollectionModifier
 
 		for i := 0; i < count; i++ {
 			c := col.Get(i)
@@ -61,7 +61,7 @@ func (f *childrenFunction) Execute(ctx pathsys.ContextAccessor, node interface{}
 				}
 				if ccol != nil && !ccol.Empty() {
 					if children == nil {
-						children = pathsys.NewCollection(adapter)
+						children = hipathsys.NewCollection(adapter)
 					}
 					children.AddAll(ccol)
 				}
@@ -75,15 +75,15 @@ func (f *childrenFunction) Execute(ctx pathsys.ContextAccessor, node interface{}
 }
 
 type descendantsFunction struct {
-	pathsys.BaseFunction
+	hipathsys.BaseFunction
 }
 
 func newDescendantsFunction() *descendantsFunction {
 	return &descendantsFunction{
-		BaseFunction: pathsys.NewBaseFunction("descendants", -1, 0, 0),
+		BaseFunction: hipathsys.NewBaseFunction("descendants", -1, 0, 0),
 	}
 }
 
-func (f *descendantsFunction) Execute(ctx pathsys.ContextAccessor, node interface{}, args []interface{}, _ pathsys.Looper) (interface{}, error) {
-	return repeatFunc.Execute(ctx, node, args, pathsys.NewLoop(childrenFuncInvocation))
+func (f *descendantsFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
+	return repeatFunc.Execute(ctx, node, args, hipathsys.NewLoop(childrenFuncInvocation))
 }

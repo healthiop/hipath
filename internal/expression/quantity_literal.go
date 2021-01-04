@@ -30,18 +30,18 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"regexp"
 )
 
 var quantityUnitRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 
 type QuantityLiteral struct {
-	node pathsys.QuantityAccessor
+	node hipathsys.QuantityAccessor
 }
 
-func ParseQuantityLiteral(number string, unit string) (pathsys.Evaluator, error) {
-	value, err := pathsys.ParseDecimal(number)
+func ParseQuantityLiteral(number string, unit string) (hipathsys.Evaluator, error) {
+	value, err := hipathsys.ParseDecimal(number)
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +50,10 @@ func ParseQuantityLiteral(number string, unit string) (pathsys.Evaluator, error)
 		return nil, err
 	}
 
-	return &QuantityLiteral{pathsys.NewQuantity(value, convertedUnit)}, nil
+	return &QuantityLiteral{hipathsys.NewQuantity(value, convertedUnit)}, nil
 }
 
-func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
+func parseQuantityUnit(unit string) (hipathsys.StringAccessor, error) {
 	if len(unit) == 0 || unit == "''" {
 		return nil, nil
 	}
@@ -62,9 +62,9 @@ func parseQuantityUnit(unit string) (pathsys.StringAccessor, error) {
 	if !quantityUnitRegexp.MatchString(u) {
 		return nil, fmt.Errorf("invalid quantity unit: %s", u)
 	}
-	return pathsys.NewString(u), nil
+	return hipathsys.NewString(u), nil
 }
 
-func (e *QuantityLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *QuantityLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

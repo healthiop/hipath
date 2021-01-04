@@ -29,14 +29,14 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestThisInvocation(t *testing.T) {
-	loop := pathsys.NewLoop(nil)
-	this := pathsys.NewString("test")
+	loop := hipathsys.NewLoop(nil)
+	this := hipathsys.NewString("test")
 	loop.IncIndex(this)
 	evaluator := NewThisInvocation()
 	res, err := evaluator.Evaluate(nil, nil, loop)
@@ -52,14 +52,14 @@ func TestThisInvocationOutsideLoop(t *testing.T) {
 }
 
 func TestIndexInvocation(t *testing.T) {
-	loop := pathsys.NewLoop(nil)
-	loop.IncIndex(pathsys.NewInteger(10))
-	this := pathsys.NewString("test")
+	loop := hipathsys.NewLoop(nil)
+	loop.IncIndex(hipathsys.NewInteger(10))
+	this := hipathsys.NewString("test")
 	loop.IncIndex(this)
 	evaluator := NewIndexInvocation()
 	res, err := evaluator.Evaluate(nil, nil, loop)
 	assert.NoError(t, err, "error expected")
-	assert.Equal(t, pathsys.NewInteger(int32(1)), res)
+	assert.Equal(t, hipathsys.NewInteger(int32(1)), res)
 }
 
 func TestIndexInvocationOutsideLoop(t *testing.T) {
@@ -70,10 +70,10 @@ func TestIndexInvocationOutsideLoop(t *testing.T) {
 }
 
 func TestTotalInvocation(t *testing.T) {
-	loop := pathsys.NewLoop(nil)
-	this := pathsys.NewString("test")
+	loop := hipathsys.NewLoop(nil)
+	this := hipathsys.NewString("test")
 	loop.IncIndex(this)
-	total := pathsys.NewInteger(20)
+	total := hipathsys.NewInteger(20)
 	loop.SetTotal(total)
 	evaluator := NewTotalInvocation()
 	res, err := evaluator.Evaluate(nil, nil, loop)

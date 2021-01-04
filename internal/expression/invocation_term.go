@@ -28,16 +28,16 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 type InvocationTerm struct {
-	evaluator pathsys.Evaluator
+	evaluator hipathsys.Evaluator
 }
 
-func NewInvocationTerm(evaluator pathsys.Evaluator) *InvocationTerm {
+func NewInvocationTerm(evaluator hipathsys.Evaluator) *InvocationTerm {
 	return &InvocationTerm{evaluator}
 }
 
-func (t *InvocationTerm) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (t *InvocationTerm) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	return t.evaluator.Evaluate(ctx, node, loop)
 }

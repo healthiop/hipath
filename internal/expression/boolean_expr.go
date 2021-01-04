@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type BooleanOp int
@@ -43,16 +43,16 @@ const (
 )
 
 type BooleanExpression struct {
-	evalLeft  pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
 	op        BooleanOp
-	evalRight pathsys.Evaluator
+	evalRight hipathsys.Evaluator
 }
 
-func NewBooleanExpression(evalLeft pathsys.Evaluator, op BooleanOp, evalRight pathsys.Evaluator) *BooleanExpression {
+func NewBooleanExpression(evalLeft hipathsys.Evaluator, op BooleanOp, evalRight hipathsys.Evaluator) *BooleanExpression {
 	return &BooleanExpression{evalLeft, op, evalRight}
 }
 
-func (e *BooleanExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *BooleanExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err
@@ -78,14 +78,14 @@ func (e *BooleanExpression) Evaluate(ctx pathsys.ContextAccessor, node interface
 	if e.op == ImpliesOp {
 		if leftBool == nil {
 			if rightBool.Bool() {
-				return pathsys.True, nil
+				return hipathsys.True, nil
 			}
 			return nil, nil
 		}
 		if leftBool.Bool() {
 			return rightBool, nil
 		}
-		return pathsys.True, nil
+		return hipathsys.True, nil
 	} else {
 		if leftBool == nil || rightBool == nil {
 			return nil, nil
@@ -93,23 +93,23 @@ func (e *BooleanExpression) Evaluate(ctx pathsys.ContextAccessor, node interface
 
 		switch e.op {
 		case AndOp:
-			return pathsys.BooleanOf(leftBool.Bool() && rightBool.Bool()), nil
+			return hipathsys.BooleanOf(leftBool.Bool() && rightBool.Bool()), nil
 		case OrOp:
-			return pathsys.BooleanOf(leftBool.Bool() || rightBool.Bool()), nil
+			return hipathsys.BooleanOf(leftBool.Bool() || rightBool.Bool()), nil
 		case XOrOp:
-			return pathsys.BooleanOf(leftBool.Bool() != rightBool.Bool()), nil
+			return hipathsys.BooleanOf(leftBool.Bool() != rightBool.Bool()), nil
 		default:
 			panic(fmt.Sprintf("unhandled boolean operator: %d", e.op))
 		}
 	}
 }
 
-func unwrapBooleanCollection(node interface{}) (pathsys.BooleanAccessor, error) {
+func unwrapBooleanCollection(node interface{}) (hipathsys.BooleanAccessor, error) {
 	if node == nil {
 		return nil, nil
 	}
 
-	if col, ok := node.(pathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.CollectionAccessor); ok {
 		if col.Empty() {
 			return nil, nil
 		}
@@ -118,16 +118,16 @@ func unwrapBooleanCollection(node interface{}) (pathsys.BooleanAccessor, error) 
 		}
 
 		v := col.Get(0)
-		if b, ok := v.(pathsys.BooleanAccessor); ok {
+		if b, ok := v.(hipathsys.BooleanAccessor); ok {
 			return b, nil
 		}
 		if v == nil {
 			return nil, nil
 		}
-		return pathsys.True, nil
+		return hipathsys.True, nil
 	}
 
-	if b, ok := node.(pathsys.BooleanAccessor); ok {
+	if b, ok := node.(hipathsys.BooleanAccessor); ok {
 		return b, nil
 	}
 

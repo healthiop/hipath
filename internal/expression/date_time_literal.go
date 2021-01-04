@@ -30,24 +30,24 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type DateTimeLiteral struct {
-	node pathsys.DateTimeAccessor
+	node hipathsys.DateTimeAccessor
 }
 
-func ParseDateTimeLiteral(value string) (pathsys.Evaluator, error) {
+func ParseDateTimeLiteral(value string) (hipathsys.Evaluator, error) {
 	if len(value) < 2 || value[0] != '@' {
 		return nil, fmt.Errorf("invalid date/time literal: %s", value)
 	}
-	if node, err := pathsys.ParseDateTime(value[1:]); err != nil {
+	if node, err := hipathsys.ParseDateTime(value[1:]); err != nil {
 		return nil, err
 	} else {
 		return &DateTimeLiteral{node}, nil
 	}
 }
 
-func (e *DateTimeLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *DateTimeLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

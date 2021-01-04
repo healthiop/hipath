@@ -29,18 +29,18 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestInvocationTermEvaluate(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString(""))
+	c.Add(hipathsys.NewString(""))
 
-	f, err := LookupFunctionInvocation("empty", []pathsys.Evaluator{})
+	f, err := LookupFunctionInvocation("empty", []hipathsys.Evaluator{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,15 +50,15 @@ func TestInvocationTermEvaluate(t *testing.T) {
 	res, err := evaluator.Evaluate(ctx, c, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.BooleanAccessor)(nil), res) {
-		assert.Equal(t, pathsys.False, res)
+	if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.False, res)
 	}
 }
 
 func TestInvocationTermEvaluateFuncErr(t *testing.T) {
-	ctx := test.NewTestContextWithNode(t, pathsys.NewString(""))
+	ctx := test.NewTestContextWithNode(t, hipathsys.NewString(""))
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewInteger(123))
+	c.Add(hipathsys.NewInteger(123))
 
 	evaluator := NewInvocationTerm(newTestErrorExpression())
 

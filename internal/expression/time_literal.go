@@ -30,24 +30,24 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
 type TimeLiteral struct {
-	node pathsys.TimeAccessor
+	node hipathsys.TimeAccessor
 }
 
-func ParseTimeLiteral(value string) (pathsys.Evaluator, error) {
+func ParseTimeLiteral(value string) (hipathsys.Evaluator, error) {
 	if len(value) < 3 || value[0] != '@' || value[1] != 'T' {
 		return nil, fmt.Errorf("invalid time literal: %s", value)
 	}
-	if node, err := pathsys.ParseTime(value[2:]); err != nil {
+	if node, err := hipathsys.ParseTime(value[2:]); err != nil {
 		return nil, err
 	} else {
 		return &TimeLiteral{node}, nil
 	}
 }
 
-func (e *TimeLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *TimeLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return e.node, nil
 }

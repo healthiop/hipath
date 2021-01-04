@@ -28,17 +28,17 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 type EmptyLiteral struct {
 }
 
 var emptyLiteral = &EmptyLiteral{}
 
-func NewEmptyLiteral() pathsys.Evaluator {
+func NewEmptyLiteral() hipathsys.Evaluator {
 	return emptyLiteral
 }
 
-func (e *EmptyLiteral) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *EmptyLiteral) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return nil, nil
 }

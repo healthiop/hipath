@@ -29,8 +29,8 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -42,8 +42,8 @@ func TestNumberLiteralInteger(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-			assert.Equal(t, int32(-72638), res.(pathsys.IntegerAccessor).Int())
+		if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+			assert.Equal(t, int32(-72638), res.(hipathsys.IntegerAccessor).Int())
 		}
 	}
 }
@@ -54,8 +54,8 @@ func TestNewNumberLiteralInt(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.IntegerAccessor)(nil), res) {
-		assert.Equal(t, int32(-72638), res.(pathsys.IntegerAccessor).Int())
+	if assert.Implements(t, (*hipathsys.IntegerAccessor)(nil), res) {
+		assert.Equal(t, int32(-72638), res.(hipathsys.IntegerAccessor).Int())
 	}
 }
 
@@ -65,8 +65,8 @@ func TestNewNumberLiteralFloat64(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-		assert.Equal(t, -72638.877, res.(pathsys.DecimalAccessor).Float64())
+	if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+		assert.Equal(t, -72638.877, res.(hipathsys.DecimalAccessor).Float64())
 	}
 }
 
@@ -85,8 +85,8 @@ func TestNumberLiteralDecimal(t *testing.T) {
 		res, err := evaluator.Evaluate(nil, nil, nil)
 		assert.NoError(t, err, "no error expected")
 		assert.NotNil(t, res, "res expected")
-		if assert.Implements(t, (*pathsys.DecimalAccessor)(nil), res) {
-			assert.Equal(t, -72638.1, res.(pathsys.DecimalAccessor).Float64())
+		if assert.Implements(t, (*hipathsys.DecimalAccessor)(nil), res) {
+			assert.Equal(t, -72638.1, res.(hipathsys.DecimalAccessor).Float64())
 		}
 	}
 }

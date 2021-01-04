@@ -29,9 +29,9 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -42,8 +42,8 @@ func TestStringConcat(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test ABC"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test ABC"), res)
 	}
 }
 
@@ -58,8 +58,8 @@ func TestStringConcatBoolean(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test 20"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test 20"), res)
 	}
 }
 
@@ -70,8 +70,8 @@ func TestStringConcatBothEmpty(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString(""), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString(""), res)
 	}
 }
 
@@ -82,8 +82,8 @@ func TestStringConcatLeftEmpty(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test"), res)
 	}
 }
 
@@ -99,8 +99,8 @@ func TestStringConcatLeftError(t *testing.T) {
 func TestStringConcatLeftMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test2"))
 
 	evaluator := NewStringConcatExpression(
 		newTestExpression(col), NewRawStringLiteral("Test"))
@@ -113,7 +113,7 @@ func TestStringConcatLeftMultiCol(t *testing.T) {
 func TestStringConcatLeftCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test1"))
 
 	evaluator := NewStringConcatExpression(
 		newTestExpression(col), NewRawStringLiteral("Test"))
@@ -121,8 +121,8 @@ func TestStringConcatLeftCol(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("test1Test"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("test1Test"), res)
 	}
 }
 
@@ -133,8 +133,8 @@ func TestStringConcatRightEmpty(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("Test"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("Test"), res)
 	}
 }
 
@@ -150,8 +150,8 @@ func TestStringConcatRightError(t *testing.T) {
 func TestStringConcatRightMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("test1"))
-	col.Add(pathsys.NewString("test2"))
+	col.Add(hipathsys.NewString("test1"))
+	col.Add(hipathsys.NewString("test2"))
 
 	evaluator := NewStringConcatExpression(
 		NewRawStringLiteral("Test"), newTestExpression(col))
@@ -164,7 +164,7 @@ func TestStringConcatRightMultiCol(t *testing.T) {
 func TestStringConcatRightCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(pathsys.NewString("Test1"))
+	col.Add(hipathsys.NewString("Test1"))
 
 	evaluator := NewStringConcatExpression(
 		NewRawStringLiteral("Test"), newTestExpression(col))
@@ -172,7 +172,7 @@ func TestStringConcatRightCol(t *testing.T) {
 	res, err := evaluator.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.NotNil(t, res, "res expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("TestTest1"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("TestTest1"), res)
 	}
 }

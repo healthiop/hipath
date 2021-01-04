@@ -28,18 +28,18 @@
 
 package expression
 
-import "github.com/volsch/gohipath/pathsys"
+import "github.com/healthiop/hipath/hipathsys"
 
 type UnionExpression struct {
-	evalLeft  pathsys.Evaluator
-	evalRight pathsys.Evaluator
+	evalLeft  hipathsys.Evaluator
+	evalRight hipathsys.Evaluator
 }
 
-func NewUnionExpression(evalLeft pathsys.Evaluator, evalRight pathsys.Evaluator) *UnionExpression {
+func NewUnionExpression(evalLeft hipathsys.Evaluator, evalRight hipathsys.Evaluator) *UnionExpression {
 	return &UnionExpression{evalLeft, evalRight}
 }
 
-func (e *UnionExpression) Evaluate(ctx pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *UnionExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	left, err := e.evalLeft.Evaluate(ctx, node, loop)
 	if err != nil {
 		return nil, err

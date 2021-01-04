@@ -30,7 +30,7 @@ package expression
 
 import (
 	"fmt"
-	"github.com/volsch/gohipath/pathsys"
+	"github.com/healthiop/hipath/hipathsys"
 	"testing"
 )
 
@@ -38,14 +38,14 @@ type testExpression struct {
 	res             interface{}
 	invocationCount int
 	node            interface{}
-	loop            pathsys.Looper
+	loop            hipathsys.Looper
 }
 
 func newTestExpression(res interface{}) *testExpression {
 	return &testExpression{res: res}
 }
 
-func (e *testExpression) Evaluate(_ pathsys.ContextAccessor, node interface{}, loop pathsys.Looper) (interface{}, error) {
+func (e *testExpression) Evaluate(_ hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
 	e.invocationCount = e.invocationCount + 1
 	e.node = node
 	e.loop = loop
@@ -59,12 +59,12 @@ func newTestErrorExpression() *testErrorExpression {
 	return &testErrorExpression{}
 }
 
-func (e *testErrorExpression) Evaluate(pathsys.ContextAccessor, interface{}, pathsys.Looper) (interface{}, error) {
+func (e *testErrorExpression) Evaluate(hipathsys.ContextAccessor, interface{}, hipathsys.Looper) (interface{}, error) {
 	return nil, fmt.Errorf("an error occurred")
 }
 
 type testingAccessor interface {
-	pathsys.AnyAccessor
+	hipathsys.AnyAccessor
 	testing() *testing.T
 }
 
@@ -84,11 +84,11 @@ func (t *testingType) Source() interface{} {
 	panic("implement me")
 }
 
-func (t *testingType) DataType() pathsys.DataTypes {
+func (t *testingType) DataType() hipathsys.DataTypes {
 	panic("implement me")
 }
 
-func (t *testingType) TypeSpec() pathsys.TypeSpecAccessor {
+func (t *testingType) TypeSpec() hipathsys.TypeSpecAccessor {
 	panic("implement me")
 }
 

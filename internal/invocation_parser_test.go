@@ -29,10 +29,10 @@
 package internal
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/expression"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/expression"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
@@ -44,10 +44,10 @@ func TestParseAggregateTotal(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), res) {
-			assert.Equal(t, 32.0, res.(pathsys.NumberAccessor).Float64())
+		if assert.Implements(t, (*hipathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, 32.0, res.(hipathsys.NumberAccessor).Float64())
 		}
 	}
 }
@@ -60,17 +60,17 @@ func TestParseAggregateIndex(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, nil, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.NumberAccessor)(nil), res) {
-			assert.Equal(t, 31.0, res.(pathsys.NumberAccessor).Float64())
+		if assert.Implements(t, (*hipathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, 31.0, res.(hipathsys.NumberAccessor).Float64())
 		}
 	}
 }
 
 func TestParseMemberInvocation(t *testing.T) {
 	model := make(map[string]interface{})
-	model["x1"] = pathsys.NewString("test")
+	model["x1"] = hipathsys.NewString("test")
 
 	res, errorItemCollection := testParse("x1")
 
@@ -79,10 +79,10 @@ func TestParseMemberInvocation(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		ctx := test.NewTestContext(t)
-		res, err := res.(pathsys.Evaluator).Evaluate(ctx, model, nil)
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, model, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-			assert.Equal(t, "test", res.(pathsys.StringAccessor).String())
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, "test", res.(hipathsys.StringAccessor).String())
 		}
 	}
 }

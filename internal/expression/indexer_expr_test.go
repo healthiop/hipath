@@ -29,18 +29,18 @@
 package expression
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohipath/internal/test"
-	"github.com/volsch/gohipath/pathsys"
 	"testing"
 )
 
 func TestIndexerExpressionCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
-	c.Add(pathsys.NewString("test2"))
-	c.Add(pathsys.NewString("test3"))
+	c.Add(hipathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test2"))
+	c.Add(hipathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("1")
 	if err != nil {
@@ -50,15 +50,15 @@ func TestIndexerExpressionCollection(t *testing.T) {
 	e := NewIndexerExpression(newTestExpression(c), i)
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("test2"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("test2"), res)
 	}
 }
 
 func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test1"))
 
 	i, err := ParseNumberLiteral("-1")
 	if err != nil {
@@ -74,7 +74,7 @@ func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 func TestIndexerExpressionCollectionInvalidIndexType(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), ParseStringLiteral("0"))
 	res, err := e.Evaluate(nil, nil, nil)
@@ -97,7 +97,7 @@ func TestIndexerExpressionExpressionNil(t *testing.T) {
 func TestIndexerExpressionIndexNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), newTestExpression(nil))
 	res, err := e.Evaluate(nil, nil, nil)
@@ -108,9 +108,9 @@ func TestIndexerExpressionIndexNil(t *testing.T) {
 func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(pathsys.NewString("test1"))
-	c.Add(pathsys.NewString("test2"))
-	c.Add(pathsys.NewString("test3"))
+	c.Add(hipathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test2"))
+	c.Add(hipathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("3")
 	if err != nil {
@@ -132,8 +132,8 @@ func TestIndexerExpressionCollectionNoCol(t *testing.T) {
 	e := NewIndexerExpression(ParseStringLiteral("test"), i)
 	res, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*pathsys.StringAccessor)(nil), res) {
-		assert.Equal(t, pathsys.NewString("test"), res)
+	if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+		assert.Equal(t, hipathsys.NewString("test"), res)
 	}
 }
 
