@@ -114,6 +114,9 @@ var functions = []hipathsys.FunctionExecutor{
 	newNowFunction(),
 	newTimeOfDayFunction(),
 	newTodayFunction(),
+	// type
+	newAsFunction(),
+	newIsFunction(),
 	// aggregate
 	newAggregateFunction(),
 }

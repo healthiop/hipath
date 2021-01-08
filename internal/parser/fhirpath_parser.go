@@ -15,7 +15,7 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 66, 152,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 66, 164,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 3, 2, 3, 2, 3, 2, 3, 2, 5, 2, 35, 10,
@@ -26,21 +26,22 @@ var parserATN = []uint16{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 87, 10, 3, 3, 4, 3, 4, 3, 4, 3, 4, 3,
 	4, 3, 4, 3, 4, 3, 4, 3, 4, 5, 4, 98, 10, 4, 3, 5, 3, 5, 3, 5, 5, 5, 103,
 	10, 5, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 5, 6, 110, 10, 6, 3, 7, 3, 7, 3, 7,
-	5, 7, 115, 10, 7, 3, 7, 3, 7, 3, 8, 3, 8, 3, 8, 7, 8, 122, 10, 8, 12, 8,
-	14, 8, 125, 11, 8, 3, 9, 3, 9, 5, 9, 129, 10, 9, 3, 10, 3, 10, 3, 10, 5,
-	10, 134, 10, 10, 3, 11, 3, 11, 3, 12, 3, 12, 3, 13, 3, 13, 3, 14, 3, 14,
-	3, 14, 7, 14, 145, 10, 14, 12, 14, 14, 14, 148, 11, 14, 3, 15, 3, 15, 3,
-	15, 2, 3, 2, 16, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 2,
-	14, 3, 2, 6, 7, 3, 2, 8, 11, 4, 2, 6, 7, 12, 12, 3, 2, 16, 19, 3, 2, 20,
-	23, 3, 2, 24, 25, 3, 2, 27, 28, 3, 2, 13, 14, 3, 2, 34, 35, 3, 2, 41, 48,
-	3, 2, 49, 56, 5, 2, 13, 14, 24, 25, 60, 61, 2, 171, 2, 34, 3, 2, 2, 2,
-	4, 86, 3, 2, 2, 2, 6, 97, 3, 2, 2, 2, 8, 99, 3, 2, 2, 2, 10, 109, 3, 2,
-	2, 2, 12, 111, 3, 2, 2, 2, 14, 118, 3, 2, 2, 2, 16, 126, 3, 2, 2, 2, 18,
-	133, 3, 2, 2, 2, 20, 135, 3, 2, 2, 2, 22, 137, 3, 2, 2, 2, 24, 139, 3,
-	2, 2, 2, 26, 141, 3, 2, 2, 2, 28, 149, 3, 2, 2, 2, 30, 31, 8, 2, 1, 2,
-	31, 35, 5, 4, 3, 2, 32, 33, 9, 2, 2, 2, 33, 35, 5, 2, 2, 13, 34, 30, 3,
-	2, 2, 2, 34, 32, 3, 2, 2, 2, 35, 76, 3, 2, 2, 2, 36, 37, 12, 12, 2, 2,
-	37, 38, 9, 3, 2, 2, 38, 75, 5, 2, 2, 13, 39, 40, 12, 11, 2, 2, 40, 41,
+	3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 5, 7, 125,
+	10, 7, 3, 7, 3, 7, 5, 7, 129, 10, 7, 3, 8, 3, 8, 3, 8, 7, 8, 134, 10, 8,
+	12, 8, 14, 8, 137, 11, 8, 3, 9, 3, 9, 5, 9, 141, 10, 9, 3, 10, 3, 10, 3,
+	10, 5, 10, 146, 10, 10, 3, 11, 3, 11, 3, 12, 3, 12, 3, 13, 3, 13, 3, 14,
+	3, 14, 3, 14, 7, 14, 157, 10, 14, 12, 14, 14, 14, 160, 11, 14, 3, 15, 3,
+	15, 3, 15, 2, 3, 2, 16, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26,
+	28, 2, 14, 3, 2, 6, 7, 3, 2, 8, 11, 4, 2, 6, 7, 12, 12, 3, 2, 16, 19, 3,
+	2, 20, 23, 3, 2, 24, 25, 3, 2, 27, 28, 3, 2, 13, 14, 3, 2, 34, 35, 3, 2,
+	41, 48, 3, 2, 49, 56, 5, 2, 13, 14, 24, 25, 60, 61, 2, 185, 2, 34, 3, 2,
+	2, 2, 4, 86, 3, 2, 2, 2, 6, 97, 3, 2, 2, 2, 8, 99, 3, 2, 2, 2, 10, 109,
+	3, 2, 2, 2, 12, 128, 3, 2, 2, 2, 14, 130, 3, 2, 2, 2, 16, 138, 3, 2, 2,
+	2, 18, 145, 3, 2, 2, 2, 20, 147, 3, 2, 2, 2, 22, 149, 3, 2, 2, 2, 24, 151,
+	3, 2, 2, 2, 26, 153, 3, 2, 2, 2, 28, 161, 3, 2, 2, 2, 30, 31, 8, 2, 1,
+	2, 31, 35, 5, 4, 3, 2, 32, 33, 9, 2, 2, 2, 33, 35, 5, 2, 2, 13, 34, 30,
+	3, 2, 2, 2, 34, 32, 3, 2, 2, 2, 35, 76, 3, 2, 2, 2, 36, 37, 12, 12, 2,
+	2, 37, 38, 9, 3, 2, 2, 38, 75, 5, 2, 2, 13, 39, 40, 12, 11, 2, 2, 40, 41,
 	9, 4, 2, 2, 41, 75, 5, 2, 2, 12, 42, 43, 12, 9, 2, 2, 43, 44, 7, 15, 2,
 	2, 44, 75, 5, 2, 2, 10, 45, 46, 12, 8, 2, 2, 46, 47, 9, 5, 2, 2, 47, 75,
 	5, 2, 2, 9, 48, 49, 12, 7, 2, 2, 49, 50, 9, 6, 2, 2, 50, 75, 5, 2, 2, 8,
@@ -69,21 +70,26 @@ var parserATN = []uint16{
 	105, 110, 5, 12, 7, 2, 106, 110, 7, 37, 2, 2, 107, 110, 7, 38, 2, 2, 108,
 	110, 7, 39, 2, 2, 109, 104, 3, 2, 2, 2, 109, 105, 3, 2, 2, 2, 109, 106,
 	3, 2, 2, 2, 109, 107, 3, 2, 2, 2, 109, 108, 3, 2, 2, 2, 110, 11, 3, 2,
-	2, 2, 111, 112, 5, 28, 15, 2, 112, 114, 7, 30, 2, 2, 113, 115, 5, 14, 8,
-	2, 114, 113, 3, 2, 2, 2, 114, 115, 3, 2, 2, 2, 115, 116, 3, 2, 2, 2, 116,
-	117, 7, 31, 2, 2, 117, 13, 3, 2, 2, 2, 118, 123, 5, 2, 2, 2, 119, 120,
-	7, 40, 2, 2, 120, 122, 5, 2, 2, 2, 121, 119, 3, 2, 2, 2, 122, 125, 3, 2,
-	2, 2, 123, 121, 3, 2, 2, 2, 123, 124, 3, 2, 2, 2, 124, 15, 3, 2, 2, 2,
-	125, 123, 3, 2, 2, 2, 126, 128, 7, 63, 2, 2, 127, 129, 5, 18, 10, 2, 128,
-	127, 3, 2, 2, 2, 128, 129, 3, 2, 2, 2, 129, 17, 3, 2, 2, 2, 130, 134, 5,
-	20, 11, 2, 131, 134, 5, 22, 12, 2, 132, 134, 7, 62, 2, 2, 133, 130, 3,
-	2, 2, 2, 133, 131, 3, 2, 2, 2, 133, 132, 3, 2, 2, 2, 134, 19, 3, 2, 2,
-	2, 135, 136, 9, 11, 2, 2, 136, 21, 3, 2, 2, 2, 137, 138, 9, 12, 2, 2, 138,
-	23, 3, 2, 2, 2, 139, 140, 5, 26, 14, 2, 140, 25, 3, 2, 2, 2, 141, 146,
-	5, 28, 15, 2, 142, 143, 7, 3, 2, 2, 143, 145, 5, 28, 15, 2, 144, 142, 3,
-	2, 2, 2, 145, 148, 3, 2, 2, 2, 146, 144, 3, 2, 2, 2, 146, 147, 3, 2, 2,
-	2, 147, 27, 3, 2, 2, 2, 148, 146, 3, 2, 2, 2, 149, 150, 9, 13, 2, 2, 150,
-	29, 3, 2, 2, 2, 14, 34, 74, 76, 86, 97, 102, 109, 114, 123, 128, 133, 146,
+	2, 2, 111, 112, 7, 14, 2, 2, 112, 113, 7, 30, 2, 2, 113, 114, 5, 24, 13,
+	2, 114, 115, 7, 31, 2, 2, 115, 129, 3, 2, 2, 2, 116, 117, 7, 13, 2, 2,
+	117, 118, 7, 30, 2, 2, 118, 119, 5, 24, 13, 2, 119, 120, 7, 31, 2, 2, 120,
+	129, 3, 2, 2, 2, 121, 122, 5, 28, 15, 2, 122, 124, 7, 30, 2, 2, 123, 125,
+	5, 14, 8, 2, 124, 123, 3, 2, 2, 2, 124, 125, 3, 2, 2, 2, 125, 126, 3, 2,
+	2, 2, 126, 127, 7, 31, 2, 2, 127, 129, 3, 2, 2, 2, 128, 111, 3, 2, 2, 2,
+	128, 116, 3, 2, 2, 2, 128, 121, 3, 2, 2, 2, 129, 13, 3, 2, 2, 2, 130, 135,
+	5, 2, 2, 2, 131, 132, 7, 40, 2, 2, 132, 134, 5, 2, 2, 2, 133, 131, 3, 2,
+	2, 2, 134, 137, 3, 2, 2, 2, 135, 133, 3, 2, 2, 2, 135, 136, 3, 2, 2, 2,
+	136, 15, 3, 2, 2, 2, 137, 135, 3, 2, 2, 2, 138, 140, 7, 63, 2, 2, 139,
+	141, 5, 18, 10, 2, 140, 139, 3, 2, 2, 2, 140, 141, 3, 2, 2, 2, 141, 17,
+	3, 2, 2, 2, 142, 146, 5, 20, 11, 2, 143, 146, 5, 22, 12, 2, 144, 146, 7,
+	62, 2, 2, 145, 142, 3, 2, 2, 2, 145, 143, 3, 2, 2, 2, 145, 144, 3, 2, 2,
+	2, 146, 19, 3, 2, 2, 2, 147, 148, 9, 11, 2, 2, 148, 21, 3, 2, 2, 2, 149,
+	150, 9, 12, 2, 2, 150, 23, 3, 2, 2, 2, 151, 152, 5, 26, 14, 2, 152, 25,
+	3, 2, 2, 2, 153, 158, 5, 28, 15, 2, 154, 155, 7, 3, 2, 2, 155, 157, 5,
+	28, 15, 2, 156, 154, 3, 2, 2, 2, 157, 160, 3, 2, 2, 2, 158, 156, 3, 2,
+	2, 2, 158, 159, 3, 2, 2, 2, 159, 27, 3, 2, 2, 2, 160, 158, 3, 2, 2, 2,
+	161, 162, 9, 13, 2, 2, 162, 29, 3, 2, 2, 2, 15, 34, 74, 76, 86, 97, 102,
+	109, 124, 128, 135, 140, 145, 158,
 }
 var literalNames = []string{
 	"", "'.'", "'['", "']'", "'+'", "'-'", "'*'", "'/'", "'div'", "'mod'",
@@ -2423,6 +2429,16 @@ func NewFunctionContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *FunctionContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *FunctionContext) TypeSpecifier() ITypeSpecifierContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITypeSpecifierContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ITypeSpecifierContext)
+}
+
 func (s *FunctionContext) Identifier() IIdentifierContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IIdentifierContext)(nil)).Elem(), 0)
 
@@ -2482,29 +2498,73 @@ func (p *FHIRPathParser) Function() (localctx IFunctionContext) {
 		}
 	}()
 
-	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(109)
-		p.Identifier()
-	}
-	{
-		p.SetState(110)
-		p.Match(FHIRPathParserT__27)
-	}
-	p.SetState(112)
+	p.SetState(126)
 	p.GetErrorHandler().Sync(p)
-	_la = p.GetTokenStream().LA(1)
-
-	if (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__3)|(1<<FHIRPathParserT__4)|(1<<FHIRPathParserT__10)|(1<<FHIRPathParserT__11)|(1<<FHIRPathParserT__21)|(1<<FHIRPathParserT__22)|(1<<FHIRPathParserT__27)|(1<<FHIRPathParserT__29))) != 0) || (((_la-32)&-(0x1f+1)) == 0 && ((1<<uint((_la-32)))&((1<<(FHIRPathParserT__31-32))|(1<<(FHIRPathParserT__32-32))|(1<<(FHIRPathParserT__33-32))|(1<<(FHIRPathParserT__34-32))|(1<<(FHIRPathParserT__35-32))|(1<<(FHIRPathParserT__36-32))|(1<<(FHIRPathParserDATE-32))|(1<<(FHIRPathParserDATETIME-32))|(1<<(FHIRPathParserTIME-32))|(1<<(FHIRPathParserIDENTIFIER-32))|(1<<(FHIRPathParserDELIMITEDIDENTIFIER-32))|(1<<(FHIRPathParserSTRING-32))|(1<<(FHIRPathParserNUMBER-32)))) != 0) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 8, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(109)
+			p.Match(FHIRPathParserT__11)
+		}
+		{
+			p.SetState(110)
+			p.Match(FHIRPathParserT__27)
+		}
 		{
 			p.SetState(111)
-			p.ParamList()
+			p.TypeSpecifier()
+		}
+		{
+			p.SetState(112)
+			p.Match(FHIRPathParserT__28)
 		}
 
-	}
-	{
-		p.SetState(114)
-		p.Match(FHIRPathParserT__28)
+	case 2:
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(114)
+			p.Match(FHIRPathParserT__10)
+		}
+		{
+			p.SetState(115)
+			p.Match(FHIRPathParserT__27)
+		}
+		{
+			p.SetState(116)
+			p.TypeSpecifier()
+		}
+		{
+			p.SetState(117)
+			p.Match(FHIRPathParserT__28)
+		}
+
+	case 3:
+		p.EnterOuterAlt(localctx, 3)
+		{
+			p.SetState(119)
+			p.Identifier()
+		}
+		{
+			p.SetState(120)
+			p.Match(FHIRPathParserT__27)
+		}
+		p.SetState(122)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		if (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__3)|(1<<FHIRPathParserT__4)|(1<<FHIRPathParserT__10)|(1<<FHIRPathParserT__11)|(1<<FHIRPathParserT__21)|(1<<FHIRPathParserT__22)|(1<<FHIRPathParserT__27)|(1<<FHIRPathParserT__29))) != 0) || (((_la-32)&-(0x1f+1)) == 0 && ((1<<uint((_la-32)))&((1<<(FHIRPathParserT__31-32))|(1<<(FHIRPathParserT__32-32))|(1<<(FHIRPathParserT__33-32))|(1<<(FHIRPathParserT__34-32))|(1<<(FHIRPathParserT__35-32))|(1<<(FHIRPathParserT__36-32))|(1<<(FHIRPathParserDATE-32))|(1<<(FHIRPathParserDATETIME-32))|(1<<(FHIRPathParserTIME-32))|(1<<(FHIRPathParserIDENTIFIER-32))|(1<<(FHIRPathParserDELIMITEDIDENTIFIER-32))|(1<<(FHIRPathParserSTRING-32))|(1<<(FHIRPathParserNUMBER-32)))) != 0) {
+			{
+				p.SetState(121)
+				p.ParamList()
+			}
+
+		}
+		{
+			p.SetState(124)
+			p.Match(FHIRPathParserT__28)
+		}
+
 	}
 
 	return localctx
@@ -2612,24 +2672,24 @@ func (p *FHIRPathParser) ParamList() (localctx IParamListContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(116)
+		p.SetState(128)
 		p.expression(0)
 	}
-	p.SetState(121)
+	p.SetState(133)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == FHIRPathParserT__37 {
 		{
-			p.SetState(117)
+			p.SetState(129)
 			p.Match(FHIRPathParserT__37)
 		}
 		{
-			p.SetState(118)
+			p.SetState(130)
 			p.expression(0)
 		}
 
-		p.SetState(123)
+		p.SetState(135)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -2729,15 +2789,15 @@ func (p *FHIRPathParser) Quantity() (localctx IQuantityContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(124)
+		p.SetState(136)
 		p.Match(FHIRPathParserNUMBER)
 	}
-	p.SetState(126)
+	p.SetState(138)
 	p.GetErrorHandler().Sync(p)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 9, p.GetParserRuleContext()) == 1 {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 10, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(125)
+			p.SetState(137)
 			p.Unit()
 		}
 
@@ -2846,28 +2906,28 @@ func (p *FHIRPathParser) Unit() (localctx IUnitContext) {
 		}
 	}()
 
-	p.SetState(131)
+	p.SetState(143)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case FHIRPathParserT__38, FHIRPathParserT__39, FHIRPathParserT__40, FHIRPathParserT__41, FHIRPathParserT__42, FHIRPathParserT__43, FHIRPathParserT__44, FHIRPathParserT__45:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(128)
+			p.SetState(140)
 			p.DateTimePrecision()
 		}
 
 	case FHIRPathParserT__46, FHIRPathParserT__47, FHIRPathParserT__48, FHIRPathParserT__49, FHIRPathParserT__50, FHIRPathParserT__51, FHIRPathParserT__52, FHIRPathParserT__53:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(129)
+			p.SetState(141)
 			p.PluralDateTimePrecision()
 		}
 
 	case FHIRPathParserSTRING:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(130)
+			p.SetState(142)
 			p.Match(FHIRPathParserSTRING)
 		}
 
@@ -2956,7 +3016,7 @@ func (p *FHIRPathParser) DateTimePrecision() (localctx IDateTimePrecisionContext
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(133)
+		p.SetState(145)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(((_la-39)&-(0x1f+1)) == 0 && ((1<<uint((_la-39)))&((1<<(FHIRPathParserT__38-39))|(1<<(FHIRPathParserT__39-39))|(1<<(FHIRPathParserT__40-39))|(1<<(FHIRPathParserT__41-39))|(1<<(FHIRPathParserT__42-39))|(1<<(FHIRPathParserT__43-39))|(1<<(FHIRPathParserT__44-39))|(1<<(FHIRPathParserT__45-39)))) != 0) {
@@ -3048,7 +3108,7 @@ func (p *FHIRPathParser) PluralDateTimePrecision() (localctx IPluralDateTimePrec
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(135)
+		p.SetState(147)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(((_la-47)&-(0x1f+1)) == 0 && ((1<<uint((_la-47)))&((1<<(FHIRPathParserT__46-47))|(1<<(FHIRPathParserT__47-47))|(1<<(FHIRPathParserT__48-47))|(1<<(FHIRPathParserT__49-47))|(1<<(FHIRPathParserT__50-47))|(1<<(FHIRPathParserT__51-47))|(1<<(FHIRPathParserT__52-47))|(1<<(FHIRPathParserT__53-47)))) != 0) {
@@ -3150,7 +3210,7 @@ func (p *FHIRPathParser) TypeSpecifier() (localctx ITypeSpecifierContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(137)
+		p.SetState(149)
 		p.QualifiedIdentifier()
 	}
 
@@ -3260,28 +3320,28 @@ func (p *FHIRPathParser) QualifiedIdentifier() (localctx IQualifiedIdentifierCon
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(139)
+		p.SetState(151)
 		p.Identifier()
 	}
-	p.SetState(144)
+	p.SetState(156)
 	p.GetErrorHandler().Sync(p)
-	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 11, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 12, p.GetParserRuleContext())
 
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
 			{
-				p.SetState(140)
+				p.SetState(152)
 				p.Match(FHIRPathParserT__0)
 			}
 			{
-				p.SetState(141)
+				p.SetState(153)
 				p.Identifier()
 			}
 
 		}
-		p.SetState(146)
+		p.SetState(158)
 		p.GetErrorHandler().Sync(p)
-		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 11, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 12, p.GetParserRuleContext())
 	}
 
 	return localctx
@@ -3374,7 +3434,7 @@ func (p *FHIRPathParser) Identifier() (localctx IIdentifierContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(147)
+		p.SetState(159)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FHIRPathParserT__10)|(1<<FHIRPathParserT__11)|(1<<FHIRPathParserT__21)|(1<<FHIRPathParserT__22))) != 0) || _la == FHIRPathParserIDENTIFIER || _la == FHIRPathParserDELIMITEDIDENTIFIER) {

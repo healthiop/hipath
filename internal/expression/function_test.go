@@ -112,6 +112,8 @@ var functionTests = []struct {
 	{"today", newTodayFunction(), -1, 0, 0},
 	{"children", childrenFunc, -1, 0, 0},
 	{"descendants", newDescendantsFunction(), -1, 0, 0},
+	{"as", newAsFunction(), -1, 1, 1},
+	{"is", newIsFunction(), -1, 1, 1},
 	{"aggregate", newAggregateFunction(), 0, 1, 2},
 }
 

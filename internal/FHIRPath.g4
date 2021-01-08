@@ -66,7 +66,9 @@ invocation                          // Terms that can be used after the function
         ;
 
 function
-        : identifier '(' paramList? ')'
+        : 'as' '(' typeSpecifier ')'
+        | 'is' '(' typeSpecifier ')'
+        | identifier '(' paramList? ')'
         ;
 
 paramList

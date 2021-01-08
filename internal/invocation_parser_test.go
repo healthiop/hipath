@@ -86,3 +86,35 @@ func TestParseMemberInvocation(t *testing.T) {
 		}
 	}
 }
+
+func TestParseAsInvocation(t *testing.T) {
+	res, errorItemCollection := testParse("'my test'.as(System.String)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
+		ctx := test.NewTestContextWithNode(t, hipathsys.NewString("test"))
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*hipathsys.StringAccessor)(nil), res) {
+			assert.Equal(t, hipathsys.NewString("my test"), res)
+		}
+	}
+}
+
+func TestParseIsInvocation(t *testing.T) {
+	res, errorItemCollection := testParse("'my test'.is(System.String)")
+
+	if assert.NotNil(t, errorItemCollection, "error item collection must have been initialized") {
+		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
+	}
+	if assert.IsType(t, (*expression.InvocationExpression)(nil), res) {
+		ctx := test.NewTestContextWithNode(t, hipathsys.NewString("test"))
+		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no evaluation error expected")
+		if assert.Implements(t, (*hipathsys.BooleanAccessor)(nil), res) {
+			assert.Equal(t, hipathsys.True, res)
+		}
+	}
+}

@@ -49,6 +49,9 @@ func visitFunction(_ antlr.ParserRuleContext, args []interface{}) (hipathsys.Eva
 	var paramEvaluators []hipathsys.Evaluator
 	if len(args) < 4 {
 		paramEvaluators = []hipathsys.Evaluator{}
+	} else if name == "as" || name == "is" {
+		typeSpec := args[2].(string)
+		paramEvaluators = []hipathsys.Evaluator{expression.NewRawStringLiteral(typeSpec)}
 	} else {
 		paramList := args[2].([]interface{})
 		// commas need to removed from argument list
