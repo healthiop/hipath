@@ -85,6 +85,24 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 	}
 }
 
+func (a *testModel) Cast(node interface{}, name hipathsys.FQTypeNameAccessor) (interface{}, error) {
+	if n, ok := node.(testModelNodeAccessor); !ok {
+		a.t.Errorf("not a test model node: %T", node)
+		return nil, nil
+	} else {
+		if name.Namespace() == "Other" {
+			return nil, fmt.Errorf("unsupported conversion")
+		}
+		if name.Name() == "decimal" && name.Namespace() == "Test" {
+			return n, nil
+		}
+		if name.Name() == "Number" && name.Namespace() == "System" {
+			return hipathsys.NewDecimalFloat64(n.testValue()), nil
+		}
+		return nil, nil
+	}
+}
+
 func (a *testModel) TypeSpec(node interface{}) hipathsys.TypeSpecAccessor {
 	if _, ok := node.(map[string]interface{}); ok {
 		return testElementTypeSpec

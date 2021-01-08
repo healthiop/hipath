@@ -232,3 +232,67 @@ func TestHasModelTypeSystemWithModelTypeAndWithoutNamespace(t *testing.T) {
 	assert.True(t, HasModelType(ctx.ModelAdapter(), NewString("test"),
 		NewTypeName("string")))
 }
+
+func TestCastModelTypeNil(t *testing.T) {
+	ctx := newTestContext(t)
+	res, err := CastModelType(ctx.ModelAdapter(), nil,
+		NewFQTypeName("String", "Other"))
+	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestCastModelTypeSystemSelf(t *testing.T) {
+	ctx := newTestContext(t)
+	n := NewString("Test 123")
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("String", "System"))
+	assert.NoError(t, err, "no error expected")
+	assert.Same(t, n, res)
+}
+
+func TestCastModelTypeSystemIncompatible(t *testing.T) {
+	ctx := newTestContext(t)
+	n := NewString("Test 123")
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("Number", "System"))
+	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestCastModelTypeModelSelf(t *testing.T) {
+	ctx := newTestContext(t)
+	n := newTestModelNode(17.4, false, testTypeSpec)
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("decimal", "Test"))
+	assert.NoError(t, err, "no error expected")
+	assert.Same(t, n, res, "empty result expected")
+}
+
+func TestCastModelTypeModelSystem(t *testing.T) {
+	ctx := newTestContext(t)
+	n := newTestModelNode(17.4, false, testTypeSpec)
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("Number", "System"))
+	assert.NoError(t, err, "no error expected")
+	if assert.Implements(t, (*NumberAccessor)(nil), res) {
+		assert.Equal(t, 17.4, res.(NumberAccessor).Float64())
+	}
+}
+
+func TestCastModelTypeModelUnknown(t *testing.T) {
+	ctx := newTestContext(t)
+	n := newTestModelNode(17.4, false, testTypeSpec)
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("Number", "Invalid"))
+	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestCastModelTypeModelError(t *testing.T) {
+	ctx := newTestContext(t)
+	n := newTestModelNode(17.4, false, testTypeSpec)
+	res, err := CastModelType(ctx.ModelAdapter(), n,
+		NewFQTypeName("number", "Other"))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}

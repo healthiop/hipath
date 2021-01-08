@@ -118,15 +118,14 @@ var functionTests = []struct {
 func TestFunctions(t *testing.T) {
 	for _, tt := range functionTests {
 		t.Run(tt.name, func(t *testing.T) {
-			fe, found := functionsByName[tt.name]
-			if found {
+			if fe, found := functionsByName[tt.name]; !found {
+				t.Errorf("executor %s has not been defined", tt.name)
+			} else {
 				assert.Equal(t, tt.executor, fe)
 				assert.LessOrEqual(t, fe.EvaluatorParam(), tt.maxParams)
 				assert.Equal(t, tt.evaluatorParam, fe.EvaluatorParam())
 				assert.Equal(t, tt.minParams, fe.MinParams())
 				assert.Equal(t, tt.maxParams, fe.MaxParams())
-			} else {
-				t.Errorf("executor %s has not been defined", tt.name)
 			}
 		})
 	}

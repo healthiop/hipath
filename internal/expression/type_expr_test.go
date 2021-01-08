@@ -57,14 +57,15 @@ func TestAsTypeExpressionInvalid(t *testing.T) {
 func TestAsTypeExpressionColSingleItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
+	node := hipathsys.NewString("test1")
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
+	col.Add(node)
 
 	expr, err := NewAsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no error expected")
-		assert.Same(t, col, res)
+		assert.Same(t, node, res)
 	}
 }
 
@@ -110,6 +111,44 @@ func TestAsTypeExpressionColMultipleItems(t *testing.T) {
 		res, err := expr.Evaluate(ctx, nil, nil)
 		assert.Error(t, err, "error expected")
 		assert.Nil(t, res, "no result expected")
+	}
+}
+
+func TestAsTypeExpressionModelUnchanged(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	n := test.NewTestModelNode(16.1, false)
+	expr, err := NewAsTypeExpression(newTestExpression(n), "Test.decimal")
+	if assert.NoError(t, err, "no error expected") {
+		res, err := expr.Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no error expected")
+		assert.Same(t, n, res)
+	}
+}
+
+func TestAsTypeExpressionModelConverted(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	n := test.NewTestModelNode(16.1, false)
+	expr, err := NewAsTypeExpression(newTestExpression(n), "System.Number")
+	if assert.NoError(t, err, "no error expected") {
+		res, err := expr.Evaluate(ctx, nil, nil)
+		assert.NoError(t, err, "no error expected")
+		if assert.Implements(t, (*hipathsys.NumberAccessor)(nil), res) {
+			assert.Equal(t, 16.1, res.(hipathsys.NumberAccessor).Float64())
+		}
+	}
+}
+
+func TestAsTypeExpressionModelError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	n := test.NewTestModelNode(16.1, false)
+	expr, err := NewAsTypeExpression(newTestExpression(n), "Other.Number")
+	if assert.NoError(t, err, "no error expected") {
+		res, err := expr.Evaluate(ctx, nil, nil)
+		assert.Error(t, err, "error expected")
+		assert.Nil(t, res, "empty result expected")
 	}
 }
 

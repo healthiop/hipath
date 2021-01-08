@@ -31,6 +31,7 @@ package hipathsys
 type ModelAdapter interface {
 	ConvertToSystem(node interface{}) interface{}
 	TypeSpec(node interface{}) TypeSpecAccessor
+	Cast(node interface{}, name FQTypeNameAccessor) (interface{}, error)
 	Equal(node1 interface{}, node2 interface{}) bool
 	Equivalent(node1 interface{}, node2 interface{}) bool
 	Navigate(node interface{}, name string) (interface{}, error)
@@ -54,7 +55,7 @@ func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccesso
 	}
 
 	namespace := name.Namespace()
-	if len(namespace) == 0 || namespace == NamespaceName {
+	if systemNamespace(namespace) {
 		if n, ok := node.(AnyAccessor); ok {
 			if n.TypeSpec().Extends(name) {
 				return true
@@ -69,6 +70,23 @@ func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccesso
 	}
 
 	return false
+}
+
+func CastModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccessor) (interface{}, error) {
+	if node == nil {
+		return node, nil
+	}
+
+	sysNode, sys := node.(AnyAccessor)
+	if systemNamespace(name.Namespace()) && sys && sysNode.TypeSpec().Extends(name) {
+		return node, nil
+	}
+	if sys {
+		// system node cannot be casted by model adapter
+		return nil, nil
+	}
+
+	return adapter.Cast(node, name)
 }
 
 func ModelEqual(adapter ModelAdapter, node1 interface{}, node2 interface{}) bool {
@@ -149,4 +167,8 @@ type ContextAccessor interface {
 	NewCollection() CollectionModifier
 	NewCollectionWithItem(item interface{}) CollectionModifier
 	Tracer() Tracer
+}
+
+func systemNamespace(name string) bool {
+	return len(name) == 0 || name == NamespaceName
 }

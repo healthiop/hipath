@@ -49,7 +49,7 @@ type FQTypeNameAccessor interface {
 	Namespace() string
 	Name() string
 	String() string
-	Equal(node FQTypeNameAccessor) bool
+	Equal(name FQTypeNameAccessor) bool
 }
 
 type typeSpec struct {
@@ -62,7 +62,7 @@ type TypeSpecAccessor interface {
 	FQName() FQTypeNameAccessor
 	FQBaseName() FQTypeNameAccessor
 	String() string
-	Equal(node TypeSpecAccessor) bool
+	Equal(other TypeSpecAccessor) bool
 	Extends(name FQTypeNameAccessor) bool
 }
 
@@ -141,8 +141,8 @@ func (t *fqTypeName) String() string {
 	return t.fqName
 }
 
-func (t *fqTypeName) Equal(node FQTypeNameAccessor) bool {
-	return t.String() == node.String()
+func (t *fqTypeName) Equal(name FQTypeNameAccessor) bool {
+	return t.String() == name.String()
 }
 
 func (t *typeSpec) Base() TypeSpecAccessor {
@@ -167,8 +167,8 @@ func (t *typeSpec) String() string {
 	return t.fqName.String()
 }
 
-func (t *typeSpec) Equal(node TypeSpecAccessor) bool {
-	return FQTypeNameEqual(t.FQName(), node.FQName())
+func (t *typeSpec) Equal(other TypeSpecAccessor) bool {
+	return FQTypeNameEqual(t.FQName(), other.FQName())
 }
 
 func (t *typeSpec) Extends(name FQTypeNameAccessor) bool {

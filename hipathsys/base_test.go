@@ -29,6 +29,7 @@
 package hipathsys
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 )
@@ -131,6 +132,24 @@ func (a *testModel) ConvertToSystem(node interface{}) interface{} {
 			return NewDecimalFloat64(n.testValue())
 		}
 		return n
+	}
+}
+
+func (a *testModel) Cast(node interface{}, name FQTypeNameAccessor) (interface{}, error) {
+	if n, ok := node.(testModelNodeAccessor); !ok {
+		a.t.Errorf("not a test model node: %T", node)
+		return nil, nil
+	} else {
+		if name.Namespace() == "Other" {
+			return nil, fmt.Errorf("unsupported conversion")
+		}
+		if name.Name() == "decimal" && name.Namespace() == "Test" {
+			return n, nil
+		}
+		if name.Name() == "Number" && name.Namespace() == "System" {
+			return NewDecimalFloat64(n.testValue()), nil
+		}
+		return nil, nil
 	}
 }
 

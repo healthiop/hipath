@@ -62,10 +62,7 @@ func (e *AsTypeExpression) Evaluate(ctx hipathsys.ContextAccessor, node interfac
 		return nil, fmt.Errorf("as operator cannot be applied on a collection")
 	}
 
-	if hipathsys.HasModelType(ctx.ModelAdapter(), item, e.fqName) {
-		return value, nil
-	}
-	return nil, nil
+	return hipathsys.CastModelType(ctx.ModelAdapter(), item, e.fqName)
 }
 
 type IsTypeExpression struct {
