@@ -104,10 +104,14 @@ func DecimalOfInt(value int32) DecimalAccessor {
 }
 
 func ParseDecimal(value string) (DecimalAccessor, error) {
+	return ParseDecimalWithSource(value, nil)
+}
+
+func ParseDecimalWithSource(value string, source interface{}) (DecimalAccessor, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
-		return newDecimal(d, nil), nil
+		return newDecimal(d, source), nil
 	}
 }
 

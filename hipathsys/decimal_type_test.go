@@ -127,6 +127,17 @@ func TestParseDecimal(t *testing.T) {
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
 		assert.Equal(t, -83628.85, o.Float64())
+		assert.Nil(t, o.Source())
+	}
+}
+
+func TestParseDecimalWithSource(t *testing.T) {
+	source := "test source"
+	o, err := ParseDecimalWithSource("83628.85", source)
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, o, "value expected") {
+		assert.Equal(t, 83628.85, o.Float64())
+		assert.Equal(t, source, o.Source())
 	}
 }
 
