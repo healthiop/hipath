@@ -26,26 +26,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package hipathsys
 
-type ErrorItem struct {
-	line   int
-	column int
-	msg    string
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+func TestError(t *testing.T) {
+	items := make([]*ErrorItem, 2)
+	items[0] = NewErrorItem(1, 2, "test1")
+	items[1] = NewErrorItem(3, 4, "test2")
+
+	err := NewError("this is an error", items)
+	assert.Implements(t, (*error)(nil), err)
+	assert.Equal(t, "this is an error", err.Error())
+	if assert.NotNil(t, items, err.Items()) {
+		if assert.Equal(t, 2, len(err.Items())) {
+			assert.Same(t, items[0], err.Items()[0])
+			assert.Same(t, items[1], err.Items()[1])
+		}
+	}
 }
 
-func NewErrorItem(line int, column int, msg string) *ErrorItem {
-	return &ErrorItem{line, column, msg}
-}
+func TestErrorItem(t *testing.T) {
+	item := NewErrorItem(28, 12, "Test Error")
 
-func (e *ErrorItem) Line() int {
-	return e.line
-}
-
-func (e *ErrorItem) Column() int {
-	return e.column
-}
-
-func (e *ErrorItem) Msg() string {
-	return e.msg
+	assert.Equal(t, 28, item.Line())
+	assert.Equal(t, 12, item.Column())
+	assert.Equal(t, "Test Error", item.Msg())
 }

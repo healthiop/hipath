@@ -29,6 +29,8 @@
 package gohipath
 
 import (
+	"github.com/healthiop/hipath/hipathsys"
+	"github.com/healthiop/hipath/internal/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -62,4 +64,55 @@ func TestCompileInvalid(t *testing.T) {
 			assert.Len(t, err.Items(), 2)
 		}
 	}
+}
+
+func TestExecuteEmpty(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := Execute(ctx, "{}", nil)
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, res, "result expected") {
+		assert.Equal(t, 0, res.Count())
+	}
+}
+
+func TestExecuteSingle(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := Execute(ctx, "length()", hipathsys.NewString("This is a test!"))
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, res, "result expected") {
+		assert.Equal(t, 1, res.Count())
+		assert.Equal(t, hipathsys.NewInteger(15), res.Get(0))
+	}
+}
+
+func TestExecuteMulti(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := Execute(ctx, "union('value2' | 'value8')", hipathsys.NewString("value5"))
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, res, "result expected") {
+		assert.Equal(t, 3, res.Count())
+		assert.Equal(t, hipathsys.NewString("value5"), res.Get(0))
+		assert.Equal(t, hipathsys.NewString("value2"), res.Get(1))
+		assert.Equal(t, hipathsys.NewString("value8"), res.Get(2))
+	}
+}
+
+func TestExecuteErrorCompile(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := Execute(ctx, "xxx$#@yyy", nil)
+	if assert.NotNil(t, err, "error expected") {
+		if assert.NotNil(t, err.Items(), "items expected") {
+			assert.Len(t, err.Items(), 2)
+		}
+	}
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestExecuteErrorExecute(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := Execute(ctx, "union('value2' | 'value8').single()", nil)
+	if assert.NotNil(t, err, "error expected") {
+		assert.Nil(t, err.Items(), "no items expected")
+	}
+	assert.Nil(t, res, "no result expected")
 }

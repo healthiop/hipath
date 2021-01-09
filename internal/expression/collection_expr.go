@@ -26,21 +26,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package expression
 
-type Error struct {
-	msg   string
-	items []*ErrorItem
+import (
+	"github.com/healthiop/hipath/hipathsys"
+)
+
+type CollectionExpression struct {
+	eval hipathsys.Evaluator
 }
 
-func NewPathError(msg string, items []*ErrorItem) *Error {
-	return &Error{msg, items}
+func NewCollectionExpression(eval hipathsys.Evaluator) CollectionExpression {
+	return CollectionExpression{eval}
 }
 
-func (e *Error) Error() string {
-	return e.msg
-}
+func (e *CollectionExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper) (interface{}, error) {
+	res, err := e.eval.Evaluate(ctx, node, loop)
+	if err != nil {
+		return res, err
+	}
 
-func (e *Error) Items() []*ErrorItem {
-	return e.items
+	if res == nil {
+		return hipathsys.EmptyCollection, nil
+	}
+	if c, ok := res.(hipathsys.CollectionAccessor); ok {
+		return c, nil
+	} else {
+		return ctx.NewCollectionWithItem(res), nil
+	}
 }

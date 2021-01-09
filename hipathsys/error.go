@@ -26,17 +26,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package internal
+package hipathsys
 
-import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-)
+type Error struct {
+	msg   string
+	items []*ErrorItem
+}
 
-func TestErrorItem(t *testing.T) {
-	item := NewErrorItem(28, 12, "Test Error")
+type ErrorItem struct {
+	line   int
+	column int
+	msg    string
+}
 
-	assert.Equal(t, 28, item.Line())
-	assert.Equal(t, 12, item.Column())
-	assert.Equal(t, "Test Error", item.Msg())
+func NewError(msg string, items []*ErrorItem) *Error {
+	return &Error{msg, items}
+}
+
+func NewErrorItem(line int, column int, msg string) *ErrorItem {
+	return &ErrorItem{line, column, msg}
+}
+
+func (e *Error) Error() string {
+	return e.msg
+}
+
+func (e *Error) Items() []*ErrorItem {
+	return e.items
+}
+
+func (e *ErrorItem) Line() int {
+	return e.line
+}
+
+func (e *ErrorItem) Column() int {
+	return e.column
+}
+
+func (e *ErrorItem) Msg() string {
+	return e.msg
 }

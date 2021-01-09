@@ -32,14 +32,15 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/healthiop/hipath/hipathsys"
 	"github.com/healthiop/hipath/internal"
+	"github.com/healthiop/hipath/internal/expression"
 	"github.com/healthiop/hipath/internal/parser"
 )
 
 type Path struct {
-	evaluator hipathsys.Evaluator
+	evaluator expression.CollectionExpression
 }
 
-func Compile(pathString string) (*Path, *internal.Error) {
+func Compile(pathString string) (*Path, *hipathsys.Error) {
 	errorItemCollection := internal.NewErrorItemCollection()
 	errorListener := internal.NewErrorListener(errorItemCollection)
 
@@ -57,9 +58,26 @@ func Compile(pathString string) (*Path, *internal.Error) {
 	res := p.Expression().Accept(v)
 
 	if errorItemCollection.HasErrors() {
-		return nil, internal.NewPathError(
+		return nil, hipathsys.NewError(
 			"error when parsing path expression", errorItemCollection.Items())
 	}
 
-	return &Path{evaluator: res.(hipathsys.Evaluator)}, nil
+	return &Path{expression.NewCollectionExpression(res.(hipathsys.Evaluator))}, nil
+}
+
+func Execute(ctx hipathsys.ContextAccessor, pathString string, node interface{}) (hipathsys.CollectionAccessor, *hipathsys.Error) {
+	path, err := Compile(pathString)
+	if err != nil {
+		return nil, err
+	}
+
+	return path.Execute(ctx, node)
+}
+
+func (p *Path) Execute(ctx hipathsys.ContextAccessor, node interface{}) (hipathsys.CollectionAccessor, *hipathsys.Error) {
+	res, err := p.evaluator.Evaluate(ctx, node, nil)
+	if err != nil {
+		return nil, hipathsys.NewError(err.Error(), nil)
+	}
+	return res.(hipathsys.CollectionAccessor), nil
 }

@@ -28,17 +28,21 @@
 
 package internal
 
+import (
+	"github.com/healthiop/hipath/hipathsys"
+)
+
 type ErrorItemCollection struct {
-	items []*ErrorItem
+	items []*hipathsys.ErrorItem
 }
 
 func NewErrorItemCollection() *ErrorItemCollection {
-	items := make([]*ErrorItem, 0)
+	items := make([]*hipathsys.ErrorItem, 0)
 	return &ErrorItemCollection{items}
 }
 
 func (c *ErrorItemCollection) AddError(line int, column int, msg string) {
-	item := NewErrorItem(line, column, msg)
+	item := hipathsys.NewErrorItem(line, column, msg)
 	c.items = append(c.items, item)
 }
 
@@ -46,6 +50,6 @@ func (c *ErrorItemCollection) HasErrors() bool {
 	return len(c.items) > 0
 }
 
-func (c *ErrorItemCollection) Items() []*ErrorItem {
+func (c *ErrorItemCollection) Items() []*hipathsys.ErrorItem {
 	return c.items
 }
