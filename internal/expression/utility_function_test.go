@@ -84,8 +84,8 @@ func TestTraceFunc(t *testing.T) {
 	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(hipathsys.NewString("value1"))
-	node.Add(hipathsys.NewString("value2"))
+	node.MustAdd(hipathsys.NewString("value1"))
+	node.MustAdd(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
 	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
@@ -98,13 +98,25 @@ func TestTraceFunc(t *testing.T) {
 	assert.Same(t, node, tracer.col, "traced collection expected")
 }
 
+func TestTraceFuncNodeError(t *testing.T) {
+	tracer := newTestingTracer()
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
+
+	f := newTraceFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(nil))
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestTraceFuncDisabled(t *testing.T) {
 	tracer := newTestingTracer()
 	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(hipathsys.NewString("value1"))
-	node.Add(hipathsys.NewString("value2"))
+	node.MustAdd(hipathsys.NewString("value1"))
+	node.MustAdd(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
 	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("other-tracer")},
@@ -123,7 +135,8 @@ func TestTraceFuncProjection(t *testing.T) {
 	nodeN["id"] = nil
 	nodeN["item"] = "testN"
 
-	id1 := ctx.NewCollectionWithItem(hipathsys.NewString("1"))
+	id1 := ctx.NewCollection()
+	id1.MustAdd(hipathsys.NewString("1"))
 	node1 := make(map[string]interface{})
 	node1["id"] = id1
 	node1["item"] = "test1"
@@ -137,10 +150,10 @@ func TestTraceFuncProjection(t *testing.T) {
 	node9["item"] = "test9"
 
 	node := ctx.NewCollection()
-	node.Add(node1)
-	node.Add(node9)
-	node.Add(nodeN)
-	node.Add(node7)
+	node.MustAdd(node1)
+	node.MustAdd(node9)
+	node.MustAdd(nodeN)
+	node.MustAdd(node7)
 
 	f := newTraceFunction()
 	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
@@ -160,13 +173,31 @@ func TestTraceFuncProjection(t *testing.T) {
 	}
 }
 
+func TestTraceFuncProjectionValueError(t *testing.T) {
+	tracer := newTestingTracer()
+	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
+
+	node1 := make(map[string]interface{})
+	node1["id"] = test.NewTestModelErrorNode()
+
+	node := ctx.NewCollection()
+	node.MustAdd(node1)
+
+	f := newTraceFunction()
+	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},
+		hipathsys.NewLoop(NewMemberInvocation("id")))
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestTraceFuncProjectionError(t *testing.T) {
 	tracer := newTestingTracer()
 	ctx := test.NewTestContextWithNodeAndTracer(t, hipathsys.NewString("test"), tracer)
 
 	node := ctx.NewCollection()
-	node.Add(hipathsys.NewString("value1"))
-	node.Add(hipathsys.NewString("value2"))
+	node.MustAdd(hipathsys.NewString("value1"))
+	node.MustAdd(hipathsys.NewString("value2"))
 
 	f := newTraceFunction()
 	res, err := f.Execute(ctx, node, []interface{}{hipathsys.NewString("test-tracer")},

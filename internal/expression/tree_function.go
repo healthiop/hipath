@@ -63,7 +63,10 @@ func (f *childrenFunction) Execute(ctx hipathsys.ContextAccessor, node interface
 					if children == nil {
 						children = hipathsys.NewCollection(adapter)
 					}
-					children.AddAll(ccol)
+					_, err := children.AddAll(ccol)
+					if err != nil {
+						return nil, err
+					}
 				}
 			}
 		}

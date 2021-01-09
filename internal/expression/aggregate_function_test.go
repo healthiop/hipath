@@ -38,9 +38,9 @@ import (
 func TestAggregatePathFuncEvaluatorNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
-	col.Add(hipathsys.NewInteger(11))
-	col.Add(hipathsys.NewInteger(14))
+	col.MustAdd(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(11))
+	col.MustAdd(hipathsys.NewInteger(14))
 
 	f := newAggregateFunction()
 	res, err := f.Execute(ctx, col, []interface{}{nil}, hipathsys.NewLoop(nil))
@@ -57,10 +57,20 @@ func TestAggregatePathFuncNodeNil(t *testing.T) {
 	assert.Nil(t, err, res, "empty res expected")
 }
 
+func TestAggregatePathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEvaluator := newTestErrorExpression()
+	f := newAggregateFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), []interface{}{nil}, hipathsys.NewLoop(loopEvaluator))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	loopEvaluator := newTestErrorExpression()
 
@@ -73,9 +83,9 @@ func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
 func TestAggregatePathFuncTotal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
-	col.Add(hipathsys.NewInteger(11))
-	col.Add(hipathsys.NewInteger(14))
+	col.MustAdd(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(11))
+	col.MustAdd(hipathsys.NewInteger(14))
 
 	loopEvaluator := NewArithmeticExpression(
 		NewTotalInvocation(), hipathsys.AdditionOp, NewThisInvocation())
@@ -91,9 +101,9 @@ func TestAggregatePathFuncTotal(t *testing.T) {
 func TestAggregatePathFuncIndex(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
-	col.Add(hipathsys.NewInteger(11))
-	col.Add(hipathsys.NewInteger(14))
+	col.MustAdd(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(11))
+	col.MustAdd(hipathsys.NewInteger(14))
 
 	loopEvaluator := NewArithmeticExpression(
 		NewIndexInvocation(), hipathsys.AdditionOp, NewThisInvocation())

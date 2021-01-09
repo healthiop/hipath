@@ -47,9 +47,9 @@ func TestWherePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(0))
-	col.Add(hipathsys.NewInteger(7))
-	col.Add(hipathsys.NewInteger(2))
+	col.MustAdd(hipathsys.NewInteger(0))
+	col.MustAdd(hipathsys.NewInteger(7))
+	col.MustAdd(hipathsys.NewInteger(2))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
@@ -66,13 +66,36 @@ func TestWherePathFunc(t *testing.T) {
 	}
 }
 
+func TestWherePathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newWhereFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestWherePathFuncItemError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewBooleanLiteral(true)
+
+	f := newWhereFunction()
+	res, err := f.Execute(ctx, test.NewErrorCollection(), nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestWherePathFuncNoMatch(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(2))
-	col.Add(hipathsys.NewInteger(7))
-	col.Add(hipathsys.NewInteger(0))
+	col.MustAdd(hipathsys.NewInteger(2))
+	col.MustAdd(hipathsys.NewInteger(7))
+	col.MustAdd(hipathsys.NewInteger(0))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
@@ -87,9 +110,9 @@ func TestWherePathFuncEvalNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(2))
-	col.Add(hipathsys.NewInteger(7))
-	col.Add(hipathsys.NewInteger(0))
+	col.MustAdd(hipathsys.NewInteger(2))
+	col.MustAdd(hipathsys.NewInteger(7))
+	col.MustAdd(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestExpression(nil)))
@@ -101,7 +124,7 @@ func TestWherePathFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(0))
+	col.MustAdd(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestErrorExpression()))
@@ -113,7 +136,7 @@ func TestWherePathFuncTypeError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(0))
+	col.MustAdd(hipathsys.NewInteger(0))
 
 	f := newWhereFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(NewRawStringLiteral("")))
@@ -133,8 +156,8 @@ func TestSelectPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(5))
-	col.Add(hipathsys.NewInteger(7))
+	col.MustAdd(hipathsys.NewInteger(5))
+	col.MustAdd(hipathsys.NewInteger(7))
 
 	loopEval := NewUnionExpression(NewThisInvocation(), NewIndexInvocation())
 
@@ -152,12 +175,51 @@ func TestSelectPathFunc(t *testing.T) {
 	}
 }
 
+func TestSelectPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewUnionExpression(NewThisInvocation(), NewIndexInvocation())
+
+	f := newSelectFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestSelectPathFuncColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewInteger(5))
+
+	loopEval := newTestExpression(test.NewErrorCollection())
+
+	f := newSelectFunction()
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestSelectPathFuncItemError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewInteger(5))
+
+	loopEval := newTestExpression(test.NewTestModelErrorNode())
+
+	f := newSelectFunction()
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestSelectPathFuncSingleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(5))
-	col.Add(hipathsys.NewInteger(7))
+	col.MustAdd(hipathsys.NewInteger(5))
+	col.MustAdd(hipathsys.NewInteger(7))
 
 	f := newSelectFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(NewIndexInvocation()))
@@ -175,7 +237,7 @@ func TestSelectPathFuncError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(5))
+	col.MustAdd(hipathsys.NewInteger(5))
 
 	f := newSelectFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestErrorExpression()))
@@ -187,7 +249,7 @@ func TestSelectPathFuncEvalNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(5))
+	col.MustAdd(hipathsys.NewInteger(5))
 
 	f := newSelectFunction()
 	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(newTestExpression(nil)))
@@ -200,6 +262,45 @@ func TestRepeatPathFuncNil(t *testing.T) {
 	f := repeatFunc
 	res, err := f.Execute(ctx, nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestRepeatPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewMemberInvocation("item")
+
+	f := repeatFunc
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestRepeatPathFuncItemError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewInteger(5))
+
+	loopEval := newTestExpression(test.NewTestModelErrorNode())
+
+	f := repeatFunc
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestRepeatPathFuncColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewInteger(5))
+
+	loopEval := newTestExpression(test.NewErrorCollection())
+
+	f := repeatFunc
+	res, err := f.Execute(ctx, col, nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
 	assert.Nil(t, res, "empty result expected")
 }
 
@@ -256,25 +357,25 @@ func TestRepeatPathFuncColInCol(t *testing.T) {
 	node11 := createRepeatTestColData("11")
 	col := ctx.NewCollection()
 	node111 := createRepeatTestColData("111")
-	col.Add(node111)
+	col.MustAdd(node111)
 	node112 := createRepeatTestColData("112")
-	col.Add(node112)
+	col.MustAdd(node112)
 	node11["items"] = col
 
 	node12 := createRepeatTestColData("12")
 	col = ctx.NewCollection()
 	node121 := createRepeatTestColData("121")
-	col.Add(node121)
+	col.MustAdd(node121)
 	node122 := createRepeatTestColData("122")
-	col.Add(node122)
-	col.Add(nil)
+	col.MustAdd(node122)
+	col.MustAdd(nil)
 	node12["items"] = col
 
 	node1 := createRepeatTestColData("1")
 	col = ctx.NewCollection()
-	col.Add(node11)
-	col.Add(node12)
-	col.Add(node11)
+	col.MustAdd(node11)
+	col.MustAdd(node12)
+	col.MustAdd(node11)
 	node1["items"] = col
 
 	loopEval := NewMemberInvocation("items")
@@ -303,7 +404,7 @@ func TestRepeatPathFuncColInColError(t *testing.T) {
 
 	node1 := createRepeatTestColData("1")
 	col := ctx.NewCollection()
-	col.Add(node11)
+	col.MustAdd(node11)
 	node1["items"] = col
 
 	loopEval := NewMemberInvocation("items")
@@ -345,13 +446,30 @@ func TestOfTypePathFuncInvalidTypeName(t *testing.T) {
 	assert.Nil(t, res, "no result expected")
 }
 
+func TestOfTypePathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	f := newOfTypeFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), []interface{}{hipathsys.NewString("System.String")}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
+func TestOfTypePathFuncColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newOfTypeFunction()
+	res, err := f.Execute(ctx, test.NewErrorCollection(), []interface{}{hipathsys.NewString("Test.Error")}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "no result expected")
+}
+
 func TestOfTypePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewInteger(10))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	f := newOfTypeFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("System.String")}, nil)
@@ -369,9 +487,9 @@ func TestOfTypePathFuncBaseType(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewInteger(10))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	f := newOfTypeFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("System.Any")}, nil)

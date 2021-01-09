@@ -116,8 +116,8 @@ func TestBooleanExpressionInvalidOp(t *testing.T) {
 func TestBooleanExpressionMultiColLeft(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(hipathsys.True)
-	operand.Add(hipathsys.True)
+	operand.MustAdd(hipathsys.True)
+	operand.MustAdd(hipathsys.True)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -130,8 +130,8 @@ func TestBooleanExpressionMultiColLeft(t *testing.T) {
 func TestBooleanExpressionMultiColRight(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(hipathsys.True)
-	operand.Add(hipathsys.True)
+	operand.MustAdd(hipathsys.True)
+	operand.MustAdd(hipathsys.True)
 
 	evaluator := NewBooleanExpression(NewBooleanLiteral(true), AndOp, newTestExpression(operand))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -155,7 +155,7 @@ func TestBooleanExpressionNoBoolean(t *testing.T) {
 func TestBooleanExpressionSingleColString(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(hipathsys.NewString("test"))
+	operand.MustAdd(hipathsys.NewString("test"))
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -168,7 +168,7 @@ func TestBooleanExpressionSingleColString(t *testing.T) {
 func TestBooleanExpressionSingleColBoolean(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(hipathsys.False)
+	operand.MustAdd(hipathsys.False)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -193,7 +193,7 @@ func TestBooleanExpressionEmptyCol(t *testing.T) {
 func TestBooleanExpressionColSingleNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	operand := ctx.NewCollection()
-	operand.Add(nil)
+	operand.MustAdd(nil)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {

@@ -60,7 +60,7 @@ func TestEmptyPathFuncEmptyCollection(t *testing.T) {
 func TestEmptyPathFuncCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewString(""))
+	c.MustAdd(hipathsys.NewString(""))
 	f := newEmptyFunction()
 	res, err := f.Execute(nil, c, nil, nil)
 	assert.NoError(t, err, "no error expected")
@@ -84,7 +84,7 @@ func TestExistsPathFuncValueNoFilter(t *testing.T) {
 func TestExistsPathFuncColNoFilter(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewString("test"))
+	c.MustAdd(hipathsys.NewString("test"))
 	f := newExistsFunction()
 	res, err := f.Execute(nil, c, nil, hipathsys.NewLoop(nil))
 	assert.NoError(t, err, "no error expected")
@@ -98,6 +98,16 @@ func TestExistsPathFuncEmptyColNoFilter(t *testing.T) {
 	res, err := f.Execute(nil, c, nil, hipathsys.NewLoop(nil))
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, hipathsys.False, res)
+}
+
+func TestExistsPathFuncError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
+
+	f := newExistsFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), []interface{}{}, hipathsys.NewLoop(loopEvaluator))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
 }
 
 func TestExistsPathFuncValueNonMatchingFilter(t *testing.T) {
@@ -123,8 +133,8 @@ func TestExistsPathFuncValueMatchingFilter(t *testing.T) {
 func TestExistsPathFuncColNonMatchingFilter(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewString("test"))
-	c.Add(hipathsys.NewString("tesT"))
+	c.MustAdd(hipathsys.NewString("test"))
+	c.MustAdd(hipathsys.NewString("tesT"))
 	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
 
 	f := newExistsFunction()
@@ -136,8 +146,8 @@ func TestExistsPathFuncColNonMatchingFilter(t *testing.T) {
 func TestExistsPathFuncColMatchingFilter(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewString("test"))
-	c.Add(hipathsys.NewString("Test"))
+	c.MustAdd(hipathsys.NewString("test"))
+	c.MustAdd(hipathsys.NewString("Test"))
 	loopEvaluator := NewEqualityExpression(false, false, NewThisInvocation(), NewRawStringLiteral("Test"))
 
 	f := newExistsFunction()
@@ -200,6 +210,18 @@ func TestAllPathFuncEmpty(t *testing.T) {
 	assert.Equal(t, hipathsys.True, res)
 }
 
+func TestAllPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	loopEval := NewEqualityExpression(false, false,
+		NewThisInvocation(), NewIndexInvocation())
+
+	f := newAllFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, hipathsys.NewLoop(loopEval))
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestAllPathFuncSingleValue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
@@ -216,9 +238,9 @@ func TestAllPathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	node := ctx.NewCollection()
-	node.Add(hipathsys.NewInteger(0))
-	node.Add(hipathsys.NewInteger(1))
-	node.Add(hipathsys.NewInteger(2))
+	node.MustAdd(hipathsys.NewInteger(0))
+	node.MustAdd(hipathsys.NewInteger(1))
+	node.MustAdd(hipathsys.NewInteger(2))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
@@ -233,9 +255,9 @@ func TestAllPathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	node := ctx.NewCollection()
-	node.Add(hipathsys.NewInteger(0))
-	node.Add(hipathsys.NewInteger(2))
-	node.Add(hipathsys.NewInteger(1))
+	node.MustAdd(hipathsys.NewInteger(0))
+	node.MustAdd(hipathsys.NewInteger(2))
+	node.MustAdd(hipathsys.NewInteger(1))
 
 	loopEval := NewEqualityExpression(false, false,
 		NewThisInvocation(), NewIndexInvocation())
@@ -265,8 +287,8 @@ func TestAllPathFuncInvalidType(t *testing.T) {
 func TestAllTruePathFuncTypeError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.NewString("test"))
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.NewString("test"))
 
 	f := newAllTrueFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -293,12 +315,21 @@ func TestAllTruePathFuncEmpty(t *testing.T) {
 	assert.Equal(t, hipathsys.True, res)
 }
 
+func TestAllTruePathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newAllTrueFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestAllTruePathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.True)
 
 	f := newAllTrueFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -309,9 +340,9 @@ func TestAllTruePathFuncTrue(t *testing.T) {
 func TestAllTruePathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.True)
 
 	f := newAllTrueFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -341,9 +372,9 @@ func TestAnyTruePathFuncEmpty(t *testing.T) {
 func TestAnyTruePathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.False)
 
 	f := newAnyTrueFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -354,9 +385,9 @@ func TestAnyTruePathFuncTrue(t *testing.T) {
 func TestAnyTruePathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.False)
 
 	f := newAnyTrueFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -386,9 +417,9 @@ func TestAllFalsePathFuncEmpty(t *testing.T) {
 func TestAllFalsePathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.False)
 
 	f := newAllFalseFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -399,9 +430,9 @@ func TestAllFalsePathFuncTrue(t *testing.T) {
 func TestAllFalsePathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.False)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.False)
 
 	f := newAllFalseFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -431,9 +462,9 @@ func TestAnyFalsePathFuncEmpty(t *testing.T) {
 func TestAnyFalsePathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.False)
-	col.Add(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.False)
+	col.MustAdd(hipathsys.True)
 
 	f := newAnyFalseFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -444,9 +475,9 @@ func TestAnyFalsePathFuncTrue(t *testing.T) {
 func TestAnyFalsePathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.True)
-	col.Add(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.True)
+	col.MustAdd(hipathsys.True)
 
 	f := newAnyFalseFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -454,19 +485,47 @@ func TestAnyFalsePathFuncFalse(t *testing.T) {
 	assert.Equal(t, hipathsys.False, res)
 }
 
+func TestSubsetOfPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := test.NewTestModelErrorNode()
+
+	other := ctx.NewCollection()
+	other.MustAdd(hipathsys.NewString("test4"))
+
+	f := newSubsetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestSubsetOfPathFuncArgNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	other := test.NewTestModelErrorNode()
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewString("test4"))
+
+	f := newSubsetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestSubsetOfPathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test4"))
 
 	other := ctx.NewCollection()
-	other.Add(hipathsys.NewString("test4"))
-	other.Add(hipathsys.NewString("test1"))
-	other.Add(hipathsys.NewString("test2"))
-	other.Add(hipathsys.NewString("test3"))
+	other.MustAdd(hipathsys.NewString("test4"))
+	other.MustAdd(hipathsys.NewString("test1"))
+	other.MustAdd(hipathsys.NewString("test2"))
+	other.MustAdd(hipathsys.NewString("test3"))
 
 	f := newSubsetOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
@@ -478,15 +537,15 @@ func TestSubsetOfPathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test4"))
 
 	other := ctx.NewCollection()
-	other.Add(hipathsys.NewString("test4"))
-	other.Add(hipathsys.NewString("test5"))
-	other.Add(hipathsys.NewString("test2"))
-	other.Add(hipathsys.NewString("test3"))
+	other.MustAdd(hipathsys.NewString("test4"))
+	other.MustAdd(hipathsys.NewString("test5"))
+	other.MustAdd(hipathsys.NewString("test2"))
+	other.MustAdd(hipathsys.NewString("test3"))
 
 	f := newSubsetOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
@@ -498,13 +557,13 @@ func TestSubsetOfPathFuncFalseLessItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test4"))
 
 	other := ctx.NewCollection()
-	other.Add(hipathsys.NewString("test3"))
-	other.Add(hipathsys.NewString("test1"))
+	other.MustAdd(hipathsys.NewString("test3"))
+	other.MustAdd(hipathsys.NewString("test1"))
 
 	f := newSubsetOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
@@ -512,19 +571,47 @@ func TestSubsetOfPathFuncFalseLessItems(t *testing.T) {
 	assert.Equal(t, hipathsys.False, res)
 }
 
+func TestSupersetOfPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	col := test.NewTestModelErrorNode()
+
+	other := ctx.NewCollection()
+	other.MustAdd(hipathsys.NewString("test4"))
+
+	f := newSupersetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestSupersetOfPathFuncArgNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	other := test.NewTestModelErrorNode()
+
+	col := ctx.NewCollection()
+	col.MustAdd(hipathsys.NewString("test4"))
+
+	f := newSupersetOfFunction()
+	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestSupersetOfPathFuncTrue(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	other := ctx.NewCollection()
-	other.Add(hipathsys.NewString("test3"))
-	other.Add(hipathsys.NewString("test1"))
-	other.Add(hipathsys.NewString("test4"))
+	other.MustAdd(hipathsys.NewString("test3"))
+	other.MustAdd(hipathsys.NewString("test1"))
+	other.MustAdd(hipathsys.NewString("test4"))
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test4"))
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
-	col.Add(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test3"))
 
 	f := newSupersetOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
@@ -536,15 +623,15 @@ func TestSupersetOfPathFuncFalse(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	other := ctx.NewCollection()
-	other.Add(hipathsys.NewString("test3"))
-	other.Add(hipathsys.NewString("test1"))
-	other.Add(hipathsys.NewString("test4"))
+	other.MustAdd(hipathsys.NewString("test3"))
+	other.MustAdd(hipathsys.NewString("test1"))
+	other.MustAdd(hipathsys.NewString("test4"))
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test4"))
-	col.Add(hipathsys.NewString("test5"))
-	col.Add(hipathsys.NewString("test2"))
-	col.Add(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test5"))
+	col.MustAdd(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test3"))
 
 	f := newSupersetOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{other}, nil)
@@ -556,8 +643,8 @@ func TestCountPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test1"))
 
 	f := newCountFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -567,11 +654,38 @@ func TestCountPathFunc(t *testing.T) {
 	}
 }
 
+func TestCountPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newCountFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestDistinctPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newDistinctFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty model expected")
+}
+
+func TestDistinctPathFuncColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newDistinctFunction()
+	res, err := f.Execute(ctx, test.NewErrorCollection(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty model expected")
+}
+
 func TestDistinctPathFuncOneItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test3"))
 
 	f := newDistinctFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -588,10 +702,10 @@ func TestDistinctPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test4"))
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test4"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test1"))
 
 	f := newDistinctFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -621,7 +735,7 @@ func TestIsDistinctPathFuncOneItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test3"))
 
 	f := newIsDistinctFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -629,12 +743,30 @@ func TestIsDistinctPathFuncOneItem(t *testing.T) {
 	assert.Equal(t, hipathsys.True, res)
 }
 
+func TestIsDistinctPathFuncNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, test.NewTestModelErrorNode(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
+func TestIsDistinctPathFuncColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	f := newIsDistinctFunction()
+	res, err := f.Execute(ctx, test.NewErrorCollection(), nil, nil)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestIsDistinctPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test5"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test5"))
 
 	f := newIsDistinctFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -646,9 +778,9 @@ func TestIsDistinctPathFuncNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test3"))
-	col.Add(hipathsys.NewString("test5"))
-	col.Add(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test3"))
+	col.MustAdd(hipathsys.NewString("test5"))
+	col.MustAdd(hipathsys.NewString("test3"))
 
 	f := newIsDistinctFunction()
 	res, err := f.Execute(ctx, col, nil, nil)

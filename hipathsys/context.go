@@ -29,7 +29,7 @@
 package hipathsys
 
 type ModelAdapter interface {
-	ConvertToSystem(node interface{}) interface{}
+	ConvertToSystem(node interface{}) (interface{}, error)
 	TypeSpec(node interface{}) TypeSpecAccessor
 	Cast(node interface{}, name FQTypeNameAccessor) (interface{}, error)
 	Equal(node1 interface{}, node2 interface{}) bool
@@ -165,7 +165,7 @@ type ContextAccessor interface {
 	ContextNode() interface{}
 	ModelAdapter() ModelAdapter
 	NewCollection() CollectionModifier
-	NewCollectionWithItem(item interface{}) CollectionModifier
+	NewCollectionWithItem(item interface{}) (CollectionModifier, error)
 	Tracer() Tracer
 }
 

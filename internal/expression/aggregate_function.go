@@ -53,7 +53,10 @@ func (f *aggregateFunction) Execute(ctx hipathsys.ContextAccessor, node interfac
 
 	loopEvaluator := loop.Evaluator()
 	if loopEvaluator != nil {
-		col := wrapCollection(ctx, node)
+		col, err := wrapCollection(ctx, node)
+		if err != nil {
+			return nil, err
+		}
 		count := col.Count()
 		for i := 0; i < count; i++ {
 			this := col.Get(i)

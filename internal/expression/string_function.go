@@ -359,10 +359,10 @@ func (f *toCharsFunction) Execute(ctx hipathsys.ContextAccessor, node interface{
 		return hipathsys.NewEmptyCollection(), nil
 	}
 
-	col := hipathsys.NewCollection(ctx.ModelAdapter())
+	col := ctx.NewCollection()
 	sr := []rune(s.String())
 	for _, c := range sr {
-		col.Add(hipathsys.StringOf(string(c)))
+		col.MustAdd(hipathsys.StringOf(string(c)))
 	}
 
 	return col, nil

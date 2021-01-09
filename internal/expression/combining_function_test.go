@@ -38,13 +38,13 @@ import (
 func TestUnionPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
-	c1.Add(hipathsys.NewInteger(14))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(14))
 
 	c2 := ctx.NewCollection()
-	c2.Add(hipathsys.NewDecimalInt(11))
-	c2.Add(hipathsys.NewDecimalInt(12))
+	c2.MustAdd(hipathsys.NewDecimalInt(11))
+	c2.MustAdd(hipathsys.NewDecimalInt(12))
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
@@ -125,13 +125,13 @@ func TestUnionPathFuncBothEmpty(t *testing.T) {
 func TestCombinePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
-	c1.Add(hipathsys.NewInteger(14))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(14))
 
 	c2 := ctx.NewCollection()
-	c2.Add(hipathsys.NewDecimalInt(11))
-	c2.Add(hipathsys.NewDecimalInt(12))
+	c2.MustAdd(hipathsys.NewDecimalInt(11))
+	c2.MustAdd(hipathsys.NewDecimalInt(12))
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)

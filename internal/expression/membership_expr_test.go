@@ -35,11 +35,20 @@ import (
 	"testing"
 )
 
+func TestContainsExpressionNodeError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	e := NewContainsExpression(newTestExpression(test.NewTestModelErrorNode()), NewNumberLiteralInt(11), false)
+	res, err := e.Evaluate(ctx, nil, nil)
+	assert.Error(t, err, "nerror expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestContainsExpression(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), NewNumberLiteralInt(11), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -52,8 +61,8 @@ func TestContainsExpression(t *testing.T) {
 func TestContainsInverseExpression(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(NewNumberLiteralInt(11), newTestExpression(c1), true)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -66,8 +75,8 @@ func TestContainsInverseExpression(t *testing.T) {
 func TestContainsExpressionNot(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), NewNumberLiteralInt(12), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -89,8 +98,8 @@ func TestContainsExpressionColError(t *testing.T) {
 func TestContainsExpressionValError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
-	c1.Add(hipathsys.NewInteger(11))
+	c1.MustAdd(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), newTestErrorExpression(), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -112,7 +121,7 @@ func TestContainsExpressionNilCol(t *testing.T) {
 func TestContainsExpressionNilVal(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(10))
 
 	e := NewContainsExpression(newTestExpression(c1), NewEmptyLiteral(), false)
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -123,10 +132,10 @@ func TestContainsExpressionNilVal(t *testing.T) {
 func TestContainsExpressionValCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewInteger(10))
+	c1.MustAdd(hipathsys.NewInteger(10))
 	v := ctx.NewCollection()
-	v.Add(hipathsys.NewInteger(10))
-	v.Add(hipathsys.NewInteger(11))
+	v.MustAdd(hipathsys.NewInteger(10))
+	v.MustAdd(hipathsys.NewInteger(11))
 
 	e := NewContainsExpression(newTestExpression(c1), newTestExpression(v), false)
 	res, err := e.Evaluate(ctx, nil, nil)

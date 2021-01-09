@@ -44,13 +44,24 @@ type testModelNode struct {
 	sys   bool
 }
 
+type testModelErrorNode struct {
+}
+
 type testModelNodeAccessor interface {
 	testValue() float64
 	testSys() bool
 }
 
+type testModelErrorNodeAccessor interface {
+	testErr() bool
+}
+
 func NewTestModelNode(value float64, sys bool) *testModelNode {
 	return &testModelNode{value, sys}
+}
+
+func NewTestModelErrorNode() *testModelErrorNode {
+	return &testModelErrorNode{}
 }
 
 func (n *testModelNode) testValue() float64 {
@@ -61,6 +72,10 @@ func (n *testModelNode) testSys() bool {
 	return n.sys
 }
 
+func (n *testModelErrorNode) testErr() bool {
+	return true
+}
+
 type testModel struct {
 	t *testing.T
 }
@@ -69,19 +84,22 @@ func newTestModel(t *testing.T) hipathsys.ModelAdapter {
 	return &testModel{t}
 }
 
-func (a *testModel) ConvertToSystem(node interface{}) interface{} {
+func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
 	if m, ok := node.(map[string]interface{}); ok {
-		return m
+		return m, nil
 	}
 
 	if n, ok := node.(testModelNodeAccessor); !ok {
+		if _, ok = node.(testModelErrorNodeAccessor); ok {
+			return nil, fmt.Errorf("error node cannot be converted")
+		}
 		a.t.Errorf("not a test model node: %T", node)
-		return nil
+		return nil, nil
 	} else {
 		if n.testSys() {
-			return hipathsys.NewDecimalFloat64(n.testValue())
+			return hipathsys.NewDecimalFloat64(n.testValue()), nil
 		}
-		return n
+		return n, nil
 	}
 }
 
@@ -109,6 +127,9 @@ func (a *testModel) TypeSpec(node interface{}) hipathsys.TypeSpecAccessor {
 	}
 
 	if n, ok := node.(testModelNodeAccessor); !ok {
+		if _, ok := node.(testModelErrorNodeAccessor); ok {
+			return hipathsys.NewTypeSpec(hipathsys.NewFQTypeName("Error", "Test"))
+		}
 		if _, ok := node.(hipathsys.StringAccessor); !ok {
 			a.t.Errorf("not a test model node: %T", node)
 		}
@@ -188,13 +209,19 @@ func (a *testModel) Children(node interface{}) (hipathsys.CollectionAccessor, er
 	res := hipathsys.NewCollection(a)
 	keys := make([]string, 0)
 	for k := range model {
+		if k == "errorCollection" {
+			return NewErrorCollection(), nil
+		}
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
 		v := model[k]
 		if v != nil {
-			res.Add(model[k])
+			err := res.Add(model[k])
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 	return res, nil
@@ -237,7 +264,7 @@ func (t *testContext) NewCollection() hipathsys.CollectionModifier {
 	return hipathsys.NewCollection(t.modelAdapter)
 }
 
-func (t *testContext) NewCollectionWithItem(item interface{}) hipathsys.CollectionModifier {
+func (t *testContext) NewCollectionWithItem(item interface{}) (hipathsys.CollectionModifier, error) {
 	return hipathsys.NewCollectionWithItem(t.modelAdapter, item)
 }
 
@@ -247,4 +274,63 @@ func (t *testContext) ContextNode() interface{} {
 
 func (t *testContext) Tracer() hipathsys.Tracer {
 	return t.tracer
+}
+
+type errorCollection struct {
+}
+
+func NewErrorCollection() hipathsys.CollectionAccessor {
+	return &errorCollection{}
+}
+
+func (c *errorCollection) DataType() hipathsys.DataTypes {
+	return hipathsys.CollectionDataType
+}
+
+func (c *errorCollection) Empty() bool {
+	return false
+}
+
+func (c *errorCollection) Count() int {
+	return 3
+}
+
+func (c *errorCollection) Get(i int) interface{} {
+	switch i {
+	case 0:
+		return hipathsys.NewString("test item 1")
+	case 1:
+		return NewTestModelErrorNode()
+	case 2:
+		return hipathsys.NewString("test item 2")
+	default:
+		panic("invalid item index")
+	}
+}
+
+func (c *errorCollection) Contains(node interface{}) bool {
+	if _, ok := node.(testModelErrorNodeAccessor); ok {
+		return true
+	}
+	return false
+}
+
+func (c *errorCollection) TypeSpec() hipathsys.TypeSpecAccessor {
+	panic("implement me")
+}
+
+func (c *errorCollection) Source() interface{} {
+	panic("implement me")
+}
+
+func (c *errorCollection) Equal(_ interface{}) bool {
+	panic("implement me")
+}
+
+func (c *errorCollection) Equivalent(_ interface{}) bool {
+	panic("implement me")
+}
+
+func (c *errorCollection) ItemTypeSpec() hipathsys.TypeSpecAccessor {
+	panic("implement me")
 }

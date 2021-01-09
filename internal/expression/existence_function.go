@@ -76,7 +76,11 @@ func (f *existsFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}
 		if loopEvaluator == nil {
 			return hipathsys.True, nil
 		}
-		col = ctx.NewCollectionWithItem(node)
+		var err error
+		col, err = ctx.NewCollectionWithItem(node)
+		if err != nil {
+			return nil, err
+		}
 	}
 	count := col.Count()
 
@@ -117,7 +121,10 @@ func newAllFunction() *allFunction {
 
 func (f *allFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
 	loopEvaluator := loop.Evaluator()
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	for i := 0; i < count; i++ {
 		this := col.Get(i)
@@ -168,7 +175,10 @@ func newAnyFalseFunction() *allAnyTrueFalseFunction {
 }
 
 func (f *allAnyTrueFalseFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	for i := 0; i < count; i++ {
 		this := col.Get(i)
@@ -198,10 +208,16 @@ func newSubsetOfFunction() *subsetOfFunction {
 }
 
 func (f *subsetOfFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	if count > 0 {
-		otherCol := wrapCollection(ctx, args[0])
+		otherCol, err := wrapCollection(ctx, args[0])
+		if err != nil {
+			return nil, err
+		}
 		for i := 0; i < count; i++ {
 			if !otherCol.Contains(col.Get(i)) {
 				return hipathsys.False, nil
@@ -222,10 +238,16 @@ func newSupersetOfFunction() *supersetOfFunction {
 }
 
 func (f *supersetOfFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	otherCol := wrapCollection(ctx, args[0])
+	otherCol, err := wrapCollection(ctx, args[0])
+	if err != nil {
+		return nil, err
+	}
 	count := otherCol.Count()
 	if count > 0 {
-		col := wrapCollection(ctx, node)
+		col, err := wrapCollection(ctx, node)
+		if err != nil {
+			return nil, err
+		}
 		for i := 0; i < count; i++ {
 			if !col.Contains(otherCol.Get(i)) {
 				return hipathsys.False, nil
@@ -246,7 +268,10 @@ func newCountFunction() *countFunction {
 }
 
 func (f *countFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	return hipathsys.NewInteger(int32(col.Count())), nil
 }
 
@@ -261,13 +286,19 @@ func newDistinctFunction() *distinctFunction {
 }
 
 func (f *distinctFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	if col.Count() < 2 {
 		return col, nil
 	}
 
 	res := ctx.NewCollection()
-	res.AddAllUnique(col)
+	_, err = res.AddAllUnique(col)
+	if err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -282,7 +313,10 @@ func newIsDistinctFunction() *isDistinctFunction {
 }
 
 func (f *isDistinctFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	if col.Empty() {
 		return nil, nil
 	}
@@ -292,6 +326,9 @@ func (f *isDistinctFunction) Execute(ctx hipathsys.ContextAccessor, node interfa
 	}
 
 	res := ctx.NewCollection()
-	res.AddAllUnique(col)
+	_, err = res.AddAllUnique(col)
+	if err != nil {
+		return nil, err
+	}
 	return hipathsys.BooleanOf(col.Count() == res.Count()), nil
 }

@@ -99,7 +99,7 @@ func TestParseInvocationTermEmptyCollection(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		col := ctx.NewCollection()
-		col.Add(hipathsys.NewString("test"))
+		col.MustAdd(hipathsys.NewString("test"))
 
 		b, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
@@ -136,8 +136,8 @@ func TestParseInvocationTermUnion(t *testing.T) {
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
 		col := ctx.NewCollection()
-		col.Add(hipathsys.NewInteger(18))
-		col.Add(hipathsys.NewInteger(19))
+		col.MustAdd(hipathsys.NewInteger(18))
+		col.MustAdd(hipathsys.NewInteger(19))
 
 		e, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")

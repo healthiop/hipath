@@ -61,7 +61,7 @@ func TestAsTypeFuncColSingleItem(t *testing.T) {
 
 	node := hipathsys.NewString("test1")
 	col := ctx.NewCollection()
-	col.Add(node)
+	col.MustAdd(node)
 
 	f := newAsFunction()
 	res, err := f.Execute(ctx, col,
@@ -101,8 +101,8 @@ func TestAsTypeFuncColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	f := newAsFunction()
 	res, err := f.Execute(ctx, col,
@@ -171,7 +171,7 @@ func TestIsTypeFuncColSingleItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test1"))
 
 	f := newIsFunction()
 	res, err := f.Execute(ctx, col,
@@ -217,8 +217,8 @@ func TestIsTypeFuncColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	f := newIsFunction()
 	res, err := f.Execute(ctx, col,

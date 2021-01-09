@@ -161,9 +161,9 @@ func (f *testInvocationArgsFunction) Execute(ctx hipathsys.ContextAccessor, _ in
 	assert.Same(t, testLoop, loop)
 
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewInteger(int32(len(args))))
+	c.MustAdd(hipathsys.NewInteger(int32(len(args))))
 	for _, a := range args {
-		c.Add(a)
+		c.MustAdd(a)
 	}
 	return c, nil
 }

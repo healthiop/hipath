@@ -59,7 +59,11 @@ func (e *ContainsExpression) Evaluate(ctx hipathsys.ContextAccessor, node interf
 		right = tmp
 	}
 
-	col, val := wrapCollection(ctx, left), unwrapCollection(right)
+	col, err := wrapCollection(ctx, left)
+	if err != nil {
+		return nil, err
+	}
+	val := unwrapCollection(right)
 	if col == nil || col.Empty() {
 		return hipathsys.False, nil
 	}

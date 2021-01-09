@@ -58,7 +58,10 @@ func (f *traceFunction) Execute(ctx hipathsys.ContextAccessor, node interface{},
 		return node, nil
 	}
 
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 
 	var traced hipathsys.CollectionAccessor
@@ -74,7 +77,10 @@ func (f *traceFunction) Execute(ctx hipathsys.ContextAccessor, node interface{},
 			if err != nil {
 				return nil, err
 			}
-			projected.Add(res)
+			err = projected.Add(res)
+			if err != nil {
+				return nil, err
+			}
 		}
 		traced = projected
 	} else {

@@ -93,14 +93,25 @@ type testModelNode struct {
 	typeSpec TypeSpecAccessor
 }
 
+type testModelErrorNode struct {
+}
+
 type testModelNodeAccessor interface {
 	testValue() float64
 	testSys() bool
 	testTypeSpec() TypeSpecAccessor
 }
 
-func newTestModelNode(value float64, sys bool, typeSpec TypeSpecAccessor) *testModelNode {
+type testModelErrorNodeAccessor interface {
+	testErr() bool
+}
+
+func newTestModelNode(value float64, sys bool, typeSpec TypeSpecAccessor) testModelNodeAccessor {
 	return &testModelNode{value, sys, typeSpec}
+}
+
+func newTestModelErrorNode() testModelErrorNodeAccessor {
+	return &testModelErrorNode{}
 }
 
 func (n *testModelNode) testValue() float64 {
@@ -115,6 +126,10 @@ func (n *testModelNode) testTypeSpec() TypeSpecAccessor {
 	return n.typeSpec
 }
 
+func (n *testModelErrorNode) testErr() bool {
+	return true
+}
+
 type testModel struct {
 	t *testing.T
 }
@@ -123,15 +138,18 @@ func newTestModel(t *testing.T) ModelAdapter {
 	return &testModel{t}
 }
 
-func (a *testModel) ConvertToSystem(node interface{}) interface{} {
+func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
 	if n, ok := node.(testModelNodeAccessor); !ok {
+		if _, ok = node.(testModelErrorNodeAccessor); ok {
+			return nil, fmt.Errorf("error node cannot be converted")
+		}
 		a.t.Errorf("not a test model node: %T", node)
-		return nil
+		return nil, nil
 	} else {
 		if n.testSys() {
-			return NewDecimalFloat64(n.testValue())
+			return NewDecimalFloat64(n.testValue()), nil
 		}
-		return n
+		return n, nil
 	}
 }
 
@@ -228,7 +246,7 @@ func (t *testContext) NewCollection() CollectionModifier {
 	return NewCollection(t.modelAdapter)
 }
 
-func (t *testContext) NewCollectionWithItem(item interface{}) CollectionModifier {
+func (t *testContext) NewCollectionWithItem(item interface{}) (CollectionModifier, error) {
 	return NewCollectionWithItem(t.modelAdapter, item)
 }
 

@@ -44,7 +44,10 @@ func newWhereFunction() *whereFunction {
 }
 
 func (f *whereFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -67,7 +70,10 @@ func (f *whereFunction) Execute(ctx hipathsys.ContextAccessor, node interface{},
 				if filtered == nil {
 					filtered = ctx.NewCollection()
 				}
-				filtered.Add(this)
+				err := filtered.Add(this)
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -86,7 +92,10 @@ func newSelectFunction() *selectFunction {
 }
 
 func (f *selectFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, loop hipathsys.Looper) (interface{}, error) {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -107,10 +116,14 @@ func (f *selectFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}
 				projected = ctx.NewCollection()
 			}
 
+			var err error
 			if c, ok := res.(hipathsys.CollectionAccessor); ok {
-				projected.AddAll(c)
+				_, err = projected.AddAll(c)
 			} else {
-				projected.Add(res)
+				err = projected.Add(res)
+			}
+			if err != nil {
+				return nil, err
 			}
 		}
 	}
@@ -138,7 +151,10 @@ func (f *repeatFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}
 }
 
 func repeat(ctx hipathsys.ContextAccessor, node interface{}, loop hipathsys.Looper, projected hipathsys.CollectionModifier) error {
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return err
+	}
 	count := col.Count()
 	if count == 0 {
 		return nil
@@ -169,19 +185,31 @@ func repeatRecursively(ctx hipathsys.ContextAccessor, node interface{}, loop hip
 		count := col.Count()
 		for i := 0; i < count; i++ {
 			n := col.Get(i)
-			if n != nil && projected.AddUnique(n) {
-				err := repeat(ctx, n, hipathsys.NewLoopWithIndex(
-					loop.Evaluator(), i), projected)
+			if n != nil {
+				added, err := projected.AddUnique(n)
 				if err != nil {
 					return err
 				}
+				if added {
+					err = repeat(ctx, n, hipathsys.NewLoopWithIndex(
+						loop.Evaluator(), i), projected)
+					if err != nil {
+						return err
+					}
+				}
 			}
 		}
-	} else if projected.AddUnique(node) {
-		err := repeat(ctx, node, hipathsys.NewLoop(
-			loop.Evaluator()), projected)
+	} else {
+		added, err := projected.AddUnique(node)
 		if err != nil {
 			return err
+		}
+		if added {
+			err := repeat(ctx, node, hipathsys.NewLoop(
+				loop.Evaluator()), projected)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -210,7 +238,10 @@ func (f *ofTypeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}
 		return nil, fmt.Errorf("not a valid type specifier: %s", typeSpec)
 	}
 
-	col := wrapCollection(ctx, node)
+	col, err := wrapCollection(ctx, node)
+	if err != nil {
+		return nil, err
+	}
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -224,7 +255,10 @@ func (f *ofTypeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}
 			if filtered == nil {
 				filtered = ctx.NewCollection()
 			}
-			filtered.Add(n)
+			err := filtered.Add(n)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 

@@ -75,7 +75,7 @@ func TestAbsFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(-10))
+	col.MustAdd(hipathsys.NewInteger(-10))
 
 	f := newAbsFunction()
 	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{}, nil)
@@ -162,7 +162,7 @@ func TestCeilingFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newCeilingFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -214,7 +214,7 @@ func TestFloorFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newFloorFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -266,7 +266,7 @@ func TestExpFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newExpFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -320,7 +320,7 @@ func TestLnFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newLnFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -401,7 +401,7 @@ func TestLogFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newLogFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(5)}, nil)
@@ -415,7 +415,7 @@ func TestLogFuncIntegerBaseCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(5))
+	col.MustAdd(hipathsys.NewInteger(5))
 
 	f := newLogFunction()
 	res, err := f.Execute(ctx, hipathsys.NewInteger(10), []interface{}{col}, nil)
@@ -505,7 +505,7 @@ func TestPowerFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(4))
+	col.MustAdd(hipathsys.NewInteger(4))
 
 	f := newPowerFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
@@ -519,7 +519,7 @@ func TestPowerFuncIntegerExpCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(3))
+	col.MustAdd(hipathsys.NewInteger(3))
 
 	f := newPowerFunction()
 	res, err := f.Execute(ctx, hipathsys.NewInteger(4), []interface{}{col}, nil)
@@ -600,7 +600,7 @@ func TestRoundFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(4))
+	col.MustAdd(hipathsys.NewInteger(4))
 
 	f := newRoundFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
@@ -614,7 +614,7 @@ func TestRoundFuncPrecisionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(2))
+	col.MustAdd(hipathsys.NewInteger(2))
 
 	f := newRoundFunction()
 	res, err := f.Execute(ctx, hipathsys.NewDecimalFloat64(3.255), []interface{}{col}, nil)
@@ -688,7 +688,7 @@ func TestSqrtFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newSqrtFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -751,7 +751,7 @@ func TestTruncateFuncIntegerCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewInteger(10))
+	col.MustAdd(hipathsys.NewInteger(10))
 
 	f := newTruncateFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)

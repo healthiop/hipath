@@ -59,7 +59,7 @@ func TestAsTypeExpressionColSingleItem(t *testing.T) {
 
 	node := hipathsys.NewString("test1")
 	col := ctx.NewCollection()
-	col.Add(node)
+	col.MustAdd(node)
 
 	expr, err := NewAsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
@@ -103,8 +103,8 @@ func TestAsTypeExpressionColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	expr, err := NewAsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
@@ -175,7 +175,7 @@ func TestIsTypeExpressionColSingleItem(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test1"))
 
 	expr, err := NewIsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {
@@ -225,8 +225,8 @@ func TestIsTypeExpressionColMultipleItems(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	expr, err := NewIsTypeExpression(newTestExpression(col), "System.String")
 	if assert.NoError(t, err, "no error expected") {

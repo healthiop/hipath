@@ -49,5 +49,5 @@ func (e *UnionExpression) Evaluate(ctx hipathsys.ContextAccessor, node interface
 		return nil, err
 	}
 
-	return uniteCollections(ctx, left, right), nil
+	return uniteCollections(ctx, left, right)
 }

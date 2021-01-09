@@ -99,8 +99,8 @@ func TestStringConcatLeftError(t *testing.T) {
 func TestStringConcatLeftMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	evaluator := NewStringConcatExpression(
 		newTestExpression(col), NewRawStringLiteral("Test"))
@@ -113,7 +113,7 @@ func TestStringConcatLeftMultiCol(t *testing.T) {
 func TestStringConcatLeftCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test1"))
 
 	evaluator := NewStringConcatExpression(
 		newTestExpression(col), NewRawStringLiteral("Test"))
@@ -150,8 +150,8 @@ func TestStringConcatRightError(t *testing.T) {
 func TestStringConcatRightMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test1"))
-	col.Add(hipathsys.NewString("test2"))
+	col.MustAdd(hipathsys.NewString("test1"))
+	col.MustAdd(hipathsys.NewString("test2"))
 
 	evaluator := NewStringConcatExpression(
 		NewRawStringLiteral("Test"), newTestExpression(col))
@@ -164,7 +164,7 @@ func TestStringConcatRightMultiCol(t *testing.T) {
 func TestStringConcatRightCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("Test1"))
+	col.MustAdd(hipathsys.NewString("Test1"))
 
 	evaluator := NewStringConcatExpression(
 		NewRawStringLiteral("Test"), newTestExpression(col))

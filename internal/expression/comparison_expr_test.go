@@ -38,9 +38,9 @@ import (
 func TestComparisonExpressionLessOrEqualCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c1 := ctx.NewCollection()
-	c1.Add(hipathsys.NewString("test1"))
+	c1.MustAdd(hipathsys.NewString("test1"))
 	c2 := ctx.NewCollection()
-	c2.Add(hipathsys.NewString("test7"))
+	c2.MustAdd(hipathsys.NewString("test7"))
 
 	e := NewComparisonExpression(newTestExpression(c1), LessOrEqualThanOp, newTestExpression(c2))
 	node, err := e.Evaluate(ctx, nil, nil)

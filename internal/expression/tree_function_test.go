@@ -61,8 +61,8 @@ func TestChildrenFuncColNoChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n1 := ctx.NewCollection()
-	n1.Add(hipathsys.NewString("test1"))
-	n1.Add(hipathsys.NewString("test2"))
+	n1.MustAdd(hipathsys.NewString("test1"))
+	n1.MustAdd(hipathsys.NewString("test2"))
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -122,8 +122,8 @@ func TestChildrenFuncColChildren(t *testing.T) {
 	l2["a"] = n4
 
 	n := ctx.NewCollection()
-	n.Add(l1)
-	n.Add(l2)
+	n.MustAdd(l1)
+	n.MustAdd(l2)
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
@@ -140,6 +140,19 @@ func TestChildrenFuncColChildren(t *testing.T) {
 	}
 }
 
+func TestChildrenFuncErrorItem(t *testing.T) {
+	ctx := test.NewTestContext(t)
+
+	n := ctx.NewCollection()
+	n.MustAdd(test.NewTestModelNode(10, false))
+
+	f := childrenFunc
+	res, err := f.Execute(ctx, n, []interface{}{}, nil)
+
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty result expected")
+}
+
 func TestChildrenFuncChildrenError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
@@ -154,8 +167,7 @@ func TestChildrenFuncColChildrenError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n := ctx.NewCollection()
-	n.Add(hipathsys.NewString("test1"))
-	n.Add(test.NewTestModelNode(0, false))
+	n.MustAdd(map[string]interface{}{"errorCollection": nil})
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
@@ -190,8 +202,8 @@ func TestDescendantsFuncColNoDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n1 := ctx.NewCollection()
-	n1.Add(hipathsys.NewString("test1"))
-	n1.Add(hipathsys.NewString("test2"))
+	n1.MustAdd(hipathsys.NewString("test1"))
+	n1.MustAdd(hipathsys.NewString("test2"))
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -259,8 +271,8 @@ func TestDescendantsFuncColDescendants(t *testing.T) {
 	l2["a"] = n4
 
 	n := ctx.NewCollection()
-	n.Add(l1)
-	n.Add(l2)
+	n.MustAdd(l1)
+	n.MustAdd(l2)
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
@@ -292,8 +304,8 @@ func TestDescendantsFuncColDescendantsError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
 	n := ctx.NewCollection()
-	n.Add(hipathsys.NewString("test1"))
-	n.Add(test.NewTestModelNode(0, false))
+	n.MustAdd(hipathsys.NewString("test1"))
+	n.MustAdd(test.NewTestModelNode(0, false))
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)

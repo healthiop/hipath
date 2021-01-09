@@ -57,21 +57,26 @@ func IsCollection(node interface{}) bool {
 
 type CollectionModifier interface {
 	CollectionAccessor
-	Add(item interface{})
-	AddUnique(item interface{}) bool
-	AddAll(collection CollectionAccessor) int
-	AddAllUnique(collection CollectionAccessor) int
+	Add(item interface{}) error
+	AddUnique(item interface{}) (bool, error)
+	AddAll(collection CollectionAccessor) (int, error)
+	AddAllUnique(collection CollectionAccessor) (int, error)
+	MustAdd(item interface{})
 }
 
 func NewCollection(adapter ModelAdapter) CollectionModifier {
 	return NewCollectionWithSource(adapter, nil)
 }
 
-func NewCollectionWithItem(adapter ModelAdapter, item interface{}) CollectionModifier {
+func NewCollectionWithItem(adapter ModelAdapter, item interface{}) (CollectionModifier, error) {
 	c := newCollection(adapter, nil, nil)
 	c.items = make([]interface{}, 1)
-	c.items[0] = c.prepareItem(item, true)
-	return c
+	pi, err := c.convertItem(item)
+	if err != nil {
+		return nil, err
+	}
+	c.items[0] = pi
+	return c, nil
 }
 
 func NewCollectionWithSource(adapter ModelAdapter, source interface{}) CollectionModifier {
@@ -135,81 +140,109 @@ func (c *collectionType) Contains(item interface{}) bool {
 	return false
 }
 
-func (c *collectionType) Add(item interface{}) {
-	c.add(item, true)
+func (c *collectionType) MustAdd(item interface{}) {
+	err := c.Add(item)
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
-func (c *collectionType) add(item interface{}, convert bool) {
+func (c *collectionType) Add(item interface{}) error {
+	return c.addWithConversion(item)
+}
+
+func (c *collectionType) addWithConversion(item interface{}) error {
 	if c.items == nil {
 		c.items = make([]interface{}, 0)
 	}
-	c.items = append(c.items, c.prepareItem(item, convert))
+	pi, err := c.convertItem(item)
+	if err != nil {
+		return err
+	}
+	c.items = append(c.items, pi)
+	return nil
 }
 
-func (c *collectionType) prepareItem(item interface{}, convert bool) interface{} {
+func (c *collectionType) convertItem(item interface{}) (interface{}, error) {
 	if item == nil {
-		return nil
+		return nil, nil
 	}
 
-	if convert {
-		if _, ok := item.(AnyAccessor); !ok {
-			item = c.adapter.ConvertToSystem(item)
+	if _, ok := item.(AnyAccessor); !ok {
+		var err error
+		item, err = c.adapter.ConvertToSystem(item)
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	return item
+	return item, nil
 }
 
-func (c *collectionType) AddUnique(item interface{}) bool {
+func (c *collectionType) AddUnique(item interface{}) (bool, error) {
 	if c.items == nil {
-		c.Add(item)
-		return true
+		err := c.Add(item)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
 	if item == nil {
 		for _, o := range c.items {
 			if o == nil {
-				return false
+				return false, nil
 			}
 		}
 	} else {
 		if sysNode, ok := item.(AnyAccessor); ok {
 			for _, o := range c.items {
 				if o != nil && SystemAnyEqual(sysNode, o) {
-					return false
+					return false, nil
 				}
 			}
 		} else {
-			item = c.adapter.ConvertToSystem(item)
+			var err error
+			item, err = c.adapter.ConvertToSystem(item)
+			if err != nil {
+				return false, err
+			}
 			for _, o := range c.items {
 				if o != nil && ModelEqual(c.adapter, item, o) {
-					return false
+					return false, nil
 				}
 			}
 		}
 	}
 
-	c.add(item, false)
-	return true
+	c.items = append(c.items, item)
+	return true, nil
 }
 
-func (c *collectionType) AddAll(collection CollectionAccessor) int {
+func (c *collectionType) AddAll(collection CollectionAccessor) (int, error) {
 	count := collection.Count()
 	for i := 0; i < count; i++ {
-		c.add(collection.Get(i), false)
+		err := c.addWithConversion(collection.Get(i))
+		if err != nil {
+			return i, err
+		}
 	}
-	return count
+	return count, nil
 }
 
-func (c *collectionType) AddAllUnique(collection CollectionAccessor) int {
+func (c *collectionType) AddAllUnique(collection CollectionAccessor) (int, error) {
 	added := 0
 	count := collection.Count()
 	for i := 0; i < count; i++ {
-		if c.AddUnique(collection.Get(i)) {
+		a, err := c.AddUnique(collection.Get(i))
+		if err != nil {
+			return added, err
+		}
+		if a {
 			added = added + 1
 		}
 	}
-	return added
+	return added, nil
 }
 
 func (c *collectionType) Equal(item interface{}) bool {

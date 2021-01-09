@@ -56,7 +56,7 @@ func TestUnwrapCollectionOne(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	i := hipathsys.NewString("test")
 	c := ctx.NewCollection()
-	c.Add(i)
+	c.MustAdd(i)
 
 	assert.Same(t, i, unwrapCollection(c))
 }
@@ -64,15 +64,16 @@ func TestUnwrapCollectionOne(t *testing.T) {
 func TestUnwrapCollectionMore(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	c := ctx.NewCollection()
-	c.Add(hipathsys.NewString("test1"))
-	c.Add(hipathsys.NewString("test2"))
+	c.MustAdd(hipathsys.NewString("test1"))
+	c.MustAdd(hipathsys.NewString("test2"))
 
 	assert.Same(t, c, unwrapCollection(c))
 }
 
 func TestWrapCollectionNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := wrapCollection(ctx, nil)
+	col, err := wrapCollection(ctx, nil)
+	assert.NoError(t, err)
 	if assert.NotNil(t, col, "collection expected") {
 		assert.True(t, col.Empty())
 	}
@@ -81,13 +82,16 @@ func TestWrapCollectionNil(t *testing.T) {
 func TestWrapCollectionCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	assert.Same(t, col, wrapCollection(ctx, col))
+	wrapped, err := wrapCollection(ctx, col)
+	assert.NoError(t, err)
+	assert.Same(t, col, wrapped)
 }
 
 func TestWrapCollectionNoCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	item := hipathsys.NewString("test")
-	res := wrapCollection(ctx, item)
+	res, err := wrapCollection(ctx, item)
+	assert.NoError(t, err)
 	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
 		col := res.(hipathsys.CollectionAccessor)
 		if assert.Equal(t, 1, col.Count()) {
@@ -109,10 +113,66 @@ func TestEmptyCollectionEmpty(t *testing.T) {
 func TestEmptyCollectionNotEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	col := ctx.NewCollection()
-	col.Add(hipathsys.NewString("test"))
+	col.MustAdd(hipathsys.NewString("test"))
 	assert.False(t, emptyCollection(col))
 }
 
 func TestEmptyCollectionOther(t *testing.T) {
 	assert.False(t, emptyCollection(hipathsys.NewString("test")))
+}
+
+func TestUniteCollectionsLeftError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := uniteCollections(ctx, test.NewTestModelErrorNode(), ctx.NewCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestUniteCollectionsLeftColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := uniteCollections(ctx, test.NewErrorCollection(), ctx.NewCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestUniteCollectionsRightError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := uniteCollections(ctx, ctx.NewCollection(), test.NewTestModelErrorNode())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestUniteCollectionsRightColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := uniteCollections(ctx, ctx.NewCollection(), test.NewErrorCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestCombineCollectionsLeftError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := combineCollections(ctx, test.NewTestModelErrorNode(), ctx.NewCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestCombineCollectionsLeftColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := combineCollections(ctx, test.NewErrorCollection(), ctx.NewCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestCombineCollectionsRightError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := combineCollections(ctx, ctx.NewCollection(), test.NewTestModelErrorNode())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
+}
+
+func TestCombineCollectionsRightColError(t *testing.T) {
+	ctx := test.NewTestContext(t)
+	res, err := combineCollections(ctx, ctx.NewCollection(), test.NewErrorCollection())
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, res, "empty collection expected")
 }

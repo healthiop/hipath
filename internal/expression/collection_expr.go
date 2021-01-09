@@ -52,6 +52,6 @@ func (e *CollectionExpression) Evaluate(ctx hipathsys.ContextAccessor, node inte
 	if c, ok := res.(hipathsys.CollectionAccessor); ok {
 		return c, nil
 	} else {
-		return ctx.NewCollectionWithItem(res), nil
+		return ctx.NewCollectionWithItem(res)
 	}
 }
