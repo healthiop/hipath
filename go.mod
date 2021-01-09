@@ -34,5 +34,4 @@ require (
 	github.com/antlr/antlr4 v0.0.0-20210103211933-547fd7cc5eb0
 	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.6.1
-	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
