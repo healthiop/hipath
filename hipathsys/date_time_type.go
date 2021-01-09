@@ -95,11 +95,15 @@ func NewDateTimeYMDHMSNWithPrecisionAndSource(year, month, day, hour, minute, se
 }
 
 func ParseDateTime(value string) (DateTimeAccessor, error) {
+	return ParseDateTimeWithSource(value, nil)
+}
+
+func ParseDateTimeWithSource(value string, source interface{}) (DateTimeAccessor, error) {
 	parts := dateTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent date/time string: %s", value)
 	}
-	return newDateTimeFromParts(parts, nil), nil
+	return newDateTimeFromParts(parts, source), nil
 }
 
 func newDateTimeFromParts(parts []string, source interface{}) DateTimeAccessor {

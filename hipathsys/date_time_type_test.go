@@ -102,7 +102,8 @@ func TestDateTimeDateTime(t *testing.T) {
 }
 
 func TestParseDateTimeCompleteTzPos(t *testing.T) {
-	dt, err := ParseDateTime("2015-02-07T13:28:17.239+02:00")
+	source := "test source"
+	dt, err := ParseDateTimeWithSource("2015-02-07T13:28:17.239+02:00", source)
 	assert.Nil(t, err, "unexpected error")
 	if assert.NotNil(t, dt, "expected date/time object") {
 		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
@@ -111,6 +112,7 @@ func TestParseDateTimeCompleteTzPos(t *testing.T) {
 			value.UnixNano(), dt.Time().UnixNano())
 		assert.Equal(t, NanoTimePrecision, dt.Precision())
 		assert.Equal(t, "2015-02-07T13:28:17.239000000+02:00", dt.String())
+		assert.Equal(t, source, dt.Source())
 	}
 }
 
@@ -124,6 +126,7 @@ func TestParseDateTimeCompleteTzNeg(t *testing.T) {
 			value.UnixNano(), dt.Time().UnixNano())
 		assert.Equal(t, NanoTimePrecision, dt.Precision())
 		assert.Equal(t, "2015-02-07T13:28:17.239000000-05:30", dt.String())
+		assert.Nil(t, dt.Source())
 	}
 }
 

@@ -96,14 +96,18 @@ func NewTimeHMSNWithPrecisionAndSource(hour, minute, second int, nanosecond int,
 }
 
 func ParseTime(value string) (TimeAccessor, error) {
+	return ParseTimeWithSource(value, nil)
+}
+
+func ParseTimeWithSource(value string, source interface{}) (TimeAccessor, error) {
 	parts := timeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent time string: %s", value)
 	}
-	return newTimeFromParts(parts), nil
+	return newTimeFromParts(parts, source), nil
 }
 
-func newTimeFromParts(parts []string) TimeAccessor {
+func newTimeFromParts(parts []string, source interface{}) TimeAccessor {
 	hour, _ := strconv.Atoi(parts[1])
 	precision := HourTimePrecision
 
@@ -125,7 +129,7 @@ func newTimeFromParts(parts []string) TimeAccessor {
 		precision = NanoTimePrecision
 	}
 
-	return newTime(hour, minute, second, nanosecond, precision, nil)
+	return newTime(hour, minute, second, nanosecond, precision, source)
 }
 
 func newTime(hour int, minute int, second int, nanosecond int, precision DateTimePrecisions, source interface{}) TimeAccessor {

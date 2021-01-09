@@ -90,11 +90,15 @@ func NewDateYMDWithPrecisionAndSource(year, month, day int, precision DateTimePr
 }
 
 func ParseDate(value string) (DateAccessor, error) {
+	return ParseDateWithSource(value, nil)
+}
+
+func ParseDateWithSource(value string, source interface{}) (DateAccessor, error) {
 	parts := dateRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date string: %s", value)
 	}
-	return newDateFromParts(parts, nil), nil
+	return newDateFromParts(parts, source), nil
 }
 
 func newDateFromParts(parts []string, source interface{}) DateAccessor {

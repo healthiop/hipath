@@ -110,13 +110,15 @@ func TestDateYMD(t *testing.T) {
 }
 
 func TestParseDateComplete(t *testing.T) {
-	dt, err := ParseDate("2015-02-07")
+	source := "test source"
+	dt, err := ParseDateWithSource("2015-02-07", source)
 	assert.Nil(t, err, "unexpected error")
 	if assert.NotNil(t, dt, "expected date object") {
 		value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
 		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
 			value.UnixNano(), dt.Time().UnixNano())
 		assert.Equal(t, DayDatePrecision, dt.Precision())
+		assert.Equal(t, source, dt.Source())
 	}
 }
 
@@ -135,6 +137,7 @@ func TestParseDateNoDay(t *testing.T) {
 			value.UnixNano(), dt.Time().UnixNano())
 		assert.Equal(t, MonthDatePrecision, dt.Precision())
 		assert.Equal(t, "2015-02", dt.String())
+		assert.Nil(t, dt.Source())
 	}
 }
 

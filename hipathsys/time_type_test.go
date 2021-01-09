@@ -84,7 +84,8 @@ func TestTimeYMD(t *testing.T) {
 }
 
 func TestParseTimeValueComplete(t *testing.T) {
-	dt, err := ParseTime("13:28:17.239")
+	source := "test source"
+	dt, err := ParseTimeWithSource("13:28:17.239", source)
 	assert.Nil(t, err, "unexpected error")
 	if assert.NotNil(t, dt, "expected time object") {
 		assert.Equal(t, 13, dt.Hour())
@@ -92,6 +93,7 @@ func TestParseTimeValueComplete(t *testing.T) {
 		assert.Equal(t, 17, dt.Second())
 		assert.Equal(t, 239000000, dt.Nanosecond())
 		assert.Equal(t, NanoTimePrecision, dt.Precision())
+		assert.Equal(t, source, dt.Source())
 	}
 }
 
@@ -110,6 +112,7 @@ func TestParseTimeValueFractionDigits(t *testing.T) {
 		assert.Equal(t, 17, dt.Second())
 		assert.Equal(t, 239738123, dt.Nanosecond())
 		assert.Equal(t, NanoTimePrecision, dt.Precision())
+		assert.Nil(t, dt.Source())
 	}
 }
 
