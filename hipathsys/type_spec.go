@@ -45,6 +45,7 @@ type fqTypeName struct {
 }
 
 type FQTypeNameAccessor interface {
+	Anonymous() bool
 	HasNamespace() bool
 	Namespace() string
 	Name() string
@@ -58,12 +59,13 @@ type typeSpec struct {
 }
 
 type TypeSpecAccessor interface {
+	Anonymous() bool
 	Base() TypeSpecAccessor
 	FQName() FQTypeNameAccessor
 	FQBaseName() FQTypeNameAccessor
 	String() string
-	Equal(other TypeSpecAccessor) bool
-	Extends(name FQTypeNameAccessor) bool
+	EqualType(other TypeSpecAccessor) bool
+	ExtendsName(name FQTypeNameAccessor) bool
 }
 
 func ParseFQTypeName(fqName string) (FQTypeNameAccessor, error) {
@@ -90,7 +92,9 @@ func ParseFQTypeName(fqName string) (FQTypeNameAccessor, error) {
 
 func NewFQTypeName(name string, namespace string) FQTypeNameAccessor {
 	var fqName string
-	if len(namespace) > 0 {
+	if len(name) == 0 {
+		fqName = ""
+	} else if len(namespace) > 0 {
 		fqName = namespace + "." + name
 	} else {
 		fqName = name
@@ -112,7 +116,7 @@ func NewTypeName(name string) FQTypeNameAccessor {
 }
 
 func FQTypeNameEqual(t1 FQTypeNameAccessor, t2 FQTypeNameAccessor) bool {
-	return t1 == t2 || (t1 != nil && t2 != nil && t1.Equal(t2))
+	return (t1 == t2 && t1 != nil) || (t1 != nil && t2 != nil && t1.Equal(t2))
 }
 
 func NewTypeSpec(fqName FQTypeNameAccessor) TypeSpecAccessor {
@@ -125,6 +129,11 @@ func NewTypeSpecWithBase(fqName FQTypeNameAccessor, base TypeSpecAccessor) TypeS
 		fqName: fqName,
 	}
 }
+
+func (t *fqTypeName) Anonymous() bool {
+	return len(t.name) == 0
+}
+
 func (t *fqTypeName) HasNamespace() bool {
 	return len(t.namespace) > 0
 }
@@ -142,7 +151,11 @@ func (t *fqTypeName) String() string {
 }
 
 func (t *fqTypeName) Equal(name FQTypeNameAccessor) bool {
-	return t.String() == name.String()
+	return t.String() == name.String() && !t.Anonymous()
+}
+
+func (t *typeSpec) Anonymous() bool {
+	return t.fqName == nil || t.fqName.Anonymous()
 }
 
 func (t *typeSpec) Base() TypeSpecAccessor {
@@ -167,11 +180,11 @@ func (t *typeSpec) String() string {
 	return t.fqName.String()
 }
 
-func (t *typeSpec) Equal(other TypeSpecAccessor) bool {
+func (t *typeSpec) EqualType(other TypeSpecAccessor) bool {
 	return FQTypeNameEqual(t.FQName(), other.FQName())
 }
 
-func (t *typeSpec) Extends(name FQTypeNameAccessor) bool {
+func (t *typeSpec) ExtendsName(name FQTypeNameAccessor) bool {
 	if t.fqName == nil {
 		return false
 	}
@@ -181,13 +194,13 @@ func (t *typeSpec) Extends(name FQTypeNameAccessor) bool {
 			return true
 		}
 	} else {
-		if name.Name() == t.fqName.Name() {
+		if name.Name() == t.fqName.Name() && !t.fqName.Anonymous() {
 			return true
 		}
 	}
 
 	if t.base != nil {
-		return t.base.Extends(name)
+		return t.base.ExtendsName(name)
 	}
 
 	return false
@@ -196,7 +209,7 @@ func (t *typeSpec) Extends(name FQTypeNameAccessor) bool {
 func CommonBaseType(ti1 TypeSpecAccessor, ti2 TypeSpecAccessor) TypeSpecAccessor {
 	for t1 := ti1; t1 != nil; t1 = t1.Base() {
 		for t2 := ti2; t2 != nil; t2 = t2.Base() {
-			if t1.Equal(t2) {
+			if t1.EqualType(t2) {
 				return t1
 			}
 		}

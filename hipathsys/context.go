@@ -57,14 +57,14 @@ func HasModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccesso
 	namespace := name.Namespace()
 	if systemNamespace(namespace) {
 		if n, ok := node.(AnyAccessor); ok {
-			if n.TypeSpec().Extends(name) {
+			if n.TypeSpec().ExtendsName(name) {
 				return true
 			}
 		}
 	}
 
 	if namespace != NamespaceName {
-		if adapter.TypeSpec(node).Extends(name) {
+		if adapter.TypeSpec(node).ExtendsName(name) {
 			return true
 		}
 	}
@@ -78,7 +78,7 @@ func CastModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccess
 	}
 
 	sysNode, sys := node.(AnyAccessor)
-	if systemNamespace(name.Namespace()) && sys && sysNode.TypeSpec().Extends(name) {
+	if systemNamespace(name.Namespace()) && sys && sysNode.TypeSpec().ExtendsName(name) {
 		return node, nil
 	}
 	if sys {
@@ -134,7 +134,7 @@ func SystemAnyTypeEqual(node1 AnyAccessor, node2 interface{}) bool {
 		return false
 	}
 	if sysNode2, ok := node2.(AnyAccessor); ok {
-		return node1.TypeSpec().Equal(sysNode2.TypeSpec())
+		return node1.TypeSpec().EqualType(sysNode2.TypeSpec())
 	}
 	return false
 }

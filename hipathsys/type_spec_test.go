@@ -39,6 +39,16 @@ func TestNewTypeName(t *testing.T) {
 	assert.False(t, n.HasNamespace())
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "test", n.String())
+	assert.False(t, n.Anonymous())
+}
+
+func TestNewTypeNameEmpty(t *testing.T) {
+	n := NewTypeName("")
+	assert.Equal(t, "", n.Namespace())
+	assert.False(t, n.HasNamespace())
+	assert.Equal(t, "", n.Name())
+	assert.Equal(t, "", n.String())
+	assert.True(t, n.Anonymous())
 }
 
 func TestNewTypeNameWithNamespace(t *testing.T) {
@@ -47,11 +57,22 @@ func TestNewTypeNameWithNamespace(t *testing.T) {
 	assert.True(t, n.HasNamespace())
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "xyz.test", n.String())
+	assert.False(t, n.Anonymous())
+}
+
+func TestNewTypeNameWithNamespaceAnonymous(t *testing.T) {
+	n := NewFQTypeName("", "xyz")
+	assert.Equal(t, "xyz", n.Namespace())
+	assert.True(t, n.HasNamespace())
+	assert.Equal(t, "", n.Name())
+	assert.Equal(t, "", n.String())
+	assert.True(t, n.Anonymous())
 }
 
 func TestTypeSpecStringNil(t *testing.T) {
 	o := NewTypeSpecWithBase(nil, NewTypeSpec(NewFQTypeName("test", "test")))
 	assert.Equal(t, "", o.String())
+	assert.True(t, o.Anonymous())
 }
 
 func TestNewFQTypeNameWithoutNamespace(t *testing.T) {
@@ -60,6 +81,7 @@ func TestNewFQTypeNameWithoutNamespace(t *testing.T) {
 	assert.False(t, n.HasNamespace())
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "test", n.String())
+	assert.False(t, n.Anonymous())
 }
 
 func TestFQTypeNameEqual(t *testing.T) {
@@ -68,18 +90,28 @@ func TestFQTypeNameEqual(t *testing.T) {
 	assert.Equal(t, true, FQTypeNameEqual(n1, n2))
 }
 
+func TestFQTypeNameEqualAnonymousEmpty(t *testing.T) {
+	n1 := NewFQTypeName("", "ns1")
+	n2 := NewFQTypeName("", "ns1")
+	assert.Equal(t, false, FQTypeNameEqual(n1, n2))
+}
+
 func TestFQTypeNameEqualNot(t *testing.T) {
 	n1 := NewFQTypeName("test1", "ns1")
 	n2 := NewFQTypeName("test2", "ns1")
 	assert.Equal(t, false, FQTypeNameEqual(n1, n2))
 }
 
-func TestFQTypeNameEqualNil(t *testing.T) {
-	assert.Equal(t, true, FQTypeNameEqual(nil, nil))
+func TestFQTypeNameEqualAnonymousNil(t *testing.T) {
+	assert.Equal(t, false, FQTypeNameEqual(nil, nil))
 }
 
 func TestFQTypeNameEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, FQTypeNameEqual(nil, NewFQTypeName("test1", "ns1")))
+}
+
+func TestFQTypeNameEqualBothAnonymous(t *testing.T) {
+	assert.Equal(t, false, FQTypeNameEqual(NewFQTypeName("", "ns1"), NewFQTypeName("", "ns1")))
 }
 
 func TestFQTypeNameEqualRightNil(t *testing.T) {
@@ -93,7 +125,7 @@ func TestTypeSpecEqual(t *testing.T) {
 	ti2 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns1"),
 		NewTypeSpec(NewFQTypeName("test2", "ns2")))
-	assert.Equal(t, true, ti1.Equal(ti2))
+	assert.Equal(t, true, ti1.EqualType(ti2))
 }
 
 func TestTypeSpecEqualDiffers(t *testing.T) {
@@ -103,7 +135,7 @@ func TestTypeSpecEqualDiffers(t *testing.T) {
 	ti2 := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns1"),
 		NewTypeSpec(NewFQTypeName("test2", "ns2")))
-	assert.Equal(t, false, ti1.Equal(ti2))
+	assert.Equal(t, false, ti1.EqualType(ti2))
 }
 
 func TestNewTypeSpec(t *testing.T) {
@@ -111,12 +143,30 @@ func TestNewTypeSpec(t *testing.T) {
 	assert.Equal(t, "ns3.test1", ti.String())
 	assert.Nil(t, ti.Base(), "no base expected")
 	assert.Nil(t, ti.FQBaseName(), "no base name expected")
+	assert.False(t, ti.Anonymous())
+}
+
+func TestNewTypeSpecAnonymousNil(t *testing.T) {
+	ti := NewTypeSpec(nil)
+	assert.Equal(t, "", ti.String())
+	assert.Nil(t, ti.Base(), "no base expected")
+	assert.Nil(t, ti.FQBaseName(), "no base name expected")
+	assert.True(t, ti.Anonymous())
+}
+
+func TestNewTypeSpecAnonymousEmpty(t *testing.T) {
+	ti := NewTypeSpec(NewFQTypeName("", "ns3"))
+	assert.Equal(t, "", ti.String())
+	assert.Nil(t, ti.Base(), "no base expected")
+	assert.Nil(t, ti.FQBaseName(), "no base name expected")
+	assert.True(t, ti.Anonymous())
 }
 
 func TestNewTypeSpecWithBase(t *testing.T) {
 	ti := NewTypeSpecWithBase(
 		NewFQTypeName("test1", "ns3"),
 		NewTypeSpec(NewFQTypeName("test2", "ns2")))
+	assert.False(t, ti.Anonymous())
 	assert.Equal(t, "ns3.test1", ti.String())
 	if assert.NotNil(t, ti.Base(), "base expected") {
 		assert.Equal(t, "ns2.test2", ti.Base().String())
@@ -157,36 +207,36 @@ func TestCommonBaseTypeNone(t *testing.T) {
 
 func TestTypeSpecExtends(t *testing.T) {
 	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
-	assert.True(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
+	assert.True(t, resource.ExtendsName(NewFQTypeName("Resource", "FHIR")))
 }
 
 func TestTypeSpecExtendsNil(t *testing.T) {
 	resource := NewTypeSpec(nil)
-	assert.False(t, resource.Extends(NewFQTypeName("Resource", "FHIR")))
+	assert.False(t, resource.ExtendsName(NewFQTypeName("Resource", "FHIR")))
 }
 
 func TestTypeSpecExtendsBase(t *testing.T) {
 	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
 	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	assert.True(t, domainResource.Extends(NewFQTypeName("Resource", "FHIR")))
+	assert.True(t, domainResource.ExtendsName(NewFQTypeName("Resource", "FHIR")))
 }
 
 func TestTypeSpecExtendsNot(t *testing.T) {
 	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
 	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	assert.False(t, domainResource.Extends(NewFQTypeName("Patient", "FHIR")))
+	assert.False(t, domainResource.ExtendsName(NewFQTypeName("Patient", "FHIR")))
 }
 
 func TestTypeSpecExtendsBaseWithoutNamespace(t *testing.T) {
 	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
 	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	assert.True(t, domainResource.Extends(NewTypeName("Resource")))
+	assert.True(t, domainResource.ExtendsName(NewTypeName("Resource")))
 }
 
 func TestTypeSpecExtendsNotWithoutNamespace(t *testing.T) {
 	resource := NewTypeSpec(NewFQTypeName("Resource", "FHIR"))
 	domainResource := NewTypeSpecWithBase(NewFQTypeName("DomainResource", "FHIR"), resource)
-	assert.False(t, domainResource.Extends(NewTypeName("Patient")))
+	assert.False(t, domainResource.ExtendsName(NewTypeName("Patient")))
 }
 
 func TestParseFQTypeName(t *testing.T) {
