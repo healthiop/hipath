@@ -37,6 +37,12 @@ var UCUMSystemURI = NewString("http://unitsofmeasure.org")
 
 var QuantityTypeSpec = newAnyTypeSpec("Quantity")
 
+var quantityTypeInfo = NewClassInfo(namespaceNameString, NewString("Quantity"), NewString("System.Any"),
+	NewSysArrayCol(classInfoElementTypeSpec, []interface{}{
+		NewClassInfoElement(NewString("value"), NewString(DecimalTypeSpec.String()), nil),
+		NewClassInfoElement(NewString("unit"), NewString(StringTypeSpec.String()), nil),
+	}))
+
 type quantityType struct {
 	baseAnyType
 	value DecimalAccessor
@@ -109,6 +115,10 @@ func (t *quantityType) Negate() AnyAccessor {
 
 func (e *quantityType) TypeSpec() TypeSpecAccessor {
 	return QuantityTypeSpec
+}
+
+func (t *quantityType) TypeInfo() TypeInfoAccessor {
+	return quantityTypeInfo
 }
 
 func (t *quantityType) Equal(node interface{}) bool {

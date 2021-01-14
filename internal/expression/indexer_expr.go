@@ -67,7 +67,7 @@ func (e *IndexerExpression) Evaluate(ctx hipathsys.ContextAccessor, node interfa
 		return nil, nil
 	}
 
-	if c, ok := col.(hipathsys.CollectionAccessor); ok {
+	if c, ok := col.(hipathsys.ColAccessor); ok {
 		if indexValue >= c.Count() {
 			return nil, nil
 		}

@@ -61,6 +61,17 @@ func TestDateTypeSpec(t *testing.T) {
 	}
 }
 
+func TestDateTypeInfo(t *testing.T) {
+	o := NewDate(time.Now())
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Date"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestDateValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	o := NewDate(testTime)

@@ -37,8 +37,8 @@ import (
 
 func TestInvocationExpressionEvaluate(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewInteger(123))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewInteger(123))
 
 	f, err := LookupFunctionInvocation("empty", []hipathsys.Evaluator{})
 	if err != nil {
@@ -70,8 +70,8 @@ func TestInvocationExpressionEvaluateExprError(t *testing.T) {
 
 func TestInvocationExpressionEvaluateFuncErr(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewInteger(123))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewInteger(123))
 
 	evaluator := NewInvocationExpression(newTestExpression(c), newTestErrorExpression())
 

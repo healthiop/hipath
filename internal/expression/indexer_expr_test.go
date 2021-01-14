@@ -37,10 +37,10 @@ import (
 
 func TestIndexerExpressionCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString("test1"))
-	c.MustAdd(hipathsys.NewString("test2"))
-	c.MustAdd(hipathsys.NewString("test3"))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test2"))
+	c.Add(hipathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("1")
 	if err != nil {
@@ -57,8 +57,8 @@ func TestIndexerExpressionCollection(t *testing.T) {
 
 func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString("test1"))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString("test1"))
 
 	i, err := ParseNumberLiteral("-1")
 	if err != nil {
@@ -73,8 +73,8 @@ func TestIndexerExpressionCollectionIndexNeg(t *testing.T) {
 
 func TestIndexerExpressionCollectionInvalidIndexType(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString("test1"))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), ParseStringLiteral("0"))
 	res, err := e.Evaluate(nil, nil, nil)
@@ -96,8 +96,8 @@ func TestIndexerExpressionExpressionNil(t *testing.T) {
 
 func TestIndexerExpressionIndexNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString("test1"))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString("test1"))
 
 	e := NewIndexerExpression(newTestExpression(c), newTestExpression(nil))
 	res, err := e.Evaluate(nil, nil, nil)
@@ -107,10 +107,10 @@ func TestIndexerExpressionIndexNil(t *testing.T) {
 
 func TestIndexerExpressionCollectionCountExceeded(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString("test1"))
-	c.MustAdd(hipathsys.NewString("test2"))
-	c.MustAdd(hipathsys.NewString("test3"))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString("test1"))
+	c.Add(hipathsys.NewString("test2"))
+	c.Add(hipathsys.NewString("test3"))
 
 	i, err := ParseNumberLiteral("3")
 	if err != nil {

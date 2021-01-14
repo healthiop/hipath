@@ -92,6 +92,10 @@ func (t *testingType) TypeSpec() hipathsys.TypeSpecAccessor {
 	panic("implement me")
 }
 
+func (t *testingType) TypeInfo() hipathsys.TypeInfoAccessor {
+	panic("implement me")
+}
+
 func (t *testingType) Empty() bool {
 	panic("implement me")
 }

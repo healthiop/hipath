@@ -44,10 +44,7 @@ func newSingleFunction() *singleFunction {
 }
 
 func (f *singleFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -69,10 +66,7 @@ func newFirstFunction() *firstFunction {
 }
 
 func (f *firstFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	if col.Empty() {
 		return nil, nil
 	}
@@ -90,10 +84,7 @@ func newLastFunction() *lastFunction {
 }
 
 func (f *lastFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -112,21 +103,15 @@ func newTailFunction() *tailFunction {
 }
 
 func (f *tailFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, _ []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count < 2 {
 		return nil, nil
 	}
 
-	tail := ctx.NewCollection()
+	tail := ctx.NewCol()
 	for i := 1; i < count; i++ {
-		err := tail.Add(col.Get(i))
-		if err != nil {
-			return nil, err
-		}
+		tail.Add(col.Get(i))
 	}
 
 	return tail, nil
@@ -150,10 +135,7 @@ func (f *skipFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, 
 		num = int(n.Int())
 	}
 
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	if num <= 0 {
 		return col, nil
 	}
@@ -163,12 +145,9 @@ func (f *skipFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, 
 		return nil, nil
 	}
 
-	res := ctx.NewCollection()
+	res := ctx.NewCol()
 	for i := num; i < count; i++ {
-		err = res.Add(col.Get(i))
-		if err != nil {
-			return nil, err
-		}
+		res.Add(col.Get(i))
 	}
 	return res, nil
 }
@@ -194,10 +173,7 @@ func (f *takeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, 
 		return nil, nil
 	}
 
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -206,12 +182,9 @@ func (f *takeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, 
 		return col, nil
 	}
 
-	res := ctx.NewCollection()
+	res := ctx.NewCol()
 	for i := 0; i < num; i++ {
-		err := res.Add(col.Get(i))
-		if err != nil {
-			return nil, err
-		}
+		res.Add(col.Get(i))
 	}
 	return res, nil
 }
@@ -227,18 +200,12 @@ func newIntersectFunction() *intersectFunction {
 }
 
 func (f *intersectFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	other, err := wrapCollection(ctx, args[0])
-	if err != nil {
-		return nil, err
-	}
+	other := wrapCollection(ctx, args[0])
 	if other.Empty() {
 		return nil, nil
 	}
 
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	if col.Empty() {
 		return nil, nil
 	}
@@ -250,14 +217,11 @@ func (f *intersectFunction) Execute(ctx hipathsys.ContextAccessor, node interfac
 	}
 	count := col.Count()
 
-	res := ctx.NewCollection()
+	res := ctx.NewCol()
 	for i := 0; i < count; i++ {
 		n := col.Get(i)
 		if other.Contains(n) {
-			_, err := res.AddUnique(n)
-			if err != nil {
-				return nil, err
-			}
+			res.AddUnique(n)
 		}
 	}
 	return res, nil
@@ -274,14 +238,8 @@ func newExcludeFunction() *excludeFunction {
 }
 
 func (f *excludeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	other, err := wrapCollection(ctx, args[0])
-	if err != nil {
-		return nil, err
-	}
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	other := wrapCollection(ctx, args[0])
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 	if count == 0 {
 		return nil, nil
@@ -290,14 +248,11 @@ func (f *excludeFunction) Execute(ctx hipathsys.ContextAccessor, node interface{
 		return col, nil
 	}
 
-	res := ctx.NewCollection()
+	res := ctx.NewCol()
 	for i := 0; i < count; i++ {
 		n := col.Get(i)
 		if !other.Contains(n) {
-			err := res.Add(n)
-			if err != nil {
-				return nil, err
-			}
+			res.Add(n)
 		}
 	}
 	return res, nil

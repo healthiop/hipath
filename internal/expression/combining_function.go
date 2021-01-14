@@ -41,7 +41,7 @@ func newUnionFunction() *unionFunction {
 }
 
 func (f *unionFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	return uniteCollections(ctx, node, args[0])
+	return uniteCollections(ctx, node, args[0]), nil
 }
 
 type combineFunction struct {
@@ -55,5 +55,5 @@ func newCombineFunction() *combineFunction {
 }
 
 func (f *combineFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, args []interface{}, _ hipathsys.Looper) (interface{}, error) {
-	return combineCollections(ctx, node, args[0])
+	return combineCollections(ctx, node, args[0]), nil
 }

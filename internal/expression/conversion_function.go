@@ -460,7 +460,7 @@ func convertibleAny(node interface{}) (hipathsys.AnyAccessor, error) {
 	if any, ok := value.(hipathsys.AnyAccessor); !ok {
 		return nil, nil
 	} else {
-		if _, ok := any.(hipathsys.CollectionAccessor); ok {
+		if _, ok := any.(hipathsys.ColAccessor); ok {
 			return nil, fmt.Errorf("collection with multiple items cannot be converted")
 		}
 		return any, nil

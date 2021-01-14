@@ -61,6 +61,17 @@ func TestDecimalTypeSpec(t *testing.T) {
 	}
 }
 
+func TestDecimalTypeInfo(t *testing.T) {
+	o := NewDecimalInt(0)
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Decimal"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestNewDecimal(t *testing.T) {
 	o := NewDecimal(decimal.NewFromFloat(-4711.12))
 	assert.Equal(t, -4711.12, o.Float64())
@@ -417,6 +428,10 @@ func (d *decimalValueAccessorMock) DataType() DataTypes {
 }
 
 func (d *decimalValueAccessorMock) TypeSpec() TypeSpecAccessor {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) TypeInfo() TypeInfoAccessor {
 	panic("implement me")
 }
 

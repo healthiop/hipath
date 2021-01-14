@@ -60,9 +60,9 @@ func TestChildrenFuncNoChildren(t *testing.T) {
 func TestChildrenFuncColNoChildren(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := ctx.NewCollection()
-	n1.MustAdd(hipathsys.NewString("test1"))
-	n1.MustAdd(hipathsys.NewString("test2"))
+	n1 := ctx.NewCol()
+	n1.Add(hipathsys.NewString("test1"))
+	n1.Add(hipathsys.NewString("test2"))
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -91,8 +91,8 @@ func TestChildrenFuncChildren(t *testing.T) {
 	res, err := f.Execute(ctx, l1, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 3, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -121,16 +121,16 @@ func TestChildrenFuncColChildren(t *testing.T) {
 	l2 := map[string]interface{}{}
 	l2["a"] = n4
 
-	n := ctx.NewCollection()
-	n.MustAdd(l1)
-	n.MustAdd(l2)
+	n := ctx.NewCol()
+	n.Add(l1)
+	n.Add(l2)
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 4, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -138,19 +138,6 @@ func TestChildrenFuncColChildren(t *testing.T) {
 			assert.Same(t, n4, col.Get(3))
 		}
 	}
-}
-
-func TestChildrenFuncErrorItem(t *testing.T) {
-	ctx := test.NewTestContext(t)
-
-	n := ctx.NewCollection()
-	n.MustAdd(test.NewTestModelNode(10, false))
-
-	f := childrenFunc
-	res, err := f.Execute(ctx, n, []interface{}{}, nil)
-
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, res, "empty result expected")
 }
 
 func TestChildrenFuncChildrenError(t *testing.T) {
@@ -166,8 +153,9 @@ func TestChildrenFuncChildrenError(t *testing.T) {
 func TestChildrenFuncColChildrenError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n := ctx.NewCollection()
-	n.MustAdd(map[string]interface{}{"errorCollection": nil})
+	n := ctx.NewCol()
+	n.Add(hipathsys.NewString("test1"))
+	n.Add(test.NewTestModelNode(0, false))
 
 	f := childrenFunc
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
@@ -201,9 +189,9 @@ func TestDescendantsFuncNoDescendants(t *testing.T) {
 func TestDescendantsFuncColNoDescendants(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n1 := ctx.NewCollection()
-	n1.MustAdd(hipathsys.NewString("test1"))
-	n1.MustAdd(hipathsys.NewString("test2"))
+	n1 := ctx.NewCol()
+	n1.Add(hipathsys.NewString("test1"))
+	n1.Add(hipathsys.NewString("test2"))
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n1, []interface{}{}, nil)
@@ -237,8 +225,8 @@ func TestDescendantsFuncDescendants(t *testing.T) {
 	res, err := f.Execute(ctx, l1, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 6, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -270,16 +258,16 @@ func TestDescendantsFuncColDescendants(t *testing.T) {
 	l2 := map[string]interface{}{}
 	l2["a"] = n4
 
-	n := ctx.NewCollection()
-	n.MustAdd(l1)
-	n.MustAdd(l2)
+	n := ctx.NewCol()
+	n.Add(l1)
+	n.Add(l2)
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)
 
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 5, col.Count()) {
 			assert.Same(t, n1, col.Get(0))
 			assert.Equal(t, l1c, col.Get(1))
@@ -303,9 +291,9 @@ func TestDescendantsFuncDescendantsError(t *testing.T) {
 func TestDescendantsFuncColDescendantsError(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	n := ctx.NewCollection()
-	n.MustAdd(hipathsys.NewString("test1"))
-	n.MustAdd(test.NewTestModelNode(0, false))
+	n := ctx.NewCol()
+	n.Add(hipathsys.NewString("test1"))
+	n.Add(test.NewTestModelNode(0, false))
 
 	f := newDescendantsFunction()
 	res, err := f.Execute(ctx, n, []interface{}{}, nil)

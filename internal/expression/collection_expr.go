@@ -47,11 +47,11 @@ func (e *CollectionExpression) Evaluate(ctx hipathsys.ContextAccessor, node inte
 	}
 
 	if res == nil {
-		return hipathsys.EmptyCollection, nil
+		return hipathsys.EmptyCol, nil
 	}
-	if c, ok := res.(hipathsys.CollectionAccessor); ok {
+	if c, ok := res.(hipathsys.ColAccessor); ok {
 		return c, nil
 	} else {
-		return ctx.NewCollectionWithItem(res)
+		return ctx.NewColWithItem(res), nil
 	}
 }

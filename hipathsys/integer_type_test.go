@@ -56,6 +56,17 @@ func TestIntegerTypeSpec(t *testing.T) {
 	}
 }
 
+func TestIntegerTypeInfo(t *testing.T) {
+	o := NewInteger(0)
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Integer"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestIntegerNegatePos(t *testing.T) {
 	o := NewInteger(8372)
 	n := o.Negate()

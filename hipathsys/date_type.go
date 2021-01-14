@@ -38,6 +38,8 @@ import (
 
 var dateTypeSpec = newAnyTypeSpec("Date")
 
+var dateTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("Date"), anyTypeNameString)
+
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
 type dateType struct {
@@ -168,6 +170,10 @@ func (t *dateType) Time() time.Time {
 
 func (t *dateType) TypeSpec() TypeSpecAccessor {
 	return dateTypeSpec
+}
+
+func (e *dateType) TypeInfo() TypeInfoAccessor {
+	return dateTypeInfo
 }
 
 func (t *dateType) Equal(node interface{}) bool {

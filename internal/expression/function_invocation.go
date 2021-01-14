@@ -123,8 +123,6 @@ var functions = []hipathsys.FunctionExecutor{
 
 var functionsByName = createFunctionsByName(functions)
 
-var emptyFunctionArgs = []interface{}{}
-
 type FunctionInvocation struct {
 	executor        hipathsys.FunctionExecutor
 	paramEvaluators []hipathsys.Evaluator
@@ -154,7 +152,7 @@ func (f *FunctionInvocation) Evaluate(ctx hipathsys.ContextAccessor, node interf
 	var args []interface{}
 	ac := len(f.paramEvaluators)
 	if ac == 0 {
-		args = emptyFunctionArgs
+		args = nil
 	} else {
 		evaluatorParam := f.executor.EvaluatorParam()
 		args = make([]interface{}, len(f.paramEvaluators))

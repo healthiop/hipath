@@ -60,6 +60,17 @@ func TestBooleanTypeSpec(t *testing.T) {
 	}
 }
 
+func TestBooleanTypeInfo(t *testing.T) {
+	o := NewBoolean(false)
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Boolean"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestBooleanValue(t *testing.T) {
 	o := True
 	value := o.Bool()

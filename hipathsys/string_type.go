@@ -32,6 +32,8 @@ import "strings"
 
 var StringTypeSpec = newAnyTypeSpec("String")
 
+var stringTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("String"), anyTypeNameString)
+
 var EmptyString = newString("", nil)
 
 type stringType struct {
@@ -91,6 +93,10 @@ func (t *stringType) Length() int {
 
 func (e *stringType) TypeSpec() TypeSpecAccessor {
 	return StringTypeSpec
+}
+
+func (e *stringType) TypeInfo() TypeInfoAccessor {
+	return stringTypeInfo
 }
 
 func (t *stringType) Equal(node interface{}) bool {

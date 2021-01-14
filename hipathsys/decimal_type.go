@@ -37,6 +37,8 @@ import (
 
 var DecimalTypeSpec = newAnyTypeSpec("Decimal")
 
+var decimalTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("Decimal"), anyTypeNameString)
+
 var (
 	DecimalZero    = NewDecimalInt(0)
 	DecimalOne     = NewDecimalInt(1)
@@ -191,6 +193,10 @@ func (t *decimalType) ArithmeticOpSupported(ArithmeticOps) bool {
 
 func (t *decimalType) TypeSpec() TypeSpecAccessor {
 	return DecimalTypeSpec
+}
+
+func (e *decimalType) TypeInfo() TypeInfoAccessor {
+	return decimalTypeInfo
 }
 
 func (t *decimalType) Negate() AnyAccessor {

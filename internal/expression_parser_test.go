@@ -220,8 +220,8 @@ func TestParseUnionExpression(t *testing.T) {
 	if assert.IsType(t, (*expression.UnionExpression)(nil), res) {
 		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-			c := res.(hipathsys.CollectionAccessor)
+		if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+			c := res.(hipathsys.ColAccessor)
 			if assert.Equal(t, 3, c.Count()) {
 				assert.Equal(t, hipathsys.NewInteger(10), c.Get(0))
 				assert.Equal(t, hipathsys.NewInteger(12), c.Get(1))
@@ -257,8 +257,8 @@ func TestParseInvocationExpressionUnion(t *testing.T) {
 		ctx := test.NewTestContextWithNode(t, hipathsys.NewString("test"))
 		res, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-			c := res.(hipathsys.CollectionAccessor)
+		if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+			c := res.(hipathsys.ColAccessor)
 			if assert.Equal(t, 4, c.Count()) {
 				assert.Equal(t, hipathsys.NewInteger(18), c.Get(0))
 				assert.Equal(t, hipathsys.NewInteger(19), c.Get(1))

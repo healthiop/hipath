@@ -61,6 +61,17 @@ func TestTimeTypeSpec(t *testing.T) {
 	}
 }
 
+func TestTimeTypeInfo(t *testing.T) {
+	o := NewTime(time.Now())
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Time"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	o := NewTime(testTime)

@@ -59,6 +59,28 @@ func TestQuantityTypeSpec(t *testing.T) {
 	}
 }
 
+func TestQuantityTypeInfo(t *testing.T) {
+	o := NewQuantity(NewDecimalInt(10), NewString("g"))
+	i := o.TypeInfo()
+	if assert.Implements(t, (*ClassInfoAccessor)(nil), i) {
+		a := i.(ClassInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("Quantity"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+
+		if assert.Equal(t, 2, a.Element().Count()) {
+			e := a.Element().Get(0).(ClassInfoElementAccessor)
+			assert.Equal(t, NewString("value"), e.Name())
+			assert.Equal(t, NewString("System.Decimal"), e.Type())
+			assert.Nil(t, e.OneBased())
+			e = a.Element().Get(1).(ClassInfoElementAccessor)
+			assert.Equal(t, NewString("unit"), e.Name())
+			assert.Equal(t, NewString("System.String"), e.Type())
+			assert.Nil(t, e.OneBased())
+		}
+	}
+}
+
 func TestQuantityValueNil(t *testing.T) {
 	assert.Panics(t, func() { NewQuantity(nil, NewString("s")) })
 }

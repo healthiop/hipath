@@ -58,17 +58,14 @@ func (f *traceFunction) Execute(ctx hipathsys.ContextAccessor, node interface{},
 		return node, nil
 	}
 
-	col, err := wrapCollection(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, node)
 	count := col.Count()
 
-	var traced hipathsys.CollectionAccessor
+	var traced hipathsys.ColAccessor
 	if count == 0 {
-		traced = hipathsys.EmptyCollection
+		traced = hipathsys.EmptyCol
 	} else if loopEvaluator := loop.Evaluator(); loopEvaluator != nil {
-		projected := ctx.NewCollection()
+		projected := ctx.NewCol()
 		for i := 0; i < count; i++ {
 			this := col.Get(i)
 			loop.IncIndex(this)
@@ -77,10 +74,7 @@ func (f *traceFunction) Execute(ctx hipathsys.ContextAccessor, node interface{},
 			if err != nil {
 				return nil, err
 			}
-			err = projected.Add(res)
-			if err != nil {
-				return nil, err
-			}
+			projected.Add(res)
 		}
 		traced = projected
 	} else {

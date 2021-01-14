@@ -40,8 +40,8 @@ func TestUnionExpressionLiteral(t *testing.T) {
 	e := NewUnionExpression(ParseStringLiteral("test1"), ParseStringLiteral("test2"))
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 2, col.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), col.Get(0))
 			assert.Equal(t, hipathsys.NewString("test2"), col.Get(1))
@@ -51,20 +51,20 @@ func TestUnionExpressionLiteral(t *testing.T) {
 
 func TestUnionExpressionCollection(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := ctx.NewCollection()
-	c1.MustAdd(hipathsys.NewInteger(10))
-	c1.MustAdd(hipathsys.NewInteger(11))
-	c1.MustAdd(hipathsys.NewInteger(14))
+	c1 := ctx.NewCol()
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(14))
 
-	c2 := ctx.NewCollection()
-	c2.MustAdd(hipathsys.NewDecimalInt(11))
-	c2.MustAdd(hipathsys.NewDecimalInt(12))
+	c2 := ctx.NewCol()
+	c2.Add(hipathsys.NewDecimalInt(11))
+	c2.Add(hipathsys.NewDecimalInt(12))
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(c2))
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 4, col.Count()) {
 			assert.Equal(t, int32(10), hipathsys.IntegerValue(col.Get(0)))
 			assert.Equal(t, int32(11), hipathsys.IntegerValue(col.Get(1)))
@@ -76,7 +76,7 @@ func TestUnionExpressionCollection(t *testing.T) {
 
 func TestUnionExpressionCollectionEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := ctx.NewCollection()
+	c1 := ctx.NewCol()
 
 	e := NewUnionExpression(newTestExpression(c1), newTestExpression(nil))
 	res, err := e.Evaluate(ctx, nil, nil)
@@ -89,8 +89,8 @@ func TestUnionExpressionLeftNil(t *testing.T) {
 	e := NewUnionExpression(NewEmptyLiteral(), ParseStringLiteral("test"))
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, col.Count()) {
 			assert.Equal(t, hipathsys.NewString("test"), col.Get(0))
 		}
@@ -102,8 +102,8 @@ func TestUnionExpressionRightNil(t *testing.T) {
 	e := NewUnionExpression(ParseStringLiteral("test"), NewEmptyLiteral())
 	res, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, col.Count()) {
 			assert.Equal(t, hipathsys.NewString("test"), col.Get(0))
 		}

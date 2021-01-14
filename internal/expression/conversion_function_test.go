@@ -111,9 +111,9 @@ func TestToBooleanFuncOther(t *testing.T) {
 func TestToBooleanFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.True)
-	col.MustAdd(hipathsys.True)
+	col := ctx.NewCol()
+	col.Add(hipathsys.True)
+	col.Add(hipathsys.True)
 
 	f := toBooleanFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -232,9 +232,9 @@ func TestConvertsToBooleanFuncNil(t *testing.T) {
 func TestConvertsToBooleanFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.True)
-	col.MustAdd(hipathsys.True)
+	col := ctx.NewCol()
+	col.Add(hipathsys.True)
+	col.Add(hipathsys.True)
 
 	f := newConvertsToBooleanFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -290,9 +290,9 @@ func TestToIntegerFuncDecimal(t *testing.T) {
 func TestToIntegerFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
-	col.MustAdd(hipathsys.NewInteger(10))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := toIntegerFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -357,9 +357,9 @@ func TestConvertsToIntegerFuncNil(t *testing.T) {
 func TestConvertsToIntegerFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
-	col.MustAdd(hipathsys.NewInteger(10))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(10))
 
 	f := newConvertsToIntegerFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -418,9 +418,9 @@ func TestToDecimalFuncInteger(t *testing.T) {
 func TestToDecimalFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDecimalInt(10))
-	col.MustAdd(hipathsys.NewDecimalInt(10))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDecimalInt(10))
+	col.Add(hipathsys.NewDecimalInt(10))
 
 	f := toDecimalFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -500,9 +500,9 @@ func TestConvertsToDecimalFuncNil(t *testing.T) {
 func TestConvertsToDecimalFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDecimalInt(10))
-	col.MustAdd(hipathsys.NewDecimalInt(10))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDecimalInt(10))
+	col.Add(hipathsys.NewDecimalInt(10))
 
 	f := newConvertsToDecimalFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -566,9 +566,9 @@ func TestToDateFuncDateTime(t *testing.T) {
 func TestToDateFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDateTime(time.Now()))
+	col.Add(hipathsys.NewDateTime(time.Now()))
 
 	f := toDateFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -637,9 +637,9 @@ func TestConvertsToDateFuncNil(t *testing.T) {
 func TestConvertsToDateFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDateTime(time.Now()))
+	col.Add(hipathsys.NewDateTime(time.Now()))
 
 	f := newConvertsToDateFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -703,9 +703,9 @@ func TestToDateTimeFuncDate(t *testing.T) {
 func TestToDateTimeFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDateTime(time.Now()))
+	col.Add(hipathsys.NewDateTime(time.Now()))
 
 	f := toDateTimeFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -780,9 +780,9 @@ func TestConvertsToDateTimeFuncNil(t *testing.T) {
 func TestConvertsToDateTimeFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
-	col.MustAdd(hipathsys.NewDateTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewDateTime(time.Now()))
+	col.Add(hipathsys.NewDateTime(time.Now()))
 
 	f := newConvertsToDateTimeFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -829,9 +829,9 @@ func TestToQuantityFuncOther(t *testing.T) {
 func TestToQuantityFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
-	col.MustAdd(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
+	col.Add(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
 
 	f := toQuantityFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -1007,9 +1007,9 @@ func TestConvertsToQuantityFuncNil(t *testing.T) {
 func TestConvertsToQuantityFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
-	col.MustAdd(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
+	col.Add(hipathsys.NewQuantity(hipathsys.NewDecimalInt(10), hipathsys.DayQuantityUnit.Plural()))
 
 	f := newConvertsToQuantityFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -1065,9 +1065,9 @@ func TestToStringFuncOther(t *testing.T) {
 func TestToStringFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.True)
-	col.MustAdd(hipathsys.True)
+	col := ctx.NewCol()
+	col.Add(hipathsys.True)
+	col.Add(hipathsys.True)
 
 	f := toStringFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -1173,9 +1173,9 @@ func TestConvertsToStringFuncNil(t *testing.T) {
 func TestConvertsToStringFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.True)
-	col.MustAdd(hipathsys.True)
+	col := ctx.NewCol()
+	col.Add(hipathsys.True)
+	col.Add(hipathsys.True)
 
 	f := newConvertsToStringFunction()
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -1222,9 +1222,9 @@ func TestToTimeFuncOther(t *testing.T) {
 func TestToTimeFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewTime(time.Now()))
-	col.MustAdd(hipathsys.NewTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewTime(time.Now()))
+	col.Add(hipathsys.NewTime(time.Now()))
 
 	f := toTimeFunc
 	res, err := f.Execute(ctx, col, nil, nil)
@@ -1295,9 +1295,9 @@ func TestConvertsToTimeFuncNil(t *testing.T) {
 func TestConvertsToTimeFuncTooMany(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewTime(time.Now()))
-	col.MustAdd(hipathsys.NewTime(time.Now()))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewTime(time.Now()))
+	col.Add(hipathsys.NewTime(time.Now()))
 
 	f := newConvertsToTimeFunction()
 	res, err := f.Execute(ctx, col, nil, nil)

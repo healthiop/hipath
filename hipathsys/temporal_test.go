@@ -359,7 +359,7 @@ func (d *dateTemporalAccessorMock) Time() time.Time {
 	return d.time
 }
 
-func (d dateTemporalAccessorMock) Precision() DateTimePrecisions {
+func (d *dateTemporalAccessorMock) Precision() DateTimePrecisions {
 	return d.precision
 }
 
@@ -375,19 +375,23 @@ func (d *dateTemporalAccessorMock) Day() int {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) DataType() DataTypes {
+func (d *dateTemporalAccessorMock) DataType() DataTypes {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) TypeSpec() TypeSpecAccessor {
+func (d *dateTemporalAccessorMock) TypeSpec() TypeSpecAccessor {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) Equal(interface{}) bool {
+func (d *dateTemporalAccessorMock) TypeInfo() TypeInfoAccessor {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) Equivalent(interface{}) bool {
+func (d *dateTemporalAccessorMock) Equal(interface{}) bool {
+	panic("implement me")
+}
+
+func (d *dateTemporalAccessorMock) Equivalent(interface{}) bool {
 	panic("implement me")
 }
 
@@ -395,11 +399,11 @@ func (d *dateTemporalAccessorMock) Compare(Comparator) (int, OperatorStatus) {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) String() string {
+func (d *dateTemporalAccessorMock) String() string {
 	panic("implement me")
 }
 
-func (d dateTemporalAccessorMock) LowestPrecision() DateTimePrecisions {
+func (d *dateTemporalAccessorMock) LowestPrecision() DateTimePrecisions {
 	panic("implement me")
 }
 

@@ -38,6 +38,8 @@ import (
 
 var dateTimeTypeSpec = newAnyTypeSpec("DateTime")
 
+var dateTimeTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("DateTime"), anyTypeNameString)
+
 var timeZoneOffsetRegexp = regexp.MustCompile("^([+-])(\\d{1,2})(?::(\\d{1,2}))$")
 var dateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?(?:T(?:([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00))?)?)?$")
 
@@ -250,6 +252,10 @@ func (t *dateTimeType) Location() *time.Location {
 
 func (t *dateTimeType) TypeSpec() TypeSpecAccessor {
 	return dateTimeTypeSpec
+}
+
+func (e *dateTimeType) TypeInfo() TypeInfoAccessor {
+	return dateTimeTypeInfo
 }
 
 func (t *dateTimeType) LowestPrecision() DateTimePrecisions {

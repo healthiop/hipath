@@ -34,6 +34,8 @@ import (
 
 var BooleanTypeSpec = newAnyTypeSpec("Boolean")
 
+var booleanTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("Boolean"), anyTypeNameString)
+
 type booleanType struct {
 	baseAnyType
 	value bool
@@ -103,6 +105,10 @@ func (t *booleanType) String() string {
 
 func (e *booleanType) TypeSpec() TypeSpecAccessor {
 	return BooleanTypeSpec
+}
+
+func (e *booleanType) TypeInfo() TypeInfoAccessor {
+	return booleanTypeInfo
 }
 
 func (t *booleanType) Equal(node interface{}) bool {

@@ -55,7 +55,7 @@ func (f *asFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, ar
 	}
 
 	item := unwrapCollection(node)
-	if _, ok := item.(hipathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.ColAccessor); ok {
 		return nil, fmt.Errorf("as function cannot be applied on a collection")
 	}
 
@@ -84,7 +84,7 @@ func (f *isFunction) Execute(ctx hipathsys.ContextAccessor, node interface{}, ar
 	}
 
 	item := unwrapCollection(node)
-	if _, ok := item.(hipathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.ColAccessor); ok {
 		return nil, fmt.Errorf("is function cannot be applied on a collection")
 	}
 

@@ -59,10 +59,7 @@ func (e *ContainsExpression) Evaluate(ctx hipathsys.ContextAccessor, node interf
 		right = tmp
 	}
 
-	col, err := wrapCollection(ctx, left)
-	if err != nil {
-		return nil, err
-	}
+	col := wrapCollection(ctx, left)
 	val := unwrapCollection(right)
 	if col == nil || col.Empty() {
 		return hipathsys.False, nil
@@ -70,7 +67,7 @@ func (e *ContainsExpression) Evaluate(ctx hipathsys.ContextAccessor, node interf
 	if val == nil {
 		return nil, nil
 	}
-	if hipathsys.IsCollection(val) {
+	if hipathsys.IsCol(val) {
 		return nil, fmt.Errorf("collection membership cannot be checked with value: %T", val)
 	}
 

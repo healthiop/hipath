@@ -50,8 +50,8 @@ func TestFunctionInvocationNoArgs(t *testing.T) {
 	tt := newTestingType(t)
 	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, hipathsys.NewInteger(0), c.Get(0))
 		}
@@ -72,8 +72,8 @@ func TestFunctionInvocationArgs(t *testing.T) {
 	tt := newTestingType(t)
 	res, err := e.Evaluate(ctx, tt, testLoop)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 4, c.Count()) {
 			assert.Equal(t, hipathsys.NewInteger(3), c.Get(0))
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(1))
@@ -160,10 +160,10 @@ func (f *testInvocationArgsFunction) Execute(ctx hipathsys.ContextAccessor, _ in
 	t := f.t
 	assert.Same(t, testLoop, loop)
 
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewInteger(int32(len(args))))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewInteger(int32(len(args))))
 	for _, a := range args {
-		c.MustAdd(a)
+		c.Add(a)
 	}
 	return c, nil
 }

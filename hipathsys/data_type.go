@@ -31,7 +31,7 @@ package hipathsys
 type DataTypes int
 
 const UndefinedDataType DataTypes = 0x0001
-const CollectionDataType DataTypes = 0x0002
+const ColDataType DataTypes = 0x0002
 
 const LiteralDataType DataTypes = 0x0200
 
@@ -46,9 +46,12 @@ const (
 	QuantityDataType
 )
 
+var anyTypeNameString = NewString("System.Any")
+
 type AnyAccessor interface {
 	DataType() DataTypes
 	TypeSpec() TypeSpecAccessor
+	TypeInfo() TypeInfoAccessor
 	Source() interface{}
 	Equal(node interface{}) bool
 	Equivalent(node interface{}) bool

@@ -109,7 +109,7 @@ func unwrapBooleanCollection(node interface{}) (hipathsys.BooleanAccessor, error
 		return nil, nil
 	}
 
-	if col, ok := node.(hipathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.ColAccessor); ok {
 		if col.Empty() {
 			return nil, nil
 		}

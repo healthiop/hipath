@@ -39,6 +39,8 @@ import (
 
 var timeTypeSpec = newAnyTypeSpec("Time")
 
+var timeTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("Time"), anyTypeNameString)
+
 var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)?$")
 
 type timeType struct {
@@ -186,6 +188,10 @@ func (t *timeType) Nanosecond() int {
 
 func (t *timeType) TypeSpec() TypeSpecAccessor {
 	return timeTypeSpec
+}
+
+func (e *timeType) TypeInfo() TypeInfoAccessor {
+	return timeTypeInfo
 }
 
 func (t *timeType) Equal(node interface{}) bool {

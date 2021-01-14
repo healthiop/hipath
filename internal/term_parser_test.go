@@ -98,8 +98,8 @@ func TestParseInvocationTermEmptyCollection(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		col := ctx.NewCollection()
-		col.MustAdd(hipathsys.NewString("test"))
+		col := ctx.NewCol()
+		col.Add(hipathsys.NewString("test"))
 
 		b, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
@@ -117,7 +117,7 @@ func TestParseInvocationTermEmptyCollectionEmpty(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		ctx = test.NewTestContextWithNode(t, ctx.NewCollection())
+		ctx = test.NewTestContextWithNode(t, ctx.NewCol())
 
 		b, err := res.(hipathsys.Evaluator).Evaluate(ctx, nil, nil)
 		assert.NoError(t, err, "no evaluation error expected")
@@ -135,14 +135,14 @@ func TestParseInvocationTermUnion(t *testing.T) {
 		assert.False(t, errorItemCollection.HasErrors(), "no errors expected")
 	}
 	if assert.IsType(t, (*expression.InvocationTerm)(nil), res) {
-		col := ctx.NewCollection()
-		col.MustAdd(hipathsys.NewInteger(18))
-		col.MustAdd(hipathsys.NewInteger(19))
+		col := ctx.NewCol()
+		col.Add(hipathsys.NewInteger(18))
+		col.Add(hipathsys.NewInteger(19))
 
 		e, err := res.(hipathsys.Evaluator).Evaluate(ctx, col, nil)
 		assert.NoError(t, err, "no evaluation error expected")
-		if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), e) {
-			c := e.(hipathsys.CollectionAccessor)
+		if assert.Implements(t, (*hipathsys.ColAccessor)(nil), e) {
+			c := e.(hipathsys.ColAccessor)
 			if assert.Equal(t, 4, c.Count()) {
 				assert.Equal(t, hipathsys.NewInteger(18), c.Get(0))
 				assert.Equal(t, hipathsys.NewInteger(19), c.Get(1))

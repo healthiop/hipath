@@ -37,10 +37,10 @@ import (
 
 func TestAggregatePathFuncEvaluatorNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
-	col.MustAdd(hipathsys.NewInteger(11))
-	col.MustAdd(hipathsys.NewInteger(14))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(11))
+	col.Add(hipathsys.NewInteger(14))
 
 	f := newAggregateFunction()
 	res, err := f.Execute(ctx, col, []interface{}{nil}, hipathsys.NewLoop(nil))
@@ -69,8 +69,8 @@ func TestAggregatePathFuncNodeError(t *testing.T) {
 
 func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
 
 	loopEvaluator := newTestErrorExpression()
 
@@ -82,10 +82,10 @@ func TestAggregatePathFuncEvaluatorErr(t *testing.T) {
 
 func TestAggregatePathFuncTotal(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
-	col.MustAdd(hipathsys.NewInteger(11))
-	col.MustAdd(hipathsys.NewInteger(14))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(11))
+	col.Add(hipathsys.NewInteger(14))
 
 	loopEvaluator := NewArithmeticExpression(
 		NewTotalInvocation(), hipathsys.AdditionOp, NewThisInvocation())
@@ -100,10 +100,10 @@ func TestAggregatePathFuncTotal(t *testing.T) {
 
 func TestAggregatePathFuncIndex(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(10))
-	col.MustAdd(hipathsys.NewInteger(11))
-	col.MustAdd(hipathsys.NewInteger(14))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(10))
+	col.Add(hipathsys.NewInteger(11))
+	col.Add(hipathsys.NewInteger(14))
 
 	loopEvaluator := NewArithmeticExpression(
 		NewIndexInvocation(), hipathsys.AdditionOp, NewThisInvocation())
@@ -118,7 +118,7 @@ func TestAggregatePathFuncIndex(t *testing.T) {
 
 func TestAggregatePathFuncColEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
+	col := ctx.NewCol()
 
 	loopEvaluator := NewArithmeticExpression(
 		NewTotalInvocation(), hipathsys.AdditionOp, NewThisInvocation())
@@ -131,7 +131,7 @@ func TestAggregatePathFuncColEmpty(t *testing.T) {
 
 func TestAggregatePathFuncColEmptyTotal(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	col := ctx.NewCollection()
+	col := ctx.NewCol()
 
 	loopEvaluator := NewArithmeticExpression(
 		NewTotalInvocation(), hipathsys.AdditionOp, NewThisInvocation())

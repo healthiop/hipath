@@ -37,8 +37,8 @@ import (
 
 func TestInvocationTermEvaluate(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewString(""))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewString(""))
 
 	f, err := LookupFunctionInvocation("empty", []hipathsys.Evaluator{})
 	if err != nil {
@@ -57,8 +57,8 @@ func TestInvocationTermEvaluate(t *testing.T) {
 
 func TestInvocationTermEvaluateFuncErr(t *testing.T) {
 	ctx := test.NewTestContextWithNode(t, hipathsys.NewString(""))
-	c := ctx.NewCollection()
-	c.MustAdd(hipathsys.NewInteger(123))
+	c := ctx.NewCol()
+	c.Add(hipathsys.NewInteger(123))
 
 	evaluator := NewInvocationTerm(newTestErrorExpression())
 

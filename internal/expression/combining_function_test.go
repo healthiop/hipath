@@ -37,20 +37,20 @@ import (
 
 func TestUnionPathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := ctx.NewCollection()
-	c1.MustAdd(hipathsys.NewInteger(10))
-	c1.MustAdd(hipathsys.NewInteger(11))
-	c1.MustAdd(hipathsys.NewInteger(14))
+	c1 := ctx.NewCol()
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(14))
 
-	c2 := ctx.NewCollection()
-	c2.MustAdd(hipathsys.NewDecimalInt(11))
-	c2.MustAdd(hipathsys.NewDecimalInt(12))
+	c2 := ctx.NewCol()
+	c2.Add(hipathsys.NewDecimalInt(11))
+	c2.Add(hipathsys.NewDecimalInt(12))
 
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 4, c.Count()) {
 			assert.Equal(t, int32(10), hipathsys.IntegerValue(c.Get(0)))
 			assert.Equal(t, int32(11), hipathsys.IntegerValue(c.Get(1)))
@@ -68,8 +68,8 @@ func TestUnionPathFuncNoCollection(t *testing.T) {
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 2, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, hipathsys.NewString("test2"), c.Get(1))
@@ -84,8 +84,8 @@ func TestUnionPathFuncArgNil(t *testing.T) {
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
@@ -99,8 +99,8 @@ func TestUnionPathFuncObjNil(t *testing.T) {
 	f := newUnionFunction()
 	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
@@ -117,27 +117,27 @@ func TestUnionPathFuncBothNil(t *testing.T) {
 func TestUnionPathFuncBothEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newUnionFunction()
-	res, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
+	res, err := f.Execute(ctx, ctx.NewCol(), []interface{}{ctx.NewCol()}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty res expected")
 }
 
 func TestCombinePathFunc(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	c1 := ctx.NewCollection()
-	c1.MustAdd(hipathsys.NewInteger(10))
-	c1.MustAdd(hipathsys.NewInteger(11))
-	c1.MustAdd(hipathsys.NewInteger(14))
+	c1 := ctx.NewCol()
+	c1.Add(hipathsys.NewInteger(10))
+	c1.Add(hipathsys.NewInteger(11))
+	c1.Add(hipathsys.NewInteger(14))
 
-	c2 := ctx.NewCollection()
-	c2.MustAdd(hipathsys.NewDecimalInt(11))
-	c2.MustAdd(hipathsys.NewDecimalInt(12))
+	c2 := ctx.NewCol()
+	c2.Add(hipathsys.NewDecimalInt(11))
+	c2.Add(hipathsys.NewDecimalInt(12))
 
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 5, c.Count()) {
 			assert.Equal(t, hipathsys.NewInteger(10), c.Get(0))
 			assert.Equal(t, hipathsys.NewInteger(11), c.Get(1))
@@ -160,8 +160,8 @@ func TestCombinePathFuncNoCollection(t *testing.T) {
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{c2}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 2, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 			assert.Equal(t, hipathsys.NewString("test2"), c.Get(1))
@@ -176,8 +176,8 @@ func TestCombinePathFuncArgNil(t *testing.T) {
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, c1, []interface{}{nil}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
@@ -191,8 +191,8 @@ func TestCombinePathFuncObjNil(t *testing.T) {
 	f := newCombineFunction()
 	res, err := f.Execute(ctx, nil, []interface{}{c1}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		c := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		c := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, c.Count()) {
 			assert.Equal(t, hipathsys.NewString("test1"), c.Get(0))
 		}
@@ -210,7 +210,7 @@ func TestCombinePathFuncBothNil(t *testing.T) {
 func TestCombinePathFuncBothEmpty(t *testing.T) {
 	ctx := test.NewTestContext(t)
 	f := newCombineFunction()
-	res, err := f.Execute(ctx, ctx.NewCollection(), []interface{}{ctx.NewCollection()}, nil)
+	res, err := f.Execute(ctx, ctx.NewCol(), []interface{}{ctx.NewCol()}, nil)
 	assert.NoError(t, err, "no error expected")
 	assert.Nil(t, res, "empty res expected")
 }

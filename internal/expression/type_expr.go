@@ -58,7 +58,7 @@ func (e *AsTypeExpression) Evaluate(ctx hipathsys.ContextAccessor, node interfac
 	}
 
 	item := unwrapCollection(value)
-	if _, ok := item.(hipathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.ColAccessor); ok {
 		return nil, fmt.Errorf("as operator cannot be applied on a collection")
 	}
 
@@ -90,7 +90,7 @@ func (e *IsTypeExpression) Evaluate(ctx hipathsys.ContextAccessor, node interfac
 	}
 
 	item := unwrapCollection(value)
-	if _, ok := item.(hipathsys.CollectionAccessor); ok {
+	if _, ok := item.(hipathsys.ColAccessor); ok {
 		return nil, fmt.Errorf("is operator cannot be applied on a collection")
 	}
 

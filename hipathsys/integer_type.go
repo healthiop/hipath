@@ -38,6 +38,8 @@ import (
 
 var IntegerTypeSpec = newAnyTypeSpec("Integer")
 
+var integerTypeInfo = NewSimpleTypeInfo(namespaceNameString, NewString("Integer"), anyTypeNameString)
+
 type integerType struct {
 	baseAnyType
 	value        int32
@@ -120,6 +122,10 @@ func (t *integerType) HasFraction() bool {
 
 func (t *integerType) TypeSpec() TypeSpecAccessor {
 	return IntegerTypeSpec
+}
+
+func (e *integerType) TypeInfo() TypeInfoAccessor {
+	return integerTypeInfo
 }
 
 func (t *integerType) Value() DecimalAccessor {

@@ -40,89 +40,63 @@ func ExtractIdentifier(value string) string {
 	return resultingValue
 }
 
-func uniteCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) (hipathsys.CollectionModifier, error) {
+func uniteCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) hipathsys.ColModifier {
 	if n1 == nil && n2 == nil {
-		return nil, nil
-	}
-
-	c := ctx.NewCollection()
-	err := addUniqueCollectionItems(c, n1)
-	if err != nil {
-		return nil, err
-	}
-	err = addUniqueCollectionItems(c, n2)
-	if err != nil {
-		return nil, err
-	}
-
-	if c.Count() == 0 {
-		return nil, nil
-	}
-	return c, nil
-}
-
-func addUniqueCollectionItems(collection hipathsys.CollectionModifier, node interface{}) error {
-	if node == nil {
 		return nil
 	}
-	if c, ok := node.(hipathsys.CollectionAccessor); ok {
-		_, err := collection.AddAllUnique(c)
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err := collection.AddUnique(node)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
-func combineCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) (hipathsys.CollectionModifier, error) {
-	if n1 == nil && n2 == nil {
-		return nil, nil
-	}
-
-	c := ctx.NewCollection()
-	err := addCollectionItems(c, n1)
-	if err != nil {
-		return nil, err
-	}
-	err = addCollectionItems(c, n2)
-	if err != nil {
-		return nil, err
-	}
+	c := ctx.NewCol()
+	addUniqueCollectionItems(c, n1)
+	addUniqueCollectionItems(c, n2)
 
 	if c.Count() == 0 {
-		return nil, nil
-	}
-	return c, nil
-}
-
-func addCollectionItems(collection hipathsys.CollectionModifier, node interface{}) error {
-	if node == nil {
 		return nil
 	}
-	if c, ok := node.(hipathsys.CollectionAccessor); ok {
-		_, err := collection.AddAll(c)
-		if err != nil {
-			return err
-		}
-	} else {
-		err := collection.Add(node)
-		if err != nil {
-			return err
-		}
+	return c
+}
+
+func addUniqueCollectionItems(collection hipathsys.ColModifier, node interface{}) {
+	if node == nil {
+		return
 	}
-	return nil
+	if c, ok := node.(hipathsys.ColAccessor); ok {
+		collection.AddAllUnique(c)
+	} else {
+		collection.AddUnique(node)
+	}
+}
+
+func combineCollections(ctx hipathsys.ContextAccessor, n1 interface{}, n2 interface{}) hipathsys.ColModifier {
+	if n1 == nil && n2 == nil {
+		return nil
+	}
+
+	c := ctx.NewCol()
+	addCollectionItems(c, n1)
+	addCollectionItems(c, n2)
+
+	if c.Count() == 0 {
+		return nil
+	}
+	return c
+}
+
+func addCollectionItems(collection hipathsys.ColModifier, node interface{}) {
+	if node == nil {
+		return
+	}
+	if c, ok := node.(hipathsys.ColAccessor); ok {
+		collection.AddAll(c)
+	} else {
+		collection.Add(node)
+	}
 }
 
 func unwrapCollection(node interface{}) interface{} {
 	if node == nil {
 		return nil
 	}
-	if c, ok := node.(hipathsys.CollectionAccessor); !ok {
+	if c, ok := node.(hipathsys.ColAccessor); !ok {
 		return node
 	} else {
 		count := c.Count()
@@ -136,23 +110,23 @@ func unwrapCollection(node interface{}) interface{} {
 	}
 }
 
-func wrapCollection(ctx hipathsys.ContextAccessor, node interface{}) (hipathsys.CollectionAccessor, error) {
+func wrapCollection(ctx hipathsys.ContextAccessor, node interface{}) hipathsys.ColAccessor {
 	if node == nil {
-		return hipathsys.EmptyCollection, nil
+		return hipathsys.EmptyCol
 	}
 
-	if col, ok := node.(hipathsys.CollectionAccessor); ok {
-		return col, nil
+	if col, ok := node.(hipathsys.ColAccessor); ok {
+		return col
 	}
 
-	return ctx.NewCollectionWithItem(node)
+	return ctx.NewColWithItem(node)
 }
 
 func emptyCollection(node interface{}) bool {
 	if node == nil {
 		return true
 	}
-	if col, ok := node.(hipathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.ColAccessor); ok {
 		return col.Empty()
 	}
 	return false

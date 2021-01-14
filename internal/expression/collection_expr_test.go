@@ -39,8 +39,8 @@ func TestCollectionExpressionEmpty(t *testing.T) {
 	e := NewCollectionExpression(NewEmptyLiteral())
 	node, err := e.Evaluate(nil, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), node) {
-		res := node.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), node) {
+		res := node.(hipathsys.ColAccessor)
 		assert.Equal(t, 0, res.Count())
 	}
 }
@@ -50,8 +50,8 @@ func TestCollectionExpressionSingle(t *testing.T) {
 	e := NewCollectionExpression(NewRawStringLiteral("test 123"))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), node) {
-		res := node.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), node) {
+		res := node.(hipathsys.ColAccessor)
 		if assert.Equal(t, 1, res.Count()) {
 			assert.Equal(t, hipathsys.NewString("test 123"), res.Get(0))
 		}
@@ -64,8 +64,8 @@ func TestCollectionExpressionMulti(t *testing.T) {
 		NewRawStringLiteral("test 1"), NewRawStringLiteral("test 3")))
 	node, err := e.Evaluate(ctx, nil, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), node) {
-		res := node.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), node) {
+		res := node.(hipathsys.ColAccessor)
 		if assert.Equal(t, 2, res.Count()) {
 			assert.Equal(t, hipathsys.NewString("test 1"), res.Get(0))
 			assert.Equal(t, hipathsys.NewString("test 3"), res.Get(1))

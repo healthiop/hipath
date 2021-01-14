@@ -33,307 +33,220 @@ import (
 	"testing"
 )
 
-func TestCollectionSource(t *testing.T) {
+func TestColSource(t *testing.T) {
 	ctx := newTestContext(t)
-	o := NewCollectionWithSource(ctx.ModelAdapter(), "abc")
+	o := NewColWithSource(ctx.ModelAdapter(), "abc")
 	assert.Equal(t, "abc", o.Source())
 }
 
-func TestCollectionDataType(t *testing.T) {
+func TestColDataType(t *testing.T) {
 	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	assert.Equal(t, CollectionDataType, c.DataType())
+	c := ctx.NewCol()
+	assert.Equal(t, ColDataType, c.DataType())
 }
 
-func TestCollectionTypeSpec(t *testing.T) {
+func TestColTypeSpec(t *testing.T) {
 	ctx := newTestContext(t)
-	c := ctx.NewCollection()
+	c := ctx.NewCol()
 	ti := c.TypeSpec()
 	if assert.NotNil(t, ti, "type info expected") {
-		assert.Equal(t, "System.Collection", ti.String())
-		if assert.NotNil(t, ti, "base type info expected") {
-			assert.Equal(t, "System.Any", ti.Base().String())
-		}
+		assert.Equal(t, "", ti.String())
+		assert.Nil(t, ti.Base(), "no base type expected")
+		assert.True(t, ti.Anonymous())
 	}
 }
 
-func TestNewCollectionNilCtx(t *testing.T) {
-	assert.Panics(t, func() { NewCollection(nil) })
+func TestColTypeInfo(t *testing.T) {
+	ctx := newTestContext(t)
+	c := ctx.NewCol()
+	i := c.TypeInfo()
+	if assert.Implements(t, (*ListTypeInfoAccessor)(nil), i) {
+		a := i.(ListTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Nil(t, a.ElementType(), "item type spec has not been set")
+	}
 }
 
-func TestNewCollection(t *testing.T) {
+func TestColTypeInfoWithItemTypeSpec(t *testing.T) {
 	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	assert.True(t, c.Empty(), "new collection must be empty")
+	c := NewColWithSpec(ctx.ModelAdapter(), DecimalTypeSpec)
+	i := c.TypeInfo()
+	if assert.Implements(t, (*ListTypeInfoAccessor)(nil), i) {
+		a := i.(ListTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("System.Decimal"), a.ElementType())
+	}
+}
+
+func TestNewColNilCtx(t *testing.T) {
+	assert.Panics(t, func() { NewCol(nil) })
+}
+
+func TestNewCol(t *testing.T) {
+	ctx := newTestContext(t)
+	c := ctx.NewCol()
+	assert.True(t, c.Empty(), "new col must be empty")
 	assert.Equal(t, 0, c.Count())
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestNewCollectionWithItemError(t *testing.T) {
+func TestNewColWithItemTypeSpec(t *testing.T) {
 	ctx := newTestContext(t)
-	c, err := NewCollectionWithItem(ctx.ModelAdapter(), newTestModelErrorNode())
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, c, "no collection expected")
-}
-
-func TestNewCollectionWithItemTypeSpec(t *testing.T) {
-	ctx := newTestContext(t)
-	c := NewCollectionWithItemTypeSpec(ctx.ModelAdapter(), StringTypeSpec)
-	assert.True(t, c.Empty(), "new collection must be empty")
+	c := NewColWithSpec(ctx.ModelAdapter(), StringTypeSpec)
+	assert.True(t, c.Empty(), "new col must be empty")
 	assert.Equal(t, 0, c.Count())
 	assert.Same(t, StringTypeSpec, c.ItemTypeSpec())
 }
 
-func TestCollectionWithItemTypeSpec(t *testing.T) {
+func TestColWithItemTypeSpec(t *testing.T) {
 	ctx := newTestContext(t)
-	c := NewCollectionWithItemTypeSpec(ctx.ModelAdapter(), StringTypeSpec)
-	assert.NoError(t, c.Add(NewInteger(10)), "no error expected")
-	assert.False(t, c.Empty(), "collection is not empty")
+	c := NewColWithSpec(ctx.ModelAdapter(), StringTypeSpec)
+	c.Add(NewInteger(10))
+	assert.False(t, c.Empty(), "col is not empty")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, StringTypeSpec, c.ItemTypeSpec())
 }
 
-func TestNewCollectionGetEmpty(t *testing.T) {
+func TestNewColGetEmpty(t *testing.T) {
 	ctx := newTestContext(t)
-	c := ctx.NewCollection()
+	c := ctx.NewCol()
 	assert.Panics(t, func() { c.Get(0) })
 }
 
-func TestCollectionAddGet(t *testing.T) {
+func TestColAddGet(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := NewString("test2")
-	c := ctx.NewCollection()
-	assert.NoError(t, c.Add(item1))
-	assert.NoError(t, c.Add(item2))
-	assert.False(t, c.Empty(), "collection contains elements")
+	c := ctx.NewCol()
+	c.Add(item1)
+	c.Add(item2)
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionMustAddGet(t *testing.T) {
-	ctx := newTestContext(t)
-	item1 := NewString("test1")
-	item2 := NewString("test2")
-	c := ctx.NewCollection()
-	c.MustAdd(item1)
-	c.MustAdd(item2)
-	assert.False(t, c.Empty(), "collection contains elements")
-	assert.Equal(t, 2, c.Count())
-	assert.Same(t, item1, c.Get(0))
-	assert.Same(t, item2, c.Get(1))
-	assert.Nil(t, c.ItemTypeSpec())
-}
-
-func TestCollectionMustAddError(t *testing.T) {
-	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	assert.Panics(t, func() { c.MustAdd(newTestModelErrorNode()) })
-}
-
-func TestNewCollectionWithItem(t *testing.T) {
-	ctx := newTestContext(t)
-	item1 := NewString("test1")
-	c, err := ctx.NewCollectionWithItem(item1)
-	assert.NoError(t, err, "no error expected")
-	assert.False(t, c.Empty(), "collection contains elements")
-	assert.Equal(t, 1, c.Count())
-	assert.Same(t, item1, c.Get(0))
-	assert.Nil(t, c.ItemTypeSpec())
-}
-
-func TestCollectionAddGetModel(t *testing.T) {
+func TestColAddGetModel(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := newTestModelNode(10, false, testTypeSpec)
 	item2 := newTestModelNode(11, false, testTypeSpec)
-	c := ctx.NewCollection()
-	assert.NoError(t, c.Add(item1))
-	assert.NoError(t, c.Add(item2))
-	assert.False(t, c.Empty(), "collection contains elements")
+	c := ctx.NewCol()
+	c.Add(item1)
+	c.Add(item2)
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestNewCollectionWithModemItem(t *testing.T) {
+func TestNewColWithModelItem(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := newTestModelNode(10, false, testTypeSpec)
-	c, err := ctx.NewCollectionWithItem(item1)
-	if assert.NoError(t, err, "no error expected") {
-		assert.NoError(t, c.Add(item1))
-		assert.False(t, c.Empty(), "collection contains elements")
-		assert.Equal(t, 2, c.Count())
-		assert.Same(t, item1, c.Get(0))
-		assert.Nil(t, c.ItemTypeSpec())
-	}
-}
-
-func TestCollectionAddGetConvertedModel(t *testing.T) {
-	ctx := newTestContext(t)
-	item1 := newTestModelNode(10.1, true, testTypeSpec)
-	item2 := newTestModelNode(12.1, true, testTypeSpec)
-	c := ctx.NewCollection()
-	assert.NoError(t, c.Add(item1))
-	assert.NoError(t, c.Add(item2))
-	assert.False(t, c.Empty(), "collection contains elements")
+	c := ctx.NewColWithItem(item1)
+	c.Add(item1)
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
-	if assert.Implements(t, (*DecimalAccessor)(nil), c.Get(0)) {
-		assert.Equal(t, 10.1, c.Get(0).(DecimalAccessor).Float64())
-	}
-	if assert.Implements(t, (*DecimalAccessor)(nil), c.Get(1)) {
-		assert.Equal(t, 12.1, c.Get(1).(DecimalAccessor).Float64())
-	}
+	assert.Same(t, item1, c.Get(0))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddNil(t *testing.T) {
+func TestColAddNil(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
-	c := ctx.NewCollection()
-	assert.NoError(t, c.Add(item1))
-	assert.NoError(t, c.Add(nil))
-	assert.False(t, c.Empty(), "collection contains elements")
+	c := ctx.NewCol()
+	c.Add(item1)
+	c.Add(nil)
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Nil(t, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddUniqueAll(t *testing.T) {
+func TestColAddUniqueAll(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := NewString("test2")
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(item1)
-	assert.NoError(t, err)
+	c := ctx.NewCol()
+	a := c.AddUnique(item1)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item2)
-	assert.NoError(t, err)
+	a = c.AddUnique(item2)
 	assert.Equal(t, true, a)
-	assert.False(t, c.Empty(), "collection contains elements")
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddUniqueDupNil(t *testing.T) {
+func TestColAddUniqueDupNil(t *testing.T) {
 	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(nil)
-	assert.NoError(t, err)
+	c := ctx.NewCol()
+	a := c.AddUnique(nil)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(nil)
-	assert.NoError(t, err)
+	a = c.AddUnique(nil)
 	assert.Equal(t, false, a)
-	assert.False(t, c.Empty(), "collection contains elements")
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Nil(t, c.Get(0))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddUniqueEmptyError(t *testing.T) {
-	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(newTestModelErrorNode())
-	assert.Error(t, err)
-	assert.Equal(t, false, a)
-	assert.Equal(t, 0, c.Count())
-}
-
-func TestCollectionAddUniqueError(t *testing.T) {
-	ctx := newTestContext(t)
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(NewString("test"))
-	assert.NoError(t, err)
-	assert.Equal(t, true, a)
-	a, err = c.AddUnique(newTestModelErrorNode())
-	assert.Error(t, err)
-	assert.Equal(t, false, a)
-	assert.Equal(t, 1, c.Count())
-}
-
-func TestCollectionAddUniqueModel(t *testing.T) {
+func TestColAddUniqueModel(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := newTestModelNode(10, false, testTypeSpec)
 	item3 := NewString("test1")
 	item4 := newTestModelNode(10, false, testTypeSpec)
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(item1)
-	assert.NoError(t, err)
+	c := ctx.NewCol()
+	a := c.AddUnique(item1)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item2)
-	assert.NoError(t, err)
+	a = c.AddUnique(item2)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item3)
-	assert.NoError(t, err)
+	a = c.AddUnique(item3)
 	assert.Equal(t, false, a)
-	a, err = c.AddUnique(item4)
-	assert.NoError(t, err)
+	a = c.AddUnique(item4)
 	assert.Equal(t, false, a)
-	assert.False(t, c.Empty(), "collection contains elements")
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddUniqueConvertedModel(t *testing.T) {
-	ctx := newTestContext(t)
-	item1 := NewDecimalFloat64(10)
-	item2 := newTestModelNode(10, true, testTypeSpec)
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(item1)
-	assert.NoError(t, err)
-	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item2)
-	assert.NoError(t, err)
-	assert.Equal(t, false, a)
-	assert.False(t, c.Empty(), "collection contains elements")
-	assert.Equal(t, 1, c.Count())
-	assert.Same(t, item1, c.Get(0))
-	assert.Nil(t, c.ItemTypeSpec())
-}
-
-func TestCollectionAddUniqueDiscard(t *testing.T) {
+func TestColAddUniqueDiscard(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := NewString("test1")
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(item1)
-	assert.NoError(t, err)
+	c := ctx.NewCol()
+	a := c.AddUnique(item1)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item2)
-	assert.NoError(t, err)
+	a = c.AddUnique(item2)
 	assert.Equal(t, false, a)
-	assert.False(t, c.Empty(), "collection contains elements")
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddUniqueExistingNil(t *testing.T) {
+func TestColAddUniqueExistingNil(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
-	c := ctx.NewCollection()
-	a, err := c.AddUnique(nil)
-	assert.NoError(t, err)
+	c := ctx.NewCol()
+	a := c.AddUnique(nil)
 	assert.Equal(t, true, a)
-	a, err = c.AddUnique(item1)
-	assert.NoError(t, err)
+	a = c.AddUnique(item1)
 	assert.Equal(t, true, a)
-	assert.False(t, c.Empty(), "collection contains elements")
+	assert.False(t, c.Empty(), "col contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Nil(t, c.Get(0))
 	assert.Same(t, item1, c.Get(1))
 	assert.Nil(t, c.ItemTypeSpec())
 }
 
-func TestCollectionAddAllUnique(t *testing.T) {
+func TestColAddAllUnique(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := NewString("test2")
@@ -341,27 +254,21 @@ func TestCollectionAddAllUnique(t *testing.T) {
 	item4 := NewString("test2")
 	item5 := NewString("test4")
 
-	c1 := ctx.NewCollection()
-	a, err := c1.AddUnique(item1)
-	assert.NoError(t, err)
+	c1 := ctx.NewCol()
+	a := c1.AddUnique(item1)
 	assert.Equal(t, true, a)
-	a, err = c1.AddUnique(item2)
-	assert.NoError(t, err)
+	a = c1.AddUnique(item2)
 	assert.Equal(t, true, a)
-	a, err = c1.AddUnique(item3)
-	assert.NoError(t, err)
+	a = c1.AddUnique(item3)
 	assert.Equal(t, true, a)
 
-	c2 := ctx.NewCollection()
-	a, err = c2.AddUnique(item4)
-	assert.NoError(t, err)
+	c2 := ctx.NewCol()
+	a = c2.AddUnique(item4)
 	assert.Equal(t, true, a)
-	a, err = c2.AddUnique(item5)
-	assert.NoError(t, err)
+	a = c2.AddUnique(item5)
 	assert.Equal(t, true, a)
 
-	count, err := c2.AddAllUnique(c1)
-	assert.NoError(t, err)
+	count := c2.AddAllUnique(c1)
 	assert.Equal(t, 2, count)
 	if assert.Equal(t, 4, c2.Count()) {
 		assert.Same(t, item4, c2.Get(0))
@@ -371,7 +278,7 @@ func TestCollectionAddAllUnique(t *testing.T) {
 	}
 }
 
-func TestCollectionAddAll(t *testing.T) {
+func TestColAddAll(t *testing.T) {
 	ctx := newTestContext(t)
 	item1 := NewString("test1")
 	item2 := NewString("test2")
@@ -379,27 +286,21 @@ func TestCollectionAddAll(t *testing.T) {
 	item4 := NewString("test2")
 	item5 := NewString("test4")
 
-	c1 := ctx.NewCollection()
-	a, err := c1.AddUnique(item1)
-	assert.NoError(t, err)
+	c1 := ctx.NewCol()
+	a := c1.AddUnique(item1)
 	assert.Equal(t, true, a)
-	a, err = c1.AddUnique(item2)
-	assert.NoError(t, err)
+	a = c1.AddUnique(item2)
 	assert.Equal(t, true, a)
-	a, err = c1.AddUnique(item3)
-	assert.NoError(t, err)
+	a = c1.AddUnique(item3)
 	assert.Equal(t, true, a)
 
-	c2 := ctx.NewCollection()
-	a, err = c2.AddUnique(item4)
-	assert.NoError(t, err)
+	c2 := ctx.NewCol()
+	a = c2.AddUnique(item4)
 	assert.Equal(t, true, a)
-	a, err = c2.AddUnique(item5)
-	assert.NoError(t, err)
+	a = c2.AddUnique(item5)
 	assert.Equal(t, true, a)
 
-	count, err := c2.AddAll(c1)
-	assert.NoError(t, err)
+	count := c2.AddAll(c1)
 	assert.Equal(t, 3, count)
 	if assert.Equal(t, 5, c2.Count()) {
 		assert.Same(t, item4, c2.Get(0))
@@ -410,282 +311,329 @@ func TestCollectionAddAll(t *testing.T) {
 	}
 }
 
-func TestCollectionAddAllError(t *testing.T) {
+func TestColEqualTypeDiffers(t *testing.T) {
 	ctx := newTestContext(t)
-
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("test1")))
-	c2 := newErrorCollection()
-
-	count, err := c1.AddAll(c2)
-	assert.Error(t, err, "error expected")
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 2, c1.Count())
+	assert.Equal(t, false, ctx.NewCol().Equal(NewString("")))
+	assert.Equal(t, false, ctx.NewCol().Equivalent(NewString("")))
 }
 
-func TestCollectionAddAllUniqueError(t *testing.T) {
+func TestColEqualNil(t *testing.T) {
 	ctx := newTestContext(t)
-
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("test1")))
-	c2 := newErrorCollection()
-
-	count, err := c1.AddAllUnique(c2)
-	assert.Error(t, err, "error expected")
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 2, c1.Count())
+	assert.Equal(t, false, ctx.NewCol().Equal(nil))
+	assert.Equal(t, false, ctx.NewCol().Equivalent(nil))
 }
 
-func TestCollectionEqualTypeDiffers(t *testing.T) {
+func TestColEqualEmpty(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.Equal(t, false, ctx.NewCollection().Equal(NewString("")))
-	assert.Equal(t, false, ctx.NewCollection().Equivalent(NewString("")))
+	assert.Equal(t, true, ctx.NewCol().Equal(ctx.NewCol()))
+	assert.Equal(t, true, ctx.NewCol().Equivalent(ctx.NewCol()))
 }
 
-func TestCollectionEqualNil(t *testing.T) {
+func TestColEqual(t *testing.T) {
 	ctx := newTestContext(t)
-	assert.Equal(t, false, ctx.NewCollection().Equal(nil))
-	assert.Equal(t, false, ctx.NewCollection().Equivalent(nil))
-}
-
-func TestCollectionEqualEmpty(t *testing.T) {
-	ctx := newTestContext(t)
-	assert.Equal(t, true, ctx.NewCollection().Equal(ctx.NewCollection()))
-	assert.Equal(t, true, ctx.NewCollection().Equivalent(ctx.NewCollection()))
-}
-
-func TestCollectionEqual(t *testing.T) {
-	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("test1")))
-	assert.NoError(t, c1.Add(NewString("test2")))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(NewString("test1")))
-	assert.NoError(t, c2.Add(NewString("test2")))
+	c1 := ctx.NewCol()
+	c1.Add(NewString("test1"))
+	c1.Add(NewString("test2"))
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test1"))
+	c2.Add(NewString("test2"))
 	assert.Equal(t, true, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))
 }
 
-func TestCollectionEqualModel(t *testing.T) {
+func TestColEqualModel(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c1.Add(newTestModelNode(12, false, testTypeSpec)))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c2.Add(newTestModelNode(12, false, testTypeSpec)))
+	c1 := ctx.NewCol()
+	c1.Add(newTestModelNode(10, false, testTypeSpec))
+	c1.Add(newTestModelNode(12, false, testTypeSpec))
+	c2 := ctx.NewCol()
+	c2.Add(newTestModelNode(10, false, testTypeSpec))
+	c2.Add(newTestModelNode(12, false, testTypeSpec))
 	assert.Equal(t, true, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))
 }
 
-func TestCollectionEqualModelDiffers(t *testing.T) {
+func TestColEqualModelDiffers(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c1.Add(newTestModelNode(12, false, testTypeSpec)))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c2.Add(newTestModelNode(14, false, testTypeSpec)))
+	c1 := ctx.NewCol()
+	c1.Add(newTestModelNode(10, false, testTypeSpec))
+	c1.Add(newTestModelNode(12, false, testTypeSpec))
+	c2 := ctx.NewCol()
+	c2.Add(newTestModelNode(10, false, testTypeSpec))
+	c2.Add(newTestModelNode(14, false, testTypeSpec))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, false, c1.Equivalent(c2))
 }
 
-func TestCollectionEqualOrderDiffers(t *testing.T) {
+func TestColEqualOrderDiffers(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("test1")))
-	assert.NoError(t, c1.Add(NewString("test2")))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(NewString("test2")))
-	assert.NoError(t, c2.Add(NewString("test1")))
+	c1 := ctx.NewCol()
+	c1.Add(NewString("test1"))
+	c1.Add(NewString("test2"))
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test2"))
+	c2.Add(NewString("test1"))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, false, c1.Equivalent(c2))
 }
 
-func TestCollectionEqualCountDiffers(t *testing.T) {
+func TestColEqualCountDiffers(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("test1")))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(NewString("test1")))
-	assert.NoError(t, c2.Add(NewString("test1")))
+	c1 := ctx.NewCol()
+	c1.Add(NewString("test1"))
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test1"))
+	c2.Add(NewString("test1"))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, false, c1.Equivalent(c2))
 }
 
-func TestCollectionEquivalent(t *testing.T) {
+func TestColEquivalent(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(NewString("Test Value")))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(NewString("test\nvalue")))
+	c1 := ctx.NewCol()
+	c1.Add(NewString("Test Value"))
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test\nvalue"))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))
 }
 
-func TestCollectionEquivalentModel(t *testing.T) {
+func TestColEquivalentModel(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := ctx.NewCollection()
-	assert.NoError(t, c1.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c1.Add(newTestModelNode(12.1, false, testTypeSpec)))
-	c2 := ctx.NewCollection()
-	assert.NoError(t, c2.Add(newTestModelNode(10, false, testTypeSpec)))
-	assert.NoError(t, c2.Add(newTestModelNode(12.2, false, testTypeSpec)))
+	c1 := ctx.NewCol()
+	c1.Add(newTestModelNode(10, false, testTypeSpec))
+	c1.Add(newTestModelNode(12.1, false, testTypeSpec))
+	c2 := ctx.NewCol()
+	c2.Add(newTestModelNode(10, false, testTypeSpec))
+	c2.Add(newTestModelNode(12.2, false, testTypeSpec))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))
 }
 
-func TestIsCollection(t *testing.T) {
+func TestIsCol(t *testing.T) {
 	ctx := newTestContext(t)
-	col := ctx.NewCollection()
-	assert.True(t, IsCollection(col))
+	col := ctx.NewCol()
+	assert.True(t, IsCol(col))
 }
 
-func TestIsCollectionNot(t *testing.T) {
-	assert.False(t, IsCollection(True))
+func TestIsColNot(t *testing.T) {
+	assert.False(t, IsCol(True))
 }
 
-func TestCollectionContains(t *testing.T) {
+func TestColContains(t *testing.T) {
 	ctx := newTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(NewInteger(10))
-	col.MustAdd(NewInteger(12))
+	col := ctx.NewCol()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
 	assert.True(t, col.Contains(NewInteger(12)))
 }
 
-func TestCollectionEmptyContains(t *testing.T) {
+func TestColEmptyContains(t *testing.T) {
 	ctx := newTestContext(t)
-	col := ctx.NewCollection()
+	col := ctx.NewCol()
 	assert.False(t, col.Contains(NewInteger(12)))
 }
 
-func TestCollectionContainsNot(t *testing.T) {
+func TestColContainsNot(t *testing.T) {
 	ctx := newTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(NewInteger(10))
-	col.MustAdd(NewInteger(12))
+	col := ctx.NewCol()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
 	assert.False(t, col.Contains(NewInteger(14)))
 }
 
-func TestCollectionContainsModel(t *testing.T) {
+func TestColContainsModel(t *testing.T) {
 	ctx := newTestContext(t)
-	col := ctx.NewCollection()
-	col.MustAdd(newTestModelNode(10.0, false, testTypeSpec))
-	col.MustAdd(newTestModelNode(12.1, false, testTypeSpec))
+	col := ctx.NewCol()
+	col.Add(newTestModelNode(10.0, false, testTypeSpec))
+	col.Add(newTestModelNode(12.1, false, testTypeSpec))
 	assert.True(t, col.Contains(newTestModelNode(12.1, false, testTypeSpec)))
 }
 
-func TestEmptyCollectionSource(t *testing.T) {
-	o := NewEmptyCollectionWithSource("abc")
+func TestEmptyColSource(t *testing.T) {
+	o := NewEmptyColWithSource("abc")
 	assert.Equal(t, "abc", o.Source())
 }
 
-func TestEmptyCollectionDataType(t *testing.T) {
-	c := NewEmptyCollection()
-	assert.Equal(t, CollectionDataType, c.DataType())
+func TestEmptyColDataType(t *testing.T) {
+	c := NewEmptyCol()
+	assert.Equal(t, ColDataType, c.DataType())
 }
 
-func TestEmptyCollectionTypeSpec(t *testing.T) {
-	c := NewEmptyCollection()
+func TestEmptyColTypeSpec(t *testing.T) {
+	c := NewEmptyCol()
 	ti := c.TypeSpec()
 	if assert.NotNil(t, ti, "type info expected") {
-		assert.Equal(t, "System.Collection", ti.String())
-		if assert.NotNil(t, ti, "base type info expected") {
-			assert.Equal(t, "System.Any", ti.Base().String())
-		}
+		assert.Equal(t, "", ti.String())
+		assert.Nil(t, ti.Base(), "no base type expected")
+		assert.True(t, ti.Anonymous())
 	}
 }
 
-func TestEmptyCollectionEmpty(t *testing.T) {
-	c := NewEmptyCollection()
-	assert.True(t, c.Empty(), "new collection must be empty")
+func TestEmptyColTypeInfo(t *testing.T) {
+	c := NewEmptyCol()
+	i := c.TypeInfo()
+	if assert.Implements(t, (*ListTypeInfoAccessor)(nil), i) {
+		a := i.(ListTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Nil(t, a.ElementType(), "item type spec has not been set")
+	}
+}
+
+func TestEmptyColEmpty(t *testing.T) {
+	c := NewEmptyCol()
+	assert.True(t, c.Empty(), "new col must be empty")
 	assert.Equal(t, 0, c.Count())
 	assert.Same(t, UndefinedTypeSpec, c.ItemTypeSpec())
 }
 
-func TestEmptyCollectionGet(t *testing.T) {
-	c := NewEmptyCollection()
+func TestEmptyColGet(t *testing.T) {
+	c := NewEmptyCol()
 	assert.Panics(t, func() { c.Get(0) })
 }
 
-func TestEmptyCollectionEqual(t *testing.T) {
+func TestEmptyColEqual(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := NewEmptyCollection()
-	c2 := NewCollection(ctx.ModelAdapter())
+	c1 := NewEmptyCol()
+	c2 := NewCol(ctx.ModelAdapter())
 	assert.True(t, c1.Equal(c2))
 	assert.True(t, c1.Equivalent(c2))
 }
 
-func TestEmptyCollectionEqualNot(t *testing.T) {
+func TestEmptyColEqualNot(t *testing.T) {
 	ctx := newTestContext(t)
-	c1 := NewEmptyCollection()
-	c2 := NewCollection(ctx.ModelAdapter())
-	assert.NoError(t, c2.Add(NewString("test")))
+	c1 := NewEmptyCol()
+	c2 := NewCol(ctx.ModelAdapter())
+	c2.Add(NewString("test"))
 	assert.False(t, c1.Equal(c2))
 	assert.False(t, c1.Equivalent(c2))
 }
 
-func TestEmptyCollectionNoCol(t *testing.T) {
-	c1 := NewEmptyCollection()
+func TestEmptyColNoCol(t *testing.T) {
+	c1 := NewEmptyCol()
 	assert.False(t, c1.Equal(NewString("")))
 	assert.False(t, c1.Equivalent(NewString("")))
 }
 
-func TestEmptyCollectionContains(t *testing.T) {
-	c := NewEmptyCollection()
+func TestEmptyColContains(t *testing.T) {
+	c := NewEmptyCol()
 	assert.False(t, c.Contains(False))
 }
 
-type errorCollection struct {
+func TestColDelegateSource(t *testing.T) {
+	ctx := newTestContext(t)
+	o := NewColWithSource(ctx.ModelAdapter(), "abc")
+	d := NewColDelegate(o)
+	assert.Equal(t, "abc", d.Source())
 }
 
-func newErrorCollection() CollectionAccessor {
-	return &errorCollection{}
+func TestColDelegateDataType(t *testing.T) {
+	ctx := newTestContext(t)
+	c := ctx.NewCol()
+	d := NewColDelegate(c)
+	assert.Equal(t, ColDataType, d.DataType())
 }
 
-func (c *errorCollection) DataType() DataTypes {
-	return CollectionDataType
-}
-
-func (c *errorCollection) Empty() bool {
-	return false
-}
-
-func (c *errorCollection) Count() int {
-	return 2
-}
-
-func (c *errorCollection) Get(i int) interface{} {
-	switch i {
-	case 0:
-		return NewString("test item")
-	case 1:
-		return newTestModelErrorNode()
-	default:
-		panic("invalid item index")
+func TestColDelegateTypeSpec(t *testing.T) {
+	ctx := newTestContext(t)
+	c := ctx.NewCol()
+	d := NewColDelegate(c)
+	ti := d.TypeSpec()
+	if assert.NotNil(t, ti, "type info expected") {
+		assert.Equal(t, "", ti.String())
+		assert.Nil(t, ti.Base(), "no base type expected")
+		assert.True(t, ti.Anonymous())
 	}
 }
 
-func (c *errorCollection) TypeSpec() TypeSpecAccessor {
-	panic("implement me")
+func TestColDelegateTypeInfo(t *testing.T) {
+	ctx := newTestContext(t)
+	c := ctx.NewCol()
+	d := NewColDelegate(c)
+	i := d.TypeInfo()
+	if assert.Implements(t, (*ListTypeInfoAccessor)(nil), i) {
+		a := i.(ListTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Nil(t, a.ElementType(), "item type spec has not been set")
+	}
 }
 
-func (c *errorCollection) Source() interface{} {
-	panic("implement me")
+func TestColDelegateTypeInfoWithItemTypeSpec(t *testing.T) {
+	ctx := newTestContext(t)
+	c := NewColWithSpec(ctx.ModelAdapter(), DecimalTypeSpec)
+	d := NewColDelegate(c)
+	i := d.TypeInfo()
+	if assert.Implements(t, (*ListTypeInfoAccessor)(nil), i) {
+		a := i.(ListTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("System.Decimal"), a.ElementType())
+	}
 }
 
-func (c errorCollection) Equal(_ interface{}) bool {
-	panic("implement me")
+func TestColDelegateGet(t *testing.T) {
+	ctx := newTestContext(t)
+	item1 := NewString("test1")
+	item2 := NewString("test2")
+	c := ctx.NewCol()
+	c.Add(item1)
+	c.Add(item2)
+	d := NewColDelegate(c)
+	assert.False(t, d.Empty(), "col contains elements")
+	assert.Equal(t, 2, d.Count())
+	assert.Same(t, item1, d.Get(0))
+	assert.Same(t, item2, d.Get(1))
+	assert.Nil(t, d.ItemTypeSpec())
 }
 
-func (c *errorCollection) Equivalent(_ interface{}) bool {
-	panic("implement me")
+func TestColDelegateContains(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCol()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
+	d := NewColDelegate(col)
+	assert.True(t, d.Contains(NewInteger(12)))
 }
 
-func (c *errorCollection) ItemTypeSpec() TypeSpecAccessor {
-	panic("implement me")
+func TestColDelegateContainsNot(t *testing.T) {
+	ctx := newTestContext(t)
+	col := ctx.NewCol()
+	col.Add(NewInteger(10))
+	col.Add(NewInteger(12))
+	d := NewColDelegate(col)
+	assert.False(t, d.Contains(NewInteger(11)))
 }
 
-func (c *errorCollection) Contains(_ interface{}) bool {
-	panic("implement me")
+func TestColDelegateEqual(t *testing.T) {
+	ctx := newTestContext(t)
+	c1 := ctx.NewCol()
+	c1.Add(NewString("test1"))
+	c1.Add(NewString("test2"))
+	d := NewColDelegate(c1)
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test1"))
+	c2.Add(NewString("test2"))
+	assert.Equal(t, true, d.Equal(c2))
+	assert.Equal(t, true, d.Equivalent(c2))
+}
+
+func TestColDelegateEquivalent(t *testing.T) {
+	ctx := newTestContext(t)
+	c1 := ctx.NewCol()
+	c1.Add(NewString("Test Value"))
+	d := NewColDelegate(c1)
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test\nvalue"))
+	assert.Equal(t, false, d.Equal(c2))
+	assert.Equal(t, true, d.Equivalent(c2))
+}
+
+func TestColDelegateEqualNot(t *testing.T) {
+	ctx := newTestContext(t)
+	c1 := ctx.NewCol()
+	c1.Add(NewString("test1"))
+	d := NewColDelegate(c1)
+	c2 := ctx.NewCol()
+	c2.Add(NewString("test2"))
+	assert.Equal(t, false, d.Equal(c2))
+	assert.Equal(t, false, d.Equivalent(c2))
 }

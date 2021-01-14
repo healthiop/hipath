@@ -65,7 +65,7 @@ func Compile(pathString string) (*Path, *hipathsys.Error) {
 	return &Path{expression.NewCollectionExpression(res.(hipathsys.Evaluator))}, nil
 }
 
-func Execute(ctx hipathsys.ContextAccessor, pathString string, node interface{}) (hipathsys.CollectionAccessor, *hipathsys.Error) {
+func Execute(ctx hipathsys.ContextAccessor, pathString string, node interface{}) (hipathsys.ColAccessor, *hipathsys.Error) {
 	path, err := Compile(pathString)
 	if err != nil {
 		return nil, err
@@ -74,10 +74,10 @@ func Execute(ctx hipathsys.ContextAccessor, pathString string, node interface{})
 	return path.Execute(ctx, node)
 }
 
-func (p *Path) Execute(ctx hipathsys.ContextAccessor, node interface{}) (hipathsys.CollectionAccessor, *hipathsys.Error) {
+func (p *Path) Execute(ctx hipathsys.ContextAccessor, node interface{}) (hipathsys.ColAccessor, *hipathsys.Error) {
 	res, err := p.evaluator.Evaluate(ctx, node, nil)
 	if err != nil {
 		return nil, hipathsys.NewError(err.Error(), nil)
 	}
-	return res.(hipathsys.CollectionAccessor), nil
+	return res.(hipathsys.ColAccessor), nil
 }

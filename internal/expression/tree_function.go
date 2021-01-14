@@ -47,10 +47,10 @@ func (f *childrenFunction) Execute(ctx hipathsys.ContextAccessor, node interface
 		return nil, nil
 	}
 
-	if col, ok := node.(hipathsys.CollectionAccessor); ok {
+	if col, ok := node.(hipathsys.ColAccessor); ok {
 		count := col.Count()
 		adapter := ctx.ModelAdapter()
-		var children hipathsys.CollectionModifier
+		var children hipathsys.ColModifier
 
 		for i := 0; i < count; i++ {
 			c := col.Get(i)
@@ -61,12 +61,9 @@ func (f *childrenFunction) Execute(ctx hipathsys.ContextAccessor, node interface
 				}
 				if ccol != nil && !ccol.Empty() {
 					if children == nil {
-						children = hipathsys.NewCollection(adapter)
+						children = hipathsys.NewCol(adapter)
 					}
-					_, err := children.AddAll(ccol)
-					if err != nil {
-						return nil, err
-					}
+					children.AddAll(ccol)
 				}
 			}
 		}

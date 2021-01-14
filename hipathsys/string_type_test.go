@@ -71,6 +71,17 @@ func TestStringTypeSpec(t *testing.T) {
 	}
 }
 
+func TestStringTypeInfo(t *testing.T) {
+	o := NewString("Test")
+	i := o.TypeInfo()
+	if assert.Implements(t, (*SimpleTypeInfoAccessor)(nil), i) {
+		a := i.(SimpleTypeInfoAccessor)
+		assert.Equal(t, NewString("System"), a.Namespace())
+		assert.Equal(t, NewString("String"), a.Name())
+		assert.Equal(t, NewString("System.Any"), a.BaseType())
+	}
+}
+
 func TestStringValue(t *testing.T) {
 	o := NewString("Test")
 	value := o.String()

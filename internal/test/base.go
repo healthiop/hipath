@@ -84,9 +84,9 @@ func newTestModel(t *testing.T) hipathsys.ModelAdapter {
 	return &testModel{t}
 }
 
-func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
-	if m, ok := node.(map[string]interface{}); ok {
-		return m, nil
+func (a *testModel) CastToSystem(node interface{}) (hipathsys.AnyAccessor, error) {
+	if _, ok := node.(map[string]interface{}); ok {
+		return nil, nil
 	}
 
 	if n, ok := node.(testModelNodeAccessor); !ok {
@@ -99,11 +99,11 @@ func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
 		if n.testSys() {
 			return hipathsys.NewDecimalFloat64(n.testValue()), nil
 		}
-		return n, nil
+		return nil, nil
 	}
 }
 
-func (a *testModel) Cast(node interface{}, name hipathsys.FQTypeNameAccessor) (interface{}, error) {
+func (a *testModel) AsType(node interface{}, name hipathsys.FQTypeNameAccessor) (interface{}, error) {
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		a.t.Errorf("not a test model node: %T", node)
 		return nil, nil
@@ -154,11 +154,11 @@ func (a *testModel) Equal(node1 interface{}, node2 interface{}) bool {
 
 	n1, ok := node1.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node1)
+		return false
 	}
 	n2, ok := node2.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node2)
+		return false
 	}
 
 	if n1.testSys() || n2.testSys() {
@@ -196,7 +196,7 @@ func (a *testModel) Navigate(node interface{}, name string) (interface{}, error)
 	return result, nil
 }
 
-func (a *testModel) Children(node interface{}) (hipathsys.CollectionAccessor, error) {
+func (a *testModel) Children(node interface{}) (hipathsys.ColAccessor, error) {
 	if _, ok := node.(hipathsys.AnyAccessor); ok {
 		return nil, nil
 	}
@@ -206,7 +206,7 @@ func (a *testModel) Children(node interface{}) (hipathsys.CollectionAccessor, er
 		return nil, fmt.Errorf("cannot be cast to map: %T", node)
 	}
 
-	res := hipathsys.NewCollection(a)
+	res := hipathsys.NewCol(a)
 	keys := make([]string, 0)
 	for k := range model {
 		if k == "errorCollection" {
@@ -218,10 +218,7 @@ func (a *testModel) Children(node interface{}) (hipathsys.CollectionAccessor, er
 	for _, k := range keys {
 		v := model[k]
 		if v != nil {
-			err := res.Add(model[k])
-			if err != nil {
-				return nil, err
-			}
+			res.Add(model[k])
 		}
 	}
 	return res, nil
@@ -260,12 +257,12 @@ func (t *testContext) ModelAdapter() hipathsys.ModelAdapter {
 	return t.modelAdapter
 }
 
-func (t *testContext) NewCollection() hipathsys.CollectionModifier {
-	return hipathsys.NewCollection(t.modelAdapter)
+func (t *testContext) NewCol() hipathsys.ColModifier {
+	return hipathsys.NewCol(t.modelAdapter)
 }
 
-func (t *testContext) NewCollectionWithItem(item interface{}) (hipathsys.CollectionModifier, error) {
-	return hipathsys.NewCollectionWithItem(t.modelAdapter, item)
+func (t *testContext) NewColWithItem(item interface{}) hipathsys.ColModifier {
+	return hipathsys.NewColWithItem(t.modelAdapter, item)
 }
 
 func (t *testContext) ContextNode() interface{} {
@@ -279,12 +276,12 @@ func (t *testContext) Tracer() hipathsys.Tracer {
 type errorCollection struct {
 }
 
-func NewErrorCollection() hipathsys.CollectionAccessor {
+func NewErrorCollection() hipathsys.ColAccessor {
 	return &errorCollection{}
 }
 
 func (c *errorCollection) DataType() hipathsys.DataTypes {
-	return hipathsys.CollectionDataType
+	return hipathsys.ColDataType
 }
 
 func (c *errorCollection) Empty() bool {
@@ -316,6 +313,10 @@ func (c *errorCollection) Contains(node interface{}) bool {
 }
 
 func (c *errorCollection) TypeSpec() hipathsys.TypeSpecAccessor {
+	panic("implement me")
+}
+
+func (c *errorCollection) TypeInfo() hipathsys.TypeInfoAccessor {
 	panic("implement me")
 }
 

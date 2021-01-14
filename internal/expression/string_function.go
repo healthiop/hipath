@@ -356,13 +356,13 @@ func (f *toCharsFunction) Execute(ctx hipathsys.ContextAccessor, node interface{
 	}
 
 	if s.Length() == 0 {
-		return hipathsys.NewEmptyCollection(), nil
+		return hipathsys.NewEmptyCol(), nil
 	}
 
-	col := ctx.NewCollection()
+	col := ctx.NewCol()
 	sr := []rune(s.String())
 	for _, c := range sr {
-		col.MustAdd(hipathsys.StringOf(string(c)))
+		col.Add(hipathsys.StringOf(string(c)))
 	}
 
 	return col, nil

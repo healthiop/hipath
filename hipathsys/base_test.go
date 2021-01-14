@@ -63,6 +63,10 @@ func (a *nodeMock) TypeSpec() TypeSpecAccessor {
 	return newAnyTypeSpec("Test")
 }
 
+func (a *nodeMock) TypeInfo() TypeInfoAccessor {
+	panic("implement me")
+}
+
 func (a *nodeMock) Equal(node interface{}) bool {
 	if o, ok := node.(nodeMockAccessor); !ok {
 		return false
@@ -93,9 +97,6 @@ type testModelNode struct {
 	typeSpec TypeSpecAccessor
 }
 
-type testModelErrorNode struct {
-}
-
 type testModelNodeAccessor interface {
 	testValue() float64
 	testSys() bool
@@ -110,10 +111,6 @@ func newTestModelNode(value float64, sys bool, typeSpec TypeSpecAccessor) testMo
 	return &testModelNode{value, sys, typeSpec}
 }
 
-func newTestModelErrorNode() testModelErrorNodeAccessor {
-	return &testModelErrorNode{}
-}
-
 func (n *testModelNode) testValue() float64 {
 	return n.value
 }
@@ -126,10 +123,6 @@ func (n *testModelNode) testTypeSpec() TypeSpecAccessor {
 	return n.typeSpec
 }
 
-func (n *testModelErrorNode) testErr() bool {
-	return true
-}
-
 type testModel struct {
 	t *testing.T
 }
@@ -138,7 +131,7 @@ func newTestModel(t *testing.T) ModelAdapter {
 	return &testModel{t}
 }
 
-func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
+func (a *testModel) CastToSystem(node interface{}) (AnyAccessor, error) {
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		if _, ok = node.(testModelErrorNodeAccessor); ok {
 			return nil, fmt.Errorf("error node cannot be converted")
@@ -149,11 +142,11 @@ func (a *testModel) ConvertToSystem(node interface{}) (interface{}, error) {
 		if n.testSys() {
 			return NewDecimalFloat64(n.testValue()), nil
 		}
-		return n, nil
+		return nil, nil
 	}
 }
 
-func (a *testModel) Cast(node interface{}, name FQTypeNameAccessor) (interface{}, error) {
+func (a *testModel) AsType(node interface{}, name FQTypeNameAccessor) (interface{}, error) {
 	if n, ok := node.(testModelNodeAccessor); !ok {
 		a.t.Errorf("not a test model node: %T", node)
 		return nil, nil
@@ -189,11 +182,11 @@ func (a *testModel) TypeSpec(node interface{}) TypeSpecAccessor {
 func (a *testModel) Equal(node1 interface{}, node2 interface{}) bool {
 	n1, ok := node1.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node1)
+		return false
 	}
 	n2, ok := node2.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node2)
+		return false
 	}
 
 	if n1.testSys() || n2.testSys() {
@@ -205,11 +198,11 @@ func (a *testModel) Equal(node1 interface{}, node2 interface{}) bool {
 func (a *testModel) Equivalent(node1 interface{}, node2 interface{}) bool {
 	n1, ok := node1.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node1)
+		return false
 	}
 	n2, ok := node2.(testModelNodeAccessor)
 	if !ok {
-		a.t.Errorf("not a test model node: %T", node2)
+		return false
 	}
 
 	if n1.testSys() || n2.testSys() {
@@ -222,7 +215,7 @@ func (a *testModel) Navigate(interface{}, string) (interface{}, error) {
 	panic("implement me")
 }
 
-func (a *testModel) Children(_ interface{}) (CollectionAccessor, error) {
+func (a *testModel) Children(_ interface{}) (ColAccessor, error) {
 	panic("implement me")
 }
 
@@ -242,12 +235,12 @@ func (t *testContext) ModelAdapter() ModelAdapter {
 	return t.modelAdapter
 }
 
-func (t *testContext) NewCollection() CollectionModifier {
-	return NewCollection(t.modelAdapter)
+func (t *testContext) NewCol() ColModifier {
+	return NewCol(t.modelAdapter)
 }
 
-func (t *testContext) NewCollectionWithItem(item interface{}) (CollectionModifier, error) {
-	return NewCollectionWithItem(t.modelAdapter, item)
+func (t *testContext) NewColWithItem(item interface{}) ColModifier {
+	return NewColWithItem(t.modelAdapter, item)
 }
 
 func (t *testContext) ContextNode() interface{} {

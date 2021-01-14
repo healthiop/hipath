@@ -74,9 +74,9 @@ func TestIndexOfFuncSubstringOther(t *testing.T) {
 func TestIndexOfFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newIndexOfFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
@@ -87,9 +87,9 @@ func TestIndexOfFuncMultiCol(t *testing.T) {
 func TestIndexOfFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newIndexOfFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
@@ -149,8 +149,8 @@ func TestSubstringFuncValidStart(t *testing.T) {
 func TestSubstringFuncColValidStart(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("abcdefg"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("abcdefg"))
 
 	f := newSubstringFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewInteger(3)}, nil)
@@ -163,8 +163,8 @@ func TestSubstringFuncColValidStart(t *testing.T) {
 func TestSubstringFuncValidStartCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(3))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(3))
 
 	f := newSubstringFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{col}, nil)
@@ -255,8 +255,8 @@ func TestSubstringFuncValidStartLen(t *testing.T) {
 func TestSubstringFuncValidStartColLen(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewInteger(2))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewInteger(2))
 
 	f := newSubstringFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("abcdefg"), []interface{}{
@@ -337,9 +337,9 @@ func TestStartsWithFuncSubstringOther(t *testing.T) {
 func TestStartsWithFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newStartsWithFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
@@ -350,9 +350,9 @@ func TestStartsWithFuncMultiCol(t *testing.T) {
 func TestStartsWithFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newStartsWithFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
@@ -438,9 +438,9 @@ func TestEndsWithFuncSubstringOther(t *testing.T) {
 func TestEndsWithFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newEndsWithFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
@@ -451,9 +451,9 @@ func TestEndsWithFuncMultiCol(t *testing.T) {
 func TestEndsWithFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newEndsWithFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
@@ -539,9 +539,9 @@ func TestContainsFuncSubstringOther(t *testing.T) {
 func TestContainsFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newContainsFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("test")}, nil)
@@ -552,9 +552,9 @@ func TestContainsFuncMultiCol(t *testing.T) {
 func TestContainsFuncSubstringMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newContainsFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("test"), []interface{}{col}, nil)
@@ -601,9 +601,9 @@ func TestUpperFuncOther(t *testing.T) {
 func TestUpperFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newUpperFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -641,9 +641,9 @@ func TestLowerFuncOther(t *testing.T) {
 func TestLowerFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newLowerFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -732,8 +732,8 @@ func TestReplaceFuncInputNoString(t *testing.T) {
 func TestReplaceFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("xyz"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("xyz"))
 
 	f := newReplaceFunction()
 	res, err := f.Execute(ctx, col,
@@ -755,8 +755,8 @@ func TestReplaceFuncPatternNoString(t *testing.T) {
 func TestReplaceFuncPatternCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("x"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("x"))
 
 	f := newReplaceFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
@@ -778,8 +778,8 @@ func TestReplaceFuncSubstitutionNoString(t *testing.T) {
 func TestReplaceFuncSubstitutionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("y"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("y"))
 
 	f := newReplaceFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
@@ -819,8 +819,8 @@ func TestMatchesFuncTrue(t *testing.T) {
 func TestMatchesFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("Atest123abc"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("Atest123abc"))
 
 	f := newMatchesFunction()
 	res, err := f.Execute(ctx, col, []interface{}{hipathsys.NewString("[a-z]{3,4}\\d+[a-z]+")}, nil)
@@ -840,8 +840,8 @@ func TestMatchesFuncInputInvalid(t *testing.T) {
 func TestMatchesFuncRegexCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("[a-z]+\\d+[a-z]+"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("[a-z]+\\d+[a-z]+"))
 
 	f := newMatchesFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("Atest123abcZ"), []interface{}{col}, nil)
@@ -944,8 +944,8 @@ func TestReplaceMatchesFuncInputNoString(t *testing.T) {
 func TestReplaceMatchesFuncInputCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("xyz"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("xyz"))
 
 	f := newReplaceMatchesFunction()
 	res, err := f.Execute(ctx, col,
@@ -967,8 +967,8 @@ func TestReplaceMatchesFuncRegexNoString(t *testing.T) {
 func TestReplaceMatchesFuncRegexCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("x"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("x"))
 
 	f := newReplaceMatchesFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
@@ -990,8 +990,8 @@ func TestReplaceMatchesFuncSubstitutionNoString(t *testing.T) {
 func TestReplaceMatchesFuncSubstitutionCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("y"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("y"))
 
 	f := newReplaceMatchesFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("xyz"),
@@ -1033,9 +1033,9 @@ func TestLengthFuncOther(t *testing.T) {
 func TestLengthFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newLengthFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -1073,9 +1073,9 @@ func TestToCharsFuncOther(t *testing.T) {
 func TestToCharsFuncMultiCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
 
-	col := ctx.NewCollection()
-	col.MustAdd(hipathsys.NewString("test"))
-	col.MustAdd(hipathsys.NewString("test"))
+	col := ctx.NewCol()
+	col.Add(hipathsys.NewString("test"))
+	col.Add(hipathsys.NewString("test"))
 
 	f := newToCharsFunction()
 	res, err := f.Execute(ctx, col, []interface{}{}, nil)
@@ -1089,8 +1089,8 @@ func TestToCharsFunc(t *testing.T) {
 	f := newToCharsFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString("T i Áz"), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		if assert.Equal(t, 6, col.Count()) {
 			assert.Equal(t, hipathsys.NewString("T"), col.Get(0))
 			assert.Equal(t, hipathsys.NewString(" "), col.Get(1))
@@ -1108,8 +1108,8 @@ func TestToCharsFuncEmptyString(t *testing.T) {
 	f := newToCharsFunction()
 	res, err := f.Execute(ctx, hipathsys.NewString(""), []interface{}{}, nil)
 	assert.NoError(t, err, "no error expected")
-	if assert.Implements(t, (*hipathsys.CollectionAccessor)(nil), res) {
-		col := res.(hipathsys.CollectionAccessor)
+	if assert.Implements(t, (*hipathsys.ColAccessor)(nil), res) {
+		col := res.(hipathsys.ColAccessor)
 		assert.Equal(t, 0, col.Count())
 	}
 }

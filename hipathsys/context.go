@@ -29,13 +29,13 @@
 package hipathsys
 
 type ModelAdapter interface {
-	ConvertToSystem(node interface{}) (interface{}, error)
+	AsType(node interface{}, name FQTypeNameAccessor) (interface{}, error)
+	CastToSystem(node interface{}) (AnyAccessor, error)
 	TypeSpec(node interface{}) TypeSpecAccessor
-	Cast(node interface{}, name FQTypeNameAccessor) (interface{}, error)
 	Equal(node1 interface{}, node2 interface{}) bool
 	Equivalent(node1 interface{}, node2 interface{}) bool
 	Navigate(node interface{}, name string) (interface{}, error)
-	Children(node interface{}) (CollectionAccessor, error)
+	Children(node interface{}) (ColAccessor, error)
 }
 
 func ModelTypeSpec(adapter ModelAdapter, node interface{}) TypeSpecAccessor {
@@ -86,7 +86,7 @@ func CastModelType(adapter ModelAdapter, node interface{}, name FQTypeNameAccess
 		return nil, nil
 	}
 
-	return adapter.Cast(node, name)
+	return adapter.AsType(node, name)
 }
 
 func ModelEqual(adapter ModelAdapter, node1 interface{}, node2 interface{}) bool {
@@ -98,15 +98,14 @@ func ModelEqual(adapter ModelAdapter, node1 interface{}, node2 interface{}) bool
 	}
 
 	sysNode1, _ := node1.(AnyAccessor)
-	sysNode2, _ := node2.(AnyAccessor)
-	if sysNode1 != nil && sysNode2 != nil {
-		return sysNode1.Equal(sysNode2)
-	}
-	if sysNode1 != nil || sysNode2 != nil {
-		return false
+	if sysNode1 != nil {
+		sysNode2, _ := node2.(AnyAccessor)
+		if sysNode2 != nil {
+			return sysNode1.Equal(sysNode2)
+		}
 	}
 
-	return adapter.Equal(node1, node2)
+	return adapter != nil && adapter.Equal(node1, node2)
 }
 
 func ModelEquivalent(adapter ModelAdapter, node1 interface{}, node2 interface{}) bool {
@@ -118,15 +117,14 @@ func ModelEquivalent(adapter ModelAdapter, node1 interface{}, node2 interface{})
 	}
 
 	sysNode1, _ := node1.(AnyAccessor)
-	sysNode2, _ := node2.(AnyAccessor)
-	if sysNode1 != nil && sysNode2 != nil {
-		return sysNode1.Equivalent(sysNode2)
-	}
-	if sysNode1 != nil || sysNode2 != nil {
-		return false
+	if sysNode1 != nil {
+		sysNode2, _ := node2.(AnyAccessor)
+		if sysNode2 != nil {
+			return sysNode1.Equivalent(sysNode2)
+		}
 	}
 
-	return adapter.Equivalent(node1, node2)
+	return adapter != nil && adapter.Equivalent(node1, node2)
 }
 
 func SystemAnyTypeEqual(node1 AnyAccessor, node2 interface{}) bool {
@@ -157,15 +155,15 @@ func SystemAnyEqual(node1 AnyAccessor, node2 interface{}) bool {
 
 type Tracer interface {
 	Enabled(name string) bool
-	Trace(name string, col CollectionAccessor)
+	Trace(name string, col ColAccessor)
 }
 
 type ContextAccessor interface {
 	EnvVar(name string) (interface{}, bool)
 	ContextNode() interface{}
 	ModelAdapter() ModelAdapter
-	NewCollection() CollectionModifier
-	NewCollectionWithItem(item interface{}) (CollectionModifier, error)
+	NewCol() ColModifier
+	NewColWithItem(item interface{}) ColModifier
 	Tracer() Tracer
 }
 

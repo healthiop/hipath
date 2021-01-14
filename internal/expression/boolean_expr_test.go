@@ -115,9 +115,9 @@ func TestBooleanExpressionInvalidOp(t *testing.T) {
 
 func TestBooleanExpressionMultiColLeft(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
-	operand.MustAdd(hipathsys.True)
-	operand.MustAdd(hipathsys.True)
+	operand := ctx.NewCol()
+	operand.Add(hipathsys.True)
+	operand.Add(hipathsys.True)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -129,9 +129,9 @@ func TestBooleanExpressionMultiColLeft(t *testing.T) {
 
 func TestBooleanExpressionMultiColRight(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
-	operand.MustAdd(hipathsys.True)
-	operand.MustAdd(hipathsys.True)
+	operand := ctx.NewCol()
+	operand.Add(hipathsys.True)
+	operand.Add(hipathsys.True)
 
 	evaluator := NewBooleanExpression(NewBooleanLiteral(true), AndOp, newTestExpression(operand))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -154,8 +154,8 @@ func TestBooleanExpressionNoBoolean(t *testing.T) {
 
 func TestBooleanExpressionSingleColString(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
-	operand.MustAdd(hipathsys.NewString("test"))
+	operand := ctx.NewCol()
+	operand.Add(hipathsys.NewString("test"))
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -167,8 +167,8 @@ func TestBooleanExpressionSingleColString(t *testing.T) {
 
 func TestBooleanExpressionSingleColBoolean(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
-	operand.MustAdd(hipathsys.False)
+	operand := ctx.NewCol()
+	operand.Add(hipathsys.False)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -180,7 +180,7 @@ func TestBooleanExpressionSingleColBoolean(t *testing.T) {
 
 func TestBooleanExpressionEmptyCol(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
+	operand := ctx.NewCol()
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
@@ -192,8 +192,8 @@ func TestBooleanExpressionEmptyCol(t *testing.T) {
 
 func TestBooleanExpressionColSingleNil(t *testing.T) {
 	ctx := test.NewTestContext(t)
-	operand := ctx.NewCollection()
-	operand.MustAdd(nil)
+	operand := ctx.NewCol()
+	operand.Add(nil)
 
 	evaluator := NewBooleanExpression(newTestExpression(operand), AndOp, NewBooleanLiteral(true))
 	if assert.NotNil(t, evaluator, "evaluator expected") {
