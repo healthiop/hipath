@@ -32,6 +32,7 @@ go 1.15
 
 require (
 	github.com/antlr/antlr4 v0.0.0-20210103211933-547fd7cc5eb0
-	github.com/shopspring/decimal v1.2.0
-	github.com/stretchr/testify v1.6.1
+	github.com/shopspring/decimal v1.3.1
+	github.com/stretchr/testify v1.7.1
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
