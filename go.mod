@@ -28,10 +28,16 @@
 
 module github.com/healthiop/hipath
 
-go 1.15
+go 1.18
 
 require (
 	github.com/antlr/antlr4 v0.0.0-20210103211933-547fd7cc5eb0
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.1
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
